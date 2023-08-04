@@ -11,11 +11,97 @@ datasource db {
 }
 
 model User {
-  id       Int        @id @default(autoincrement())
-  email    String     @unique
-  password String
-  name     String?
-  username String     @unique
+  id               String             @id @default(uuid())
+  email            String             @unique
+  password         String
+  name             String
+  username         String             @unique
+  pfp              String?
+  songRatings      SongRating[]
+  albumRatings     AlbumRating[]
+  followers        Follow[]           @relation("followers")
+  following        Follow[]           @relation("following")
+  Playlist         Playlist[]
+  createdAt        DateTime           @default(now())
+  NotificationUser NotificationUser[]
 }
 
+model Follow {
+  follower    User     @relation("followers", fields: [followingId], references: [id])
+  followerId  String
+  following   User     @relation("following", fields: [followerId], references: [id])
+  followingId String
+  createdAt   DateTime @default(now())
 
+  @@id([followerId, followingId])
+}
+
+model SongRating {
+  song      Song     @relation(fields: [songId], references: [id])
+  songId    Int
+  stars     Float
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@id([userId, songId])
+}
+
+model AlbumRating {
+  album     Album    @relation(fields: [albumId], references: [id])
+  albumId   Int
+  stars     Float
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@id([userId, albumId])
+}
+
+model Notification {
+  id               String             @id @default(uuid())
+  NotificationUser NotificationUser[]
+}
+
+model NotificationUser {
+  notification   Notification @relation(fields: [notificationId], references: [id])
+  user           User         @relation(fields: [userId], references: [id])
+  notificationId String
+  userId         String
+  createdAt      DateTime     @default(now())
+
+  @@id([notificationId, userId])
+}
+
+model Song {
+  id          Int            @id
+  playlists   PlaylistSong[]
+  songRatings SongRating[]
+}
+
+model PlaylistSong {
+  playlist   Playlist @relation(fields: [playlistId], references: [id])
+  song       Song     @relation(fields: [songId], references: [id])
+  playlistId String
+  songId     Int
+  createdAt  DateTime @default(now())
+
+  @@id([playlistId, songId])
+}
+
+model Playlist {
+  id          String         @id @default(uuid())
+  user        User           @relation(fields: [userId], references: [id])
+  userId      String
+  songs       PlaylistSong[]
+  name        String
+  description String?
+  image       String?
+}
+
+model Album {
+  id           Int           @id
+  albumRatings AlbumRating[]
+}
