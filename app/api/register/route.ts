@@ -1,8 +1,5 @@
-import { PrismaClient } from "@prisma/client";
 import { NextResponse, NextRequest } from "next/server";
-
-export const prisma = new PrismaClient();
-// use `prisma` in your application to read and write data in your DB
+import { prisma } from "../prisma";
 
 export interface User {
   email: string;
@@ -29,6 +26,8 @@ export async function POST(req: NextRequest) {
         name: body.name,
       },
     });
+
+    //set next auth b/c signed in
 
     return NextResponse.json({ body: newUser });
   } catch (err: any) {

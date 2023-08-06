@@ -6,6 +6,8 @@ import { User } from "../api/register/route";
 import axios from "axios";
 import variables from "../variables.module.scss";
 import { useRouter } from "next/navigation";
+import { useContext } from "react";
+import { FormContext } from "./page";
 
 //types associated with useState -> https://www.carlrippon.com/typed-usestate-with-typescript/
 //hook form with ts: https://react-hook-form.com/get-started
@@ -53,6 +55,8 @@ const Register = ({ className }: RegisterProps) => {
       });
   };
 
+  const setFormState = useContext(FormContext);
+
   return (
     <form
       onSubmit={handleSubmit(createUser)}
@@ -62,7 +66,7 @@ const Register = ({ className }: RegisterProps) => {
       }
       style={{
         backgroundColor: variables.boxDarkGrey,
-        filter: "drop-shadow(-10px 10px 1px rgba(0, 0, 0, 0.25));",
+        filter: "drop-shadow(-10px 10px 1px rgba(0, 0, 0, 0.25))",
       }}
     >
       <div className="flex flex-col">
@@ -176,9 +180,19 @@ const Register = ({ className }: RegisterProps) => {
       </div>
       <input
         type="submit"
+        value="Sign Up"
         className="text-white self-end rounded-md px-3 py-2 w-min"
         style={{ backgroundColor: variables.purple }}
       />
+      <div className=" self-center">
+        <span className="text-white">Already have an account? </span>
+        <button
+          className="text-purple underline"
+          onClick={() => setFormState("sign in")}
+        >
+          Sign In
+        </button>
+      </div>
     </form>
   );
 };
