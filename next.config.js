@@ -7,7 +7,11 @@ const nextConfig = {
     includePaths: [path.join(__dirname, "styles")],
   },
   env: {
-    NEXTAUTH_SECRET: "hR8EzwDOA7AJA4H5q00GTPpEpm5Uz85DUP7W6WHi35I=",
+    NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
+    SPOTIFY_CLIENT_SECRET: process.env.SPOTIFY_CLIENT_SECRET,
+    SPOTIFY_CLIENT_ID: process.env.SPOTIFY_CLIENT_ID,
+    REDIS_URL: process.env.REDIS_URL,
+    REDIS_TOKEN: process.env.REDIS_TOKEN,
   },
 };
 

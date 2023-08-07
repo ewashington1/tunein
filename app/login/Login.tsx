@@ -55,10 +55,6 @@ const Login = ({ className }: LoginProps) => {
           name: res.data.body.user.name,
           redirect: false,
         });
-        console.log(session.user);
-        if (session.user) {
-          router.push("/home");
-        }
       })
       .catch((err) => {
         //username error is present

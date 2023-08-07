@@ -29,7 +29,7 @@ const authOptions: NextAuthOptions = {
     }),
   ],
   pages: {
-    // signIn: "/login",
+    signIn: "/login",
   },
   secret: process.env.NEXTAUTH_SECRET,
   //   JWT: When a user logs in, next-auth generates a JWT that contains user information. This token can be customized with the jwt callback in your configuration. This token is signed, sent to the client, and stored securely in an HTTP-only cookie. On each request, this token is sent to the server, decoded, and the user information is extracted.
