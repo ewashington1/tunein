@@ -17,6 +17,7 @@ module.exports = {
         boxDarkGrey: "#141414",
         boxLightGrey: "#222222",
         lightGrey: "#d9d9d9",
+        textLightGrey: "#9d9d9d",
         purple: "#a220c9",
       },
     },
