@@ -46,10 +46,7 @@ const LeftSideBar = () => {
         />
       </div>
       {searchPanel && (
-        <SearchPage
-          className="absolute top-0 right-[20vw] z-40 searchSlideIn "
-          setSearchPanel={setSearchPanel}
-        />
+        <SearchPage searchTerm={searchTerm} setSearchPanel={setSearchPanel} />
       )}
     </div>
   );

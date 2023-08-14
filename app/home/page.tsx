@@ -3,6 +3,7 @@
 import axios from "axios";
 import React from "react";
 import AuthenticatedLayout from "../components/AuthenticatedLayout";
+import FeedItem from "../components/FeedItem";
 
 const page = () => {
   const getTestSong = () => {
@@ -21,6 +22,7 @@ const page = () => {
           Console log test song
         </button>
       </div>
+      <FeedItem />
     </AuthenticatedLayout>
   );
 };
