@@ -216,6 +216,7 @@ const SearchPage = ({
         <div className="px-4 border-r">
           <button>Users</button>
         </div>
+
         <div className="px-4 border-r">
           <button>Songs</button>
         </div>

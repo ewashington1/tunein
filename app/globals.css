@@ -29,6 +29,7 @@ body {
 
 body {
   background-color: #262526;
+  color: white;
 }
 
 /* changing styling on autofill */
@@ -44,4 +45,18 @@ select:-webkit-autofill:focus {
   -webkit-background-clip: text;
   transition: background-color 5000s ease-in-out 0s;
   box-shadow: inset 0 0 30px 30px #d2abde;
+}
+
+.searchSlideIn {
+  animation: searchSlideIn 0.5s ease-in-out 0s;
+}
+
+@keyframes searchSlideIn {
+  from {
+    transform: translateX(-60vw);
+  }
+
+  to {
+    transform: translateX(0);
+  }
 }
