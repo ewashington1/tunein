@@ -1,8 +1,10 @@
-import React, { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleXmark as filledX } from "@fortawesome/free-solid-svg-icons";
 import { faCircleXmark as unfilledX } from "@fortawesome/free-regular-svg-icons";
-import SongCard from "./SongCard";
+import Tracks from "./SearchResults/Tracks";
+import Artists from "./SearchResults/Artists";
+import Albums from "./SearchResults/Albums";
 
 type SearchPageProps = {
   setSearchPanel: Dispatch<SetStateAction<boolean>>;
@@ -189,16 +191,20 @@ const songPlaceholders = [
   },
 ];
 
+//fix the formatting of this whole panel
 const SearchPage = ({
   setSearchPanel,
   className,
   searchTerm,
 }: SearchPageProps) => {
-  //fix the formatting of this whole panel
+  const [selectedSearchCategory, setSelectedSearchCategory] =
+    useState<String>("users");
+
   return (
+    // padding right in outer div for scrollbar offset from side
     <div
       className={
-        "h-screen w-[60vw] bg-boxDarkGrey flex flex-col absolute top-0 right-[20vw] z-40 searchSlideIn " +
+        "h-screen w-[60vw] bg-boxDarkGrey flex flex-col absolute top-0 right-[20vw] z-40 searchSlideIn pr-2 " +
         className
       }
     >
@@ -213,27 +219,55 @@ const SearchPage = ({
       </div>
 
       <div className="flex justify-center mt-0 font-semibold text-xl">
-        <div className="px-4 border-r">
-          <button>Users</button>
+        <div
+          className={
+            "px-4 border-r " +
+            (selectedSearchCategory === "users" && "text-purple")
+          }
+        >
+          <button onClick={() => setSelectedSearchCategory("users")}>
+            Users
+          </button>
         </div>
 
-        <div className="px-4 border-r">
-          <button>Songs</button>
+        <div
+          className={
+            "px-4 border-r " +
+            (selectedSearchCategory === "songs" && "text-purple")
+          }
+        >
+          <button onClick={() => setSelectedSearchCategory("songs")}>
+            Songs
+          </button>
         </div>
-        <div className="px-4 border-r">
-          <button>Albums</button>
+        <div
+          className={
+            "px-4 border-r " +
+            (selectedSearchCategory === "albums" && "text-purple")
+          }
+        >
+          <button onClick={() => setSelectedSearchCategory("albums")}>
+            Albums
+          </button>
         </div>
-        <div className="px-4">
-          <button>Artists</button>
+        <div
+          className={
+            "px-4 " + (selectedSearchCategory === "artists" && "text-purple")
+          }
+        >
+          <button onClick={() => setSelectedSearchCategory("artists")}>
+            Artists
+          </button>
         </div>
       </div>
       {/* map through all songs in request */}
-      <div className="flex flex-col mt-4 h-[80vh]">
-        {songPlaceholders.map((track, index) => (
-          // fix type error
-          <SongCard key={index} track={track} />
-        ))}
-      </div>
+      {selectedSearchCategory === "songs" && <Tracks searchTerm={searchTerm} />}
+      {selectedSearchCategory === "artists" && (
+        <Artists searchTerm={searchTerm} />
+      )}
+      {selectedSearchCategory === "albums" && (
+        <Albums searchTerm={searchTerm} />
+      )}
     </div>
   );
 };

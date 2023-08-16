@@ -1,17 +1,17 @@
 "use client";
 
 import React from "react";
-import { AlbumRating, SongRating } from "@prisma/client";
-import { Track, Album } from "@spotify/web-api-ts-sdk";
+import { AlbumRating } from "@prisma/client";
+import { Album } from "@spotify/web-api-ts-sdk";
 import { useState } from "react";
+import { FeedItem } from "../home/page";
 
-type FeedItemProps = {
-  songRating?: SongRating;
-  albumRating?: AlbumRating;
+type FeedAlbumRatingProps = {
+  albumRating: FeedItem;
 };
 
-const FeedItem = ({ songRating, albumRating }: FeedItemProps) => {
-  let associatedItem = useState<Track | Album | null>(null);
+const FeedAlbumRating = ({ albumRating }: FeedAlbumRatingProps) => {
+  let album = useState<Album | null>(null);
 
   //you'd make a fetch request using the songRating or albumRating id to set the associatedItems value
   //and once the associatedItem values aren't null, you'd put whatever info you need to in the return value.
@@ -48,4 +48,4 @@ const FeedItem = ({ songRating, albumRating }: FeedItemProps) => {
   );
 };
 
-export default FeedItem;
+export default FeedAlbumRating;
