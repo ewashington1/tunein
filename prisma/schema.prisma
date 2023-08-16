@@ -38,7 +38,7 @@ model Follow {
 
 model SongRating {
   song      Song     @relation(fields: [songId], references: [id])
-  songId    Int
+  songId    String
   stars     Float
   user      User     @relation(fields: [userId], references: [id])
   userId    String
@@ -50,7 +50,7 @@ model SongRating {
 
 model AlbumRating {
   album     Album    @relation(fields: [albumId], references: [id])
-  albumId   Int
+  albumId   String
   stars     Float
   user      User     @relation(fields: [userId], references: [id])
   userId    String
@@ -76,7 +76,7 @@ model NotificationUser {
 }
 
 model Song {
-  id          Int            @id
+  id          String         @id
   playlists   PlaylistSong[]
   songRatings SongRating[]
 }
@@ -85,7 +85,7 @@ model PlaylistSong {
   playlist   Playlist @relation(fields: [playlistId], references: [id])
   song       Song     @relation(fields: [songId], references: [id])
   playlistId String
-  songId     Int
+  songId     String
   createdAt  DateTime @default(now())
 
   @@id([playlistId, songId])
@@ -102,6 +102,6 @@ model Playlist {
 }
 
 model Album {
-  id           Int           @id
+  id           String        @id
   albumRatings AlbumRating[]
 }

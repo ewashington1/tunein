@@ -2,31 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* css pseudo elements
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
-}
-
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
-} */
-
 body {
   background-color: #262526;
   color: white;
@@ -59,4 +34,26 @@ select:-webkit-autofill:focus {
   to {
     transform: translateX(0);
   }
+}
+
+.lightGreyScrollbar::-webkit-scrollbar {
+  width: 10px;
+}
+.lightGreyScrollbar::-webkit-scrollbar-track {
+  background: #141414;
+}
+.lightGreyScrollbar::-webkit-scrollbar-thumb {
+  background: #252525;
+  border-radius: 5px;
+}
+
+.darkGreyScrollbar::-webkit-scrollbar {
+  width: 10px;
+}
+.darkGreyScrollbar::-webkit-scrollbar-track {
+  background: #252525;
+}
+.darkGreyScrollbar::-webkit-scrollbar-thumb {
+  background: #141414;
+  border-radius: 5px;
 }
