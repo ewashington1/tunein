@@ -9,6 +9,7 @@ import {
   faPlay,
   faPause,
 } from "@fortawesome/free-solid-svg-icons";
+import NewStarRating from "../NewStarRating";
 
 type SongCardProps = {
   className?: string;
@@ -34,16 +35,18 @@ const SongCard = ({ className, track }: SongCardProps) => {
 
   return (
     // height was 12.5 at first, change back after done messing w preview
-    <div className="bg-boxLightGrey mx-auto mb-4 w-4/5 h-full">
+    <div className="bg-boxLightGrey mx-auto mb-4 w-4/5 h-auto">
       <div className="w-full h-full flex p-2 max-h-[10.5vh]">
         <img src={track.album.images[0].url} alt="" className="h-full mr-2" />
         {/* song info */}
-        <div className="flex flex-col justify-center">
-          <div className="font-bold text-xl">{track.name}</div>
+        <div className="flex flex-col justify-center max-w-[50%] overflow-x-hidden">
+          <div className="font-bold text-xl whitespace-nowrap">
+            {track.name}
+          </div>
           <div className="font-light text-sm text-textLightGrey align-middle flex">
             <div className="inline">Song</div>
             <div className="w-1 h-1 bg-textLightGrey rounded-full inline-block mx-1 my-auto"></div>
-            <div className="inline">
+            <div className="inline whitespace-nowrap">
               {/* make each link to artist */}
               {track.artists.map((artist) => artist.name).join(", ")}
             </div>
@@ -95,17 +98,7 @@ const SongCard = ({ className, track }: SongCardProps) => {
           {/* my rating */}
           <div className="flex flex-col self-center text-lg items-center">
             <div>My rating:</div>
-            <div>
-              {Array.from({ length: 5 }, (_, index) => {
-                return (
-                  <FontAwesomeIcon
-                    className=" text-lightGrey"
-                    icon={filledStar}
-                    key={index}
-                  />
-                );
-              })}
-            </div>
+            <NewStarRating id={track.id} />
           </div>
         </div>
       </div>

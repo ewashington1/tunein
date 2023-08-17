@@ -17,7 +17,6 @@ export async function POST(req: GetSongRequest) {
     );
 
     const songBody = testSong.data;
-    console.log(songBody);
 
     return NextResponse.json({ body: songBody }, { status: 200 });
   } catch (err) {

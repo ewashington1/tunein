@@ -1,10 +1,9 @@
 "use client";
 
 import React from "react";
-import { AlbumRating } from "@prisma/client";
 import { Album } from "@spotify/web-api-ts-sdk";
 import { useState } from "react";
-import { FeedItem } from "../home/page";
+import { FeedItem } from "../../home/page";
 
 type FeedAlbumRatingProps = {
   albumRating: FeedItem;

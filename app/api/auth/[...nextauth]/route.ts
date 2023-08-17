@@ -53,6 +53,7 @@ const authOptions: NextAuthOptions = {
         session.user.name = token.name;
         session.user.email = token.email;
         session.user.username = token.username; // works even though error
+        session.user.id = token.id;
       }
 
       return session;

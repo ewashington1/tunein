@@ -57,3 +57,26 @@ select:-webkit-autofill:focus {
   background: #141414;
   border-radius: 5px;
 }
+
+/* @keyframes duration | easing-function | delay |
+iteration-count | direction | fill-mode | play-state | name */
+/* .textSlide {
+  animation: textSlide 10s ease-in-out 0s;
+  animation-iteration-count: infinite;
+}
+@keyframes textSlide {
+  0% {
+    transform: translateX(0%);
+  }
+  50% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
+} */
+
+/* fix to make the stars horizontal */
+svg.star-svg {
+  display: inline;
+}

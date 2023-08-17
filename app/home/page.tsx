@@ -2,11 +2,10 @@
 
 import axios from "axios";
 import React, { useEffect } from "react";
-import AuthenticatedLayout from "../components/AuthenticatedLayout";
+import AuthenticatedLayout from "../components/layout/AuthenticatedLayout";
 import { useSession } from "next-auth/react";
-import { SongRating, AlbumRating } from "@prisma/client";
-import FeedSongRating from "../components/FeedSongRating";
-import FeedAlbumRating from "../components/FeedAlbumRating";
+import FeedSongRating from "../components/feed/FeedSongRating";
+import FeedAlbumRating from "../components/feed/FeedAlbumRating";
 
 export type FeedItem = {
   songId?: string;

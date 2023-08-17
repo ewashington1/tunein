@@ -12,7 +12,6 @@ export async function POST(req: GetTopTracksRequest) {
       await getSpotifyAuthHeaders();
 
     const body = await req.json();
-    console.log(body);
 
     const requestUrl =
       "https://api.spotify.com/v1/artists/" + body.id + "/top-tracks?market=US";

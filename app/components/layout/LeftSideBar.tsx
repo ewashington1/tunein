@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import SearchPage from "./SearchPage";
+import SearchPage from "../SearchPage";
 
 const LeftSideBar = () => {
   const pathname = usePathname();
