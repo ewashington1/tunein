@@ -15,7 +15,7 @@ type AlbumCardProps = {
 
 const AlbumCard = ({ className, album }: AlbumCardProps) => {
   return (
-    <div className="bg-boxLightGrey mx-auto mb-4 w-4/5 h-full">
+    <div className="bg-boxLightGrey mx-auto mb-4 w-4/5 h-auto">
       <div className="w-full h-full flex p-2 max-h-[10.5vh]">
         <img src={album.images[0].url} alt="" className="h-full mr-2" />
         {/* song info */}

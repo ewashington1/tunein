@@ -24,8 +24,6 @@ export async function POST(req: SearchSongRequest) {
     const tracksResponse = await axios.get(searchTerm, spotifyAuthHeaders);
     const tracks = tracksResponse.data;
 
-    console.log(tracks);
-
     return NextResponse.json(tracks, { status: 200 });
   } catch (err) {
     return NextResponse.json(

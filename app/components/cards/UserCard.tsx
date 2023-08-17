@@ -1,5 +1,7 @@
-import React, { ReactNode, useEffect, useState } from "react";
+import React, { ReactNode, useState, useEffect } from "react";
+import { User } from "@prisma/client";
 import { Album, Artist, Track } from "@spotify/web-api-ts-sdk";
+import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCheck,
@@ -7,86 +9,85 @@ import {
   faStar as unfilledStar,
 } from "@fortawesome/free-solid-svg-icons";
 import { faStar as filledStar } from "@fortawesome/free-solid-svg-icons";
-import axios from "axios";
 
-type ArtistCardProps = {
+type UserCardProps = {
   className?: string;
-  artist: Artist;
+  user: User;
 };
 
-const ArtistCard = ({ className, artist }: ArtistCardProps) => {
+// hard coded
+const followersPfps: string[] = [
+  "/photos/defaultPfp.png",
+  "/photos/defaultPfp.png",
+  "/photos/defaultPfp.png",
+  "/photos/defaultPfp.png",
+  "/photos/defaultPfp.png",
+  "/photos/defaultPfp.png",
+  "/photos/defaultPfp.png",
+];
+
+const UserCard = ({ className, user }: UserCardProps) => {
   const [dropdown, setDropdown] = useState<boolean>(false);
   const [topTracks, setTopTracks] = useState<Track[] | null>(null);
   const [albums, setAlbums] = useState<Album[] | null>(null);
 
-  const getTopTracks = async () => {
-    if (topTracks !== null) return;
-    axios
-      .post("/api/spotify_requests/getTopTracks", { id: artist.id })
-      .then((res) => {
-        setTopTracks(res.data.tracks);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-  const getAlbums = async () => {
-    if (albums !== null) return;
-    axios
-      .post("/api/spotify_requests/getArtistAlbums", { id: artist.id })
-      .then((res) => {
-        setAlbums(res.data.items);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
   const expandDropdown = async () => {
-    await getTopTracks();
-    await getAlbums();
+    // await getTopTracks();
+    // await getAlbums();
     setDropdown(true);
-  };
-
-  //for the next button on top tracks (should do for album too)
-  const [topTrackIndex, setTopTrackIndex] = useState<number>(0);
-  const nextTopTracks = () => {
-    setTopTrackIndex(() => topTrackIndex + 1);
   };
 
   return (
     <div className={"bg-boxLightGrey mx-auto mb-4 w-4/5 h-auto "}>
       {/* info at top -- picture, name, etc */}
       <div className="w-full h-full max-h-[11.5vh] flex p-3">
-        {/* Artist image */}
+        {/* user image */}
         <img
           className="h-full aspect-square mr-2 object-cover rounded-full"
-          src={
-            artist.images[0] != null
-              ? artist.images[0].url
-              : "/photos/defaultPfp.png"
-          }
+          src={user.pfp != null ? user.pfp : "/photos/defaultPfp.png"}
           alt="photo"
         />
 
-        {/* artist info */}
+        {/* user info */}
         <div className="flex flex-col justify-center">
-          <div className="font-bold text-xl">{artist.name}</div>
+          <div className="flex items-center">
+            <div className="font-bold text-xl mr-3">{user.username}</div>
+            <div className="bg-white w-1 h-1 rounded-full min-w-[.25rem]" />
+            <p className="ml-3 font-light text-textLightGrey">{user.name}</p>
+          </div>
           <div className="font-light text-sm text-textLightGrey align-middle flex">
-            <div className="inline">Artist</div>
+            <div className="inline">{user.bio}</div>
           </div>
         </div>
         <div className="flex ml-auto mr-2">
-          {/* add to favorite artists button */}
-          <button className="self-center">
-            <FontAwesomeIcon
-              className="align-middle w-8 h-8 p-2 rounded-full border border-white text-purple"
-              icon={faPlus}
-            />
-          </button>
-          {/* vertical divider between two */}
+          {/* vertical divider */}
           <div className="h-4/5 w-[1px] bg-white self-center mx-4"></div>
-          {/* my rating */}
+          {/* followed by preview */}
+          <div className="min-w-[11rem] max-w-[11rem]">
+            <div className="font-thin text-textLightGrey m-auto">
+              Followed by:
+            </div>
+            {/* will get up to 4 followers pfps later */}
+            {!dropdown && (
+              <div className="flex">
+                {followersPfps.slice(0, 4).map((pfp: string): ReactNode => {
+                  return (
+                    <img
+                      className="h-7 aspect-square object-cover rounded-full"
+                      src={pfp}
+                      alt="photo"
+                    />
+                  );
+                })}
+                <div className="font-thin text-textLightGrey ml-3">
+                  {followersPfps.length > 4
+                    ? followersPfps.length - 4 + "+"
+                    : ""}
+                </div>
+              </div>
+            )}
+          </div>
+          {/* drop down button */}
           <div className="flex flex-col self-center text-lg items-center">
             {/* dropdownsvg */}
             {/* root it considered public folder, so didn't prefix w /public */}
@@ -108,7 +109,7 @@ const ArtistCard = ({ className, artist }: ArtistCardProps) => {
         </div>
       </div>
       {dropdown && (
-        <div className="p-3 dropdownTransition">
+        <div className="p-3 dropdownTransition bg-white h-auto">
           {/* top songs div */}
           <div>
             <h1 className="pr-3 w-fit border-b border-b-textLightGrey">
@@ -135,7 +136,7 @@ const ArtistCard = ({ className, artist }: ArtistCardProps) => {
                 )
               ) : (
                 <div className="flex justify-start">
-                  <div>Loading...</div>
+                  <div>Loading... Not Implemented Yet</div>
                 </div>
               )}
             </div>
@@ -166,15 +167,59 @@ const ArtistCard = ({ className, artist }: ArtistCardProps) => {
                 )
               ) : (
                 <div className="flex justify-start">
-                  <div>Loading...</div>
+                  <div>Loading... Not Implemented Yet</div>
                 </div>
               )}
             </div>
           </div>
+          {/* top artists div */}
+          <div>
+            <h1 className="pr-3 w-fit border-b border-b-textLightGrey">
+              Top Artists:
+            </h1>
+            {/* div for top artists photos and text below */}
+            <div className="flex pt-3">
+              {albums !== null ? (
+                albums.length === 0 ? (
+                  <div>No Artits</div>
+                ) : (
+                  albums.slice(0, 5).map((album: Album): ReactNode => {
+                    return (
+                      <div
+                        className="flex flex-col w-[15%] text-sm mr-4"
+                        key={album.id}
+                      >
+                        <img src={album.images[0].url} alt="photo" />
+                        <div>{album.name}</div>
+                      </div>
+                    );
+                  })
+                )
+              ) : (
+                <div className="flex justify-start">
+                  <div>Loading... Not Implemented Yet</div>
+                </div>
+              )}
+            </div>
+          </div>
+          <div className="">
+            {followersPfps
+              .slice(0, followersPfps.length)
+              .map((pfp: string): ReactNode => {
+                return (
+                  <img
+                    className="h-7 aspect-square object-cover rounded-full mb-3"
+                    src={pfp}
+                    alt="photo"
+                  />
+                );
+              })}
+          </div>
+          <div>follow</div>
         </div>
       )}
     </div>
   );
 };
 
-export default ArtistCard;
+export default UserCard;

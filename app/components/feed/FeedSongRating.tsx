@@ -4,7 +4,7 @@ import React from "react";
 import { SongRating } from "@prisma/client";
 import { Track } from "@spotify/web-api-ts-sdk";
 import { useState, useEffect } from "react";
-import { FeedItem } from "../home/page";
+import { FeedItem } from "../../home/page";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar as filledStar } from "@fortawesome/free-solid-svg-icons";
 import axios, { AxiosResponse } from "axios";
@@ -80,16 +80,14 @@ const FeedSongRating = ({ songRating }: FeedSongRatingProps) => {
         {/* description */}
         <div className="self-center align-middle max-w-[22rem] overflow-x-hidden">
           <div className="flex items-center mb-3">
-            <p className="font-bold text-4xl mr-3 whitespace-nowrap">
+            <p className="font-bold text-4xl mr-3 whitespace-nowrap textSlide">
               {track?.name}
-              daksfjksdffsafdsjfldkmfldkmfdnadfdsfassalffsafdsjfldkmfldkmfdnadfdsfassalffsafdsjfldkmfldkmfdnadfdsfassalffsafdsjfldkmfldkmfdnadfdsfassal
             </p>
             <div className="bg-white w-1 h-1 rounded-full" />
             <p className="ml-3 font-light text-textLightGrey">Song</p>
           </div>
-          <p className="text-2xl font-extralight text-textLightGrey whitespace-nowrap">
+          <p className="text-2xl font-extralight text-textLightGrey whitespace-nowrap textSlide">
             {track?.artists.map((artist) => artist.name).join(", ")}
-            ffsafdsjfldkmfldkmfdnadfdsfassalffsafdsjfldkmfldkmfdnadfdsfassalffsafdsjfldkmfldkmfdnadfdsfassalffsafdsjfldkmfldkmfdnadfdsfassal
           </p>
         </div>
         <div className="self-center ml-auto">

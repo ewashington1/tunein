@@ -14,6 +14,7 @@ type AuthenticatedLayoutProps = {
 const AuthenticatedLayout = ({ children }: AuthenticatedLayoutProps) => {
   //renaming data to session
   const { data: session, status } = useSession();
+  console.log(session);
 
   if (status === "loading") {
     return (

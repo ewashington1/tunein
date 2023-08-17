@@ -1,3 +1,5 @@
+"use client";
+
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleXmark as filledX } from "@fortawesome/free-solid-svg-icons";
@@ -5,6 +7,7 @@ import { faCircleXmark as unfilledX } from "@fortawesome/free-regular-svg-icons"
 import Tracks from "./SearchResults/Tracks";
 import Artists from "./SearchResults/Artists";
 import Albums from "./SearchResults/Albums";
+import Users from "./SearchResults/Users";
 
 type SearchPageProps = {
   setSearchPanel: Dispatch<SetStateAction<boolean>>;
@@ -261,6 +264,7 @@ const SearchPage = ({
         </div>
       </div>
       {/* map through all songs in request */}
+      {selectedSearchCategory == "users" && <Users searchTerm={searchTerm} />}
       {selectedSearchCategory === "songs" && <Tracks searchTerm={searchTerm} />}
       {selectedSearchCategory === "artists" && (
         <Artists searchTerm={searchTerm} />
