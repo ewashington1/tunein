@@ -78,8 +78,13 @@ model NotificationUser {
 
 model Song {
   id          String         @id
+  name        String
+  preview_url String
+  image_url   String
   playlists   PlaylistSong[]
   songRatings SongRating[]
+  artists     Artist[]
+  SongArtist  SongArtist[]
 }
 
 model PlaylistSong {
@@ -104,5 +109,37 @@ model Playlist {
 
 model Album {
   id           String        @id
+  name         String
+  image_url    String
+  preview_url  String
   albumRatings AlbumRating[]
+  artists      Artist[]
+  AlbumArtist  AlbumArtist[]
+}
+
+model SongArtist {
+  song     Song   @relation(fields: [songId], references: [id])
+  artist   Artist @relation(fields: [artistId], references: [id])
+  songId   String
+  artistId String
+
+  @@id([songId, artistId])
+}
+
+model AlbumArtist {
+  album    Album  @relation(fields: [albumId], references: [id])
+  artist   Artist @relation(fields: [artistId], references: [id])
+  albumId  String
+  artistId String
+
+  @@id([albumId, artistId])
+}
+
+//can add artists to playlist (favorite artist playlist)
+model Artist {
+  id          String        @id
+  songs       Song[]
+  SongArtist  SongArtist[]
+  AlbumArtist AlbumArtist[]
+  albums      Album[]
 }

@@ -17,8 +17,6 @@ type SongCardProps = {
 };
 
 const SongCard = ({ className, track }: SongCardProps) => {
-  console.log({ name: track.name, isPlayable: track.is_playable });
-
   const isPlayable = track.preview_url !== null;
 
   //useRef will persist the audioRef object accross renders, so the pause will work
@@ -98,7 +96,7 @@ const SongCard = ({ className, track }: SongCardProps) => {
           {/* my rating */}
           <div className="flex flex-col self-center text-lg items-center">
             <div>My rating:</div>
-            <NewStarRating id={track.id} />
+            <NewStarRating track={track} />
           </div>
         </div>
       </div>
