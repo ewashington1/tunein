@@ -30,7 +30,7 @@ const Users = ({ searchTerm }: UsersProps) => {
   if (userSearchResults === null) {
     return (
       <div className="flex mt-4 font-bold h-[80vh] overflow-y-scroll justify-center text-2xl lightGreyScrollbar">
-        <div>Loading song results...</div>
+        <div>Loading users...</div>
       </div>
     );
   } else if (userSearchResults.length === 0) {

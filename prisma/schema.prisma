@@ -79,7 +79,7 @@ model NotificationUser {
 model Song {
   id          String         @id
   name        String
-  preview_url String
+  preview_url String?
   image_url   String
   playlists   PlaylistSong[]
   songRatings SongRating[]
@@ -111,7 +111,6 @@ model Album {
   id           String        @id
   name         String
   image_url    String
-  preview_url  String
   albumRatings AlbumRating[]
   artists      Artist[]
   AlbumArtist  AlbumArtist[]

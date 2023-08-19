@@ -1,23 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "../../prisma";
-import { Song, SongRating, User } from "@prisma/client";
+import { Album, Song, SongRating, User } from "@prisma/client";
 import { Artist } from "@spotify/web-api-ts-sdk";
 
-type RateSongRequest = NextRequest & {
+type RateAlbumRequest = NextRequest & {
   req: {
     body: {
       stars: string;
       userId: string;
-      songId: string;
+      albumId: string;
       name: string;
       artists: Artist[];
-      preview_url: string;
       image_url: string;
     };
   };
 };
 
-export async function POST(req: RateSongRequest) {
+export async function POST(req: RateAlbumRequest) {
   try {
     const body = await req.json();
 
@@ -26,27 +25,28 @@ export async function POST(req: RateSongRequest) {
     const userId = body.userId;
 
     //song stuff
-    const songDetails = body;
+    const albumDetails = body;
 
-    //get users with matching username to search
-    const songRating = await prisma.songRating.upsert({
-      where: { userId_songId: { userId: userId, songId: songDetails.songId } },
+    //upsert inserts or modifies current if exists
+    const albumRating = await prisma.albumRating.upsert({
+      where: {
+        userId_albumId: { userId: userId, albumId: albumDetails.albumId },
+      },
       update: { stars: stars },
       create: {
         stars: stars,
         user: {
           connect: { id: userId },
         },
-        song: {
+        album: {
           connectOrCreate: {
-            where: { id: songDetails.songId },
+            where: { id: albumDetails.albumId },
             create: {
-              id: songDetails.songId,
-              name: songDetails.name,
-              preview_url: songDetails.preview_url,
-              image_url: songDetails.image_url,
+              id: albumDetails.albumId,
+              name: albumDetails.name,
+              image_url: albumDetails.image_url,
               artists: {
-                connectOrCreate: songDetails.artists.map((artist: Artist) => ({
+                connectOrCreate: albumDetails.artists.map((artist: Artist) => ({
                   where: { id: artist.id },
                   create: {
                     id: artist.id,
@@ -60,7 +60,7 @@ export async function POST(req: RateSongRequest) {
     });
 
     const returnMsg =
-      "You rated " + songRating.songId + " " + stars + " stars!";
+      "You rated " + albumRating.albumId + " " + stars + " stars!";
 
     return NextResponse.json(
       { msg: returnMsg, newRating: stars },
