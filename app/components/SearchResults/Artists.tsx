@@ -41,9 +41,9 @@ const Artists = ({ searchTerm }: ArtistsProps) => {
   }
   return (
     <div className="flex flex-col mt-4 h-[80vh] overflow-y-scroll lightGreyScrollbar">
-      {artistSearchResults.map((artist, index) => (
+      {artistSearchResults.map((artist) => (
         // fix type error
-        <ArtistCard key={index} artist={artist} />
+        <ArtistCard key={artist.id} artist={artist} />
       ))}
     </div>
   );

@@ -9,7 +9,7 @@ import {
   faPlay,
   faPause,
 } from "@fortawesome/free-solid-svg-icons";
-import NewStarRating from "../NewStarRating";
+import NewStarRatingSong from "../NewStarRatingSong";
 
 type SongCardProps = {
   className?: string;
@@ -17,7 +17,7 @@ type SongCardProps = {
 };
 
 const SongCard = ({ className, track }: SongCardProps) => {
-  const isPlayable = track.preview_url !== null;
+  const isPlayable = track.preview_url !== null || undefined;
 
   //useRef will persist the audioRef object accross renders, so the pause will work
   //plays goofy goober song if not playable
@@ -96,7 +96,7 @@ const SongCard = ({ className, track }: SongCardProps) => {
           {/* my rating */}
           <div className="flex flex-col self-center text-lg items-center">
             <div>My rating:</div>
-            <NewStarRating track={track} />
+            <NewStarRatingSong track={track} />
           </div>
         </div>
       </div>

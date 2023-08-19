@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStarHalf, faStar } from "@fortawesome/free-solid-svg-icons";
 import { Rating } from "react-simple-star-rating";
@@ -9,15 +9,30 @@ import { useSession } from "next-auth/react";
 import axios from "axios";
 import { Track } from "@spotify/web-api-ts-sdk";
 
-type NewStarRatingProps = {
+type NewStarRatingSongProps = {
   track: Track;
 };
 
-const NewStarRating = ({ track }: NewStarRatingProps) => {
+const NewStarRatingSong = ({ track }: NewStarRatingSongProps) => {
   const { data: session } = useSession();
+
+  //initialize this to your previous song rating instead
+  const [rating, setRating] = useState<number>(0);
+
+  useEffect(() => {
+    axios
+      .get("/api/prisma/songRatings/" + track.id + "/" + session?.user!.id)
+      .then((res) => {
+        console.log(res);
+        setRating(res.data.rating);
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
   const rate = async (stars: number) => {
     axios
       .post("/api/prisma/rateSong", {
+        //how to fix this error below
         userId: session?.user!.id,
         songId: track.id,
         stars: stars,
@@ -32,8 +47,7 @@ const NewStarRating = ({ track }: NewStarRatingProps) => {
       })
       .catch((err) => console.log(err));
   };
-  //initialize this to your previous song rating instead
-  const [rating, setRating] = useState<number>(0);
+
   return (
     <div className="flex">
       <Rating
@@ -47,4 +61,4 @@ const NewStarRating = ({ track }: NewStarRatingProps) => {
   );
 };
 
-export default NewStarRating;
+export default NewStarRatingSong;

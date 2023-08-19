@@ -7,6 +7,7 @@ import {
   faStar as unfilledStar,
 } from "@fortawesome/free-solid-svg-icons";
 import { faStar as filledStar } from "@fortawesome/free-solid-svg-icons";
+import NewStarRatingAlbum from "../NewStarRatingAlbum";
 
 type AlbumCardProps = {
   className?: string;
@@ -43,17 +44,7 @@ const AlbumCard = ({ className, album }: AlbumCardProps) => {
           {/* my rating */}
           <div className="flex flex-col self-center text-lg items-center">
             <div>My rating:</div>
-            <div>
-              {Array.from({ length: 5 }, (_, index) => {
-                return (
-                  <FontAwesomeIcon
-                    className=" text-lightGrey"
-                    icon={filledStar}
-                    key={index}
-                  />
-                );
-              })}
-            </div>
+            <NewStarRatingAlbum album={album} />
           </div>
         </div>
       </div>
