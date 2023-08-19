@@ -7,22 +7,24 @@ import { Rating } from "react-simple-star-rating";
 import { prisma } from "../api/prisma";
 import { useSession } from "next-auth/react";
 import axios from "axios";
+import { Track } from "@spotify/web-api-ts-sdk";
 
 type NewStarRatingProps = {
-  id: string;
+  track: Track;
 };
 
-const NewStarRating = ({ id }: NewStarRatingProps) => {
+const NewStarRating = ({ track }: NewStarRatingProps) => {
   const { data: session } = useSession();
   const rate = async (stars: number) => {
-    console.log("rated " + id + " " + stars + " stars");
-    const userId = session?.user!.id;
-    const songId = id;
     axios
       .post("/api/prisma/rateSong", {
-        userId: userId,
-        songId: songId,
+        userId: session?.user!.id,
+        songId: track.id,
         stars: stars,
+        name: track.name,
+        artists: track.artists, //array
+        preview_url: track.preview_url, //string url
+        image_url: track.album.images[0].url, //sgtring url
       })
       .then((res) => {
         console.log(res);
