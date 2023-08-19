@@ -21,20 +21,20 @@ model User {
   songRatings      SongRating[]
   albumRatings     AlbumRating[]
   followers        Follow[]           @relation("followers")
-  following        Follow[]           @relation("following")
+  followee         Follow[]           @relation("followee")
   Playlist         Playlist[]
   createdAt        DateTime           @default(now())
   NotificationUser NotificationUser[]
 }
 
 model Follow {
-  follower    User     @relation("followers", fields: [followingId], references: [id])
-  followerId  String
-  following   User     @relation("following", fields: [followerId], references: [id])
-  followingId String
-  createdAt   DateTime @default(now())
+  follower   User     @relation("followers", fields: [followerId], references: [id])
+  followerId String
+  followee   User     @relation("followee", fields: [followeeId], references: [id])
+  followeeId String
+  createdAt  DateTime @default(now())
 
-  @@id([followerId, followingId])
+  @@id([followerId, followeeId])
 }
 
 model SongRating {

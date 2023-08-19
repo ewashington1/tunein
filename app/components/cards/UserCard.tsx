@@ -9,6 +9,7 @@ import {
   faStar as unfilledStar,
 } from "@fortawesome/free-solid-svg-icons";
 import { faStar as filledStar } from "@fortawesome/free-solid-svg-icons";
+import { useSession } from "next-auth/react";
 
 type UserCardProps = {
   className?: string;
@@ -26,19 +27,60 @@ const followersPfps: string[] = [
   "/photos/defaultPfp.png",
 ];
 
+const followersUserNames: string[] = ["Mutaz03"];
+
+const followersNames: string[] = ["Mutaz B"];
+
 const UserCard = ({ className, user }: UserCardProps) => {
   const [dropdown, setDropdown] = useState<boolean>(false);
   const [topTracks, setTopTracks] = useState<Track[] | null>(null);
   const [albums, setAlbums] = useState<Album[] | null>(null);
+  const [following, setFollowing] = useState<boolean>(false);
+
+  const { data: session } = useSession();
+
+  const getFollow = async () => {
+    axios
+      .get("/api/prisma/getFollow/" + session?.user!.id + "/" + user.id)
+      .then((res) => {
+        setFollowing(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   const expandDropdown = async () => {
     // await getTopTracks();
     // await getAlbums();
+    await getFollow();
     setDropdown(true);
   };
 
+  const follow = async () => {
+    axios
+      .get("/api/prisma/follow/" + session?.user!.id + "/" + user.id)
+      .then((res) => {
+        setFollowing(!following);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const unfollow = async () => {
+    axios
+      .get("/api/prisma/unfollow/" + session?.user!.id + "/" + user.id)
+      .then((res) => {
+        setFollowing(!following);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
-    <div className={"bg-boxLightGrey mx-auto mb-4 w-4/5 h-auto "}>
+    <div className={"bg-boxLightGrey mx-auto mb-4 w-4/5 h-auto"}>
       {/* info at top -- picture, name, etc */}
       <div className="w-full h-full max-h-[11.5vh] flex p-3">
         {/* user image */}
@@ -61,13 +103,17 @@ const UserCard = ({ className, user }: UserCardProps) => {
         </div>
         <div className="flex ml-auto mr-2">
           {/* vertical divider */}
-          <div className="h-4/5 w-[1px] bg-white self-center mx-4"></div>
+          {!dropdown ? (
+            <div className="h-4/5 w-[1px] bg-white self-center mx-4"></div>
+          ) : (
+            <div className="h-full w-[1px] bg-white self-center mx-4"></div>
+          )}
           {/* followed by preview */}
           <div className="min-w-[11rem] max-w-[11rem]">
             <div className="font-thin text-textLightGrey m-auto">
               Followed by:
             </div>
-            {/* will get up to 4 followers pfps later */}
+            {/* will get up to 4 followers pfps later and will have to do conditionals */}
             {!dropdown && (
               <div className="flex">
                 {followersPfps.slice(0, 4).map((pfp: string): ReactNode => {
@@ -83,6 +129,21 @@ const UserCard = ({ className, user }: UserCardProps) => {
                   {followersPfps.length > 4
                     ? followersPfps.length - 4 + "+"
                     : ""}
+                </div>
+              </div>
+            )}
+            {dropdown && (
+              <div className="flex">
+                <img
+                  className="h-9 aspect-square object-cover rounded-full"
+                  src={followersPfps[0]}
+                  alt="photo"
+                />
+                <div>
+                  <div className="ml-3">@{followersUserNames[0]}</div>
+                  <div className="font-thin text-sm text-textLightGrey ml-3">
+                    {followersNames[0]}
+                  </div>
                 </div>
               </div>
             )}
@@ -109,113 +170,144 @@ const UserCard = ({ className, user }: UserCardProps) => {
         </div>
       </div>
       {dropdown && (
-        <div className="p-3 dropdownTransition bg-white h-auto">
-          {/* top songs div */}
-          <div>
-            <h1 className="pr-3 w-fit border-b border-b-textLightGrey">
-              Top Songs:
-            </h1>
-            {/* div for top song photos and text below */}
-            <div className="flex pt-3">
-              {/* if top tracks is null, not loaded yet, if 0 length, no results, else show results */}
-              {topTracks !== null ? (
-                topTracks.length === 0 ? (
-                  <div>No songs</div>
+        <div className="flex h-auto">
+          <div className="p-3 dropdownTransition h-auto">
+            {/* top songs div */}
+            <div>
+              <h1 className="pr-3 w-fit border-b border-b-textLightGrey">
+                Top Songs:
+              </h1>
+              {/* div for top song photos and text below */}
+              <div className="flex pt-3">
+                {/* if top tracks is null, not loaded yet, if 0 length, no results, else show results */}
+                {topTracks !== null ? (
+                  topTracks.length === 0 ? (
+                    <div>No songs</div>
+                  ) : (
+                    topTracks.slice(0, 5).map((track: Track): ReactNode => {
+                      return (
+                        <div
+                          className="flex flex-col w-[15%] text-sm mr-4"
+                          key={track.id}
+                        >
+                          <img src={track.album.images[0].url} alt="photo" />
+                          <div>{track.name}</div>
+                        </div>
+                      );
+                    })
+                  )
                 ) : (
-                  topTracks.slice(0, 5).map((track: Track): ReactNode => {
-                    return (
-                      <div
-                        className="flex flex-col w-[15%] text-sm mr-4"
-                        key={track.id}
-                      >
-                        <img src={track.album.images[0].url} alt="photo" />
-                        <div>{track.name}</div>
-                      </div>
-                    );
-                  })
-                )
-              ) : (
-                <div className="flex justify-start">
-                  <div>Loading... Not Implemented Yet</div>
-                </div>
-              )}
+                  <div className="flex justify-start">
+                    <div>Loading... Not Implemented Yet</div>
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className=" w-full bg-textLightGrey my-3"></div>
+            {/* top albums div */}
+            <div>
+              <h1 className="pr-3 w-fit border-b border-b-textLightGrey">
+                Top Albums:
+              </h1>
+              {/* div for top album photos and text below */}
+              <div className="flex pt-3">
+                {albums !== null ? (
+                  albums.length === 0 ? (
+                    <div>No albums</div>
+                  ) : (
+                    albums.slice(0, 5).map((album: Album): ReactNode => {
+                      return (
+                        <div
+                          className="flex flex-col w-[15%] text-sm mr-4"
+                          key={album.id}
+                        >
+                          <img src={album.images[0].url} alt="photo" />
+                          <div>{album.name}</div>
+                        </div>
+                      );
+                    })
+                  )
+                ) : (
+                  <div className="flex justify-start">
+                    <div>Loading... Not Implemented Yet</div>
+                  </div>
+                )}
+              </div>
+            </div>
+            {/* top artists div */}
+            <div>
+              <h1 className="pr-3 w-fit border-b border-b-textLightGrey">
+                Top Artists:
+              </h1>
+              {/* div for top artists photos and text below */}
+              <div className="flex pt-3">
+                {albums !== null ? (
+                  albums.length === 0 ? (
+                    <div>No Artits</div>
+                  ) : (
+                    albums.slice(0, 5).map((album: Album): ReactNode => {
+                      return (
+                        <div
+                          className="flex flex-col w-[15%] text-sm mr-4"
+                          key={album.id}
+                        >
+                          <img src={album.images[0].url} alt="photo" />
+                          <div>{album.name}</div>
+                        </div>
+                      );
+                    })
+                  )
+                ) : (
+                  <div className="flex justify-start">
+                    <div>Loading... Not Implemented Yet</div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-          <div className=" w-full bg-textLightGrey my-3"></div>
-          {/* top albums div */}
-          <div>
-            <h1 className="pr-3 w-fit border-b border-b-textLightGrey">
-              Top Albums:
-            </h1>
-            {/* div for top album photos and text below */}
-            <div className="flex pt-3">
-              {albums !== null ? (
-                albums.length === 0 ? (
-                  <div>No albums</div>
-                ) : (
-                  albums.slice(0, 5).map((album: Album): ReactNode => {
-                    return (
-                      <div
-                        className="flex flex-col w-[15%] text-sm mr-4"
-                        key={album.id}
-                      >
-                        <img src={album.images[0].url} alt="photo" />
-                        <div>{album.name}</div>
-                      </div>
-                    );
-                  })
-                )
-              ) : (
-                <div className="flex justify-start">
-                  <div>Loading... Not Implemented Yet</div>
-                </div>
-              )}
-            </div>
-          </div>
-          {/* top artists div */}
-          <div>
-            <h1 className="pr-3 w-fit border-b border-b-textLightGrey">
-              Top Artists:
-            </h1>
-            {/* div for top artists photos and text below */}
-            <div className="flex pt-3">
-              {albums !== null ? (
-                albums.length === 0 ? (
-                  <div>No Artits</div>
-                ) : (
-                  albums.slice(0, 5).map((album: Album): ReactNode => {
-                    return (
-                      <div
-                        className="flex flex-col w-[15%] text-sm mr-4"
-                        key={album.id}
-                      >
-                        <img src={album.images[0].url} alt="photo" />
-                        <div>{album.name}</div>
-                      </div>
-                    );
-                  })
-                )
-              ) : (
-                <div className="flex justify-start">
-                  <div>Loading... Not Implemented Yet</div>
-                </div>
-              )}
-            </div>
-          </div>
-          <div className="">
+          {/* vertical divider */}
+          <div className="h-full w-[1px] poop bg-white self-center mx-4 ml-[8.6rem]"></div>
+          <div className="flex flex-col pl-0">
             {followersPfps
-              .slice(0, followersPfps.length)
+              .slice(1, followersPfps.length)
               .map((pfp: string): ReactNode => {
                 return (
-                  <img
-                    className="h-7 aspect-square object-cover rounded-full mb-3"
-                    src={pfp}
-                    alt="photo"
-                  />
+                  <div className="flex pb-2">
+                    <img
+                      className="h-9 aspect-square object-cover rounded-full"
+                      src={followersPfps[0]}
+                      alt="photo"
+                    />
+                    <div>
+                      <div className="ml-3">@{followersUserNames[0]}</div>
+                      <div className="font-thin text-sm text-textLightGrey ml-3">
+                        {followersNames[0]}
+                      </div>
+                    </div>
+                  </div>
                 );
               })}
+            {/* conditional if following change button to unfollow */}
+            {!following ? (
+              <div
+                className="flex bg-purple drop-shadow mb-7 mt-3 rounded-md justify-center ml-[1rem]"
+                style={{ boxShadow: "-3px 5px 0px rgba(142, 12, 181, .5)" }}
+                onClick={follow}
+              >
+                <button className="font-bold text-lg">Follow</button>
+              </div>
+            ) : (
+              <div
+                className="flex bg-textLightGrey drop-shadow mb-7 mt-3 rounded-md justify-center ml-[1rem]"
+                style={{ boxShadow: "-3px 5px 0px rgba(137, 137, 137, .5)" }}
+                onClick={unfollow}
+              >
+                <button className="font-bold text-lg text-purple">
+                  Unfollow
+                </button>
+              </div>
+            )}
           </div>
-          <div>follow</div>
         </div>
       )}
     </div>
