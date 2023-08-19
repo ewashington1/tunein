@@ -42,9 +42,9 @@ const Users = ({ searchTerm }: UsersProps) => {
   }
   return (
     <div className="flex flex-col mt-4 h-[80vh] overflow-y-scroll lightGreyScrollbar">
-      {userSearchResults.map((user, index) => (
+      {userSearchResults.map((user) => (
         // fix type error
-        <UserCard key={index} user={user} />
+        <UserCard key={user.id} user={user} />
       ))}
     </div>
   );
