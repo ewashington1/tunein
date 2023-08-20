@@ -17,7 +17,7 @@ const NewStarRatingSong = ({ track }: NewStarRatingSongProps) => {
   const { data: session } = useSession();
 
   //initialize this to your previous song rating instead
-  const [rating, setRating] = useState<number>(0);
+  const [rating, setRating] = useState<number | null>(null);
 
   useEffect(() => {
     axios
@@ -47,6 +47,10 @@ const NewStarRatingSong = ({ track }: NewStarRatingSongProps) => {
       })
       .catch((err) => console.log(err));
   };
+
+  if (rating === null) {
+    return <div className="flex">Loading...</div>;
+  }
 
   return (
     <div className="flex">
