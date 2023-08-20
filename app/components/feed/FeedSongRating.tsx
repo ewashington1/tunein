@@ -98,16 +98,17 @@ const FeedSongRating = ({ songRating }: FeedSongRatingProps) => {
           </p>
         </div>
         {/* song Rating */}
-        <div className="self-center ml-auto text-center">
-          <div className="text-xl font-extralight">My Rating:</div>
-          {track !== null ? (
+        {/* put conditional where it is because eventually i want a loading animation on the stars and
+        we're gonna have a loading state when it fetches the song
+        like how it doesn't show anything when it's fetching the song for now*/}
+        {track !== null && (
+          <div className="self-center ml-auto text-center">
+            <div className="text-xl font-extralight">My Rating:</div>
             <div>
               <NewStarRatingSong track={track} />
             </div>
-          ) : (
-            <div>"Loading..."</div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
       <hr className="my-3" />
       {/* bottom section */}

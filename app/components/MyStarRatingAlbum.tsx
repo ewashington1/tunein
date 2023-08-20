@@ -47,7 +47,7 @@ const NewStarRatingAlbum = ({ album }: NewStarRatingAlbumProps) => {
   };
 
   if (rating === null) {
-    return <div className="flex">Loading...</div>;
+    return <div className="font-bold text-xl">Loading...</div>;
   }
 
   return (
