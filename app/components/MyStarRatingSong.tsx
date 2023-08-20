@@ -7,20 +7,21 @@ import { Rating } from "react-simple-star-rating";
 import { prisma } from "../api/prisma";
 import { useSession } from "next-auth/react";
 import axios from "axios";
-import { Album } from "@spotify/web-api-ts-sdk";
+import { Track } from "@spotify/web-api-ts-sdk";
 
-type NewStarRatingAlbumProps = {
-  album: Album;
+type MyStarRatingSongProps = {
+  track: Track;
 };
 
-const NewStarRatingAlbum = ({ album }: NewStarRatingAlbumProps) => {
+const MyStarRatingSong = ({ track }: MyStarRatingSongProps) => {
   const { data: session } = useSession();
+
   //initialize this to your previous song rating instead
-  const [rating, setRating] = useState<number>(0);
+  const [rating, setRating] = useState<number | null>(null);
 
   useEffect(() => {
     axios
-      .get("/api/prisma/albumRatings/" + album.id + "/" + session?.user!.id)
+      .get("/api/prisma/songRatings/" + track.id + "/" + session?.user!.id)
       .then((res) => {
         console.log(res);
         setRating(res.data.rating);
@@ -30,21 +31,26 @@ const NewStarRatingAlbum = ({ album }: NewStarRatingAlbumProps) => {
 
   const rate = async (stars: number) => {
     axios
-      .post("/api/prisma/rateAlbum", {
+      .post("/api/prisma/rateSong", {
         //how to fix this error below
         userId: session?.user!.id,
-        albumId: album.id,
+        songId: track.id,
         stars: stars,
-        name: album.name,
-        artists: album.artists, //array
-        image_url: album.images[0].url, //sgtring url
+        name: track.name,
+        artists: track.artists, //array
+        preview_url: track.preview_url, //string url
+        image_url: track.album.images[0].url, //sgtring url
       })
       .then((res) => {
-        // console.log(res);
+        console.log(res);
         setRating(res.data.newRating);
       })
       .catch((err) => console.log(err));
   };
+
+  if (rating === null) {
+    return <div className="font-bold text-xl">Loading...</div>;
+  }
 
   return (
     <div className="flex">
@@ -59,4 +65,4 @@ const NewStarRatingAlbum = ({ album }: NewStarRatingAlbumProps) => {
   );
 };
 
-export default NewStarRatingAlbum;
+export default MyStarRatingSong;

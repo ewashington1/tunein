@@ -7,7 +7,7 @@ import {
   faStar as unfilledStar,
 } from "@fortawesome/free-solid-svg-icons";
 import { faStar as filledStar } from "@fortawesome/free-solid-svg-icons";
-import NewStarRatingAlbum from "../NewStarRatingAlbum";
+import NewStarRatingAlbum from "../MyStarRatingAlbum";
 
 type AlbumCardProps = {
   className?: string;

@@ -16,7 +16,10 @@ export async function GET(
       },
     });
 
-    return NextResponse.json({ rating: rating?.stars }, { status: 200 });
+    return NextResponse.json(
+      { rating: rating !== null ? rating?.stars : 0 },
+      { status: 200 }
+    );
   } catch (err) {
     console.log(err);
     return NextResponse.json(

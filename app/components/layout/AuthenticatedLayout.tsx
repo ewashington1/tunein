@@ -14,11 +14,10 @@ type AuthenticatedLayoutProps = {
 const AuthenticatedLayout = ({ children }: AuthenticatedLayoutProps) => {
   //renaming data to session
   const { data: session, status } = useSession();
-  console.log(session);
 
   if (status === "loading") {
     return (
-      <div className="flex justify-between">
+      <div className="flex justify-center">
         <LeftSideBar />
         <div className="text-white self-center font-bold text-4xl">
           Loading...
@@ -32,7 +31,7 @@ const AuthenticatedLayout = ({ children }: AuthenticatedLayoutProps) => {
   }
 
   return (
-    <div className="flex justify-between">
+    <div className="flex justify-center">
       <LeftSideBar />
       {children}
       <RightSideBar />

@@ -207,7 +207,7 @@ const SearchPage = ({
     // padding right in outer div for scrollbar offset from side
     <div
       className={
-        "h-screen w-[60vw] bg-boxDarkGrey flex flex-col absolute top-0 right-[20vw] z-40 searchSlideIn pr-2 " +
+        "h-screen w-[60vw] bg-boxDarkGrey flex flex-col absolute top-0 left-full z-[-1] searchSlideIn pr-2 " +
         className
       }
     >

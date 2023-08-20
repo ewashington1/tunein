@@ -9,7 +9,7 @@ import {
   faPlay,
   faPause,
 } from "@fortawesome/free-solid-svg-icons";
-import NewStarRatingSong from "../NewStarRatingSong";
+import NewStarRatingSong from "../MyStarRatingSong";
 
 type SongCardProps = {
   className?: string;

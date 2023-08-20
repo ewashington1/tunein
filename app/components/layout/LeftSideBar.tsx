@@ -17,8 +17,8 @@ const LeftSideBar = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
 
   return (
-    <div>
-      <div className="bg-boxDarkGrey h-screen w-[20vw] flex flex-col z-50 relative">
+    <div className="fixed left-0 h-full z-50">
+      <div className="bg-boxDarkGrey h-screen w-[20vw] flex flex-col">
         <div className={"font-extrabold text-6xl mx-4 my-4 " + paths.root}>
           <Link href="/">TuneIn</Link>
         </div>

@@ -126,9 +126,10 @@ const UserCard = ({ className, user }: UserCardProps) => {
             {!dropdown && (
               <div className="flex">
                 {followers != null &&
-                  followers.slice(0, 4).map((user: User): ReactNode => {
+                  followers.slice(0, 4).map((user: User, index): ReactNode => {
                     return (
                       <img
+                        key={index
                         className="h-7 aspect-square object-cover rounded-full"
                         src={
                           user.pfp != null ? user.pfp : "/photos/defaultPfp.png"
@@ -286,9 +287,9 @@ const UserCard = ({ className, user }: UserCardProps) => {
           <div className="flex flex-col pl-0">
             {followers
               .slice(1, followers.length)
-              .map((user: User): ReactNode => {
+              .map((user: User, index): ReactNode => {
                 return (
-                  <div className="flex pb-2">
+                  <div key={index} className="flex pb-2">
                     <img
                       className="h-9 aspect-square object-cover rounded-full"
                       src={
