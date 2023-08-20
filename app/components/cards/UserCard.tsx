@@ -116,15 +116,18 @@ const UserCard = ({ className, user }: UserCardProps) => {
             {/* will get up to 4 followers pfps later and will have to do conditionals */}
             {!dropdown && (
               <div className="flex">
-                {followersPfps.slice(0, 4).map((pfp: string): ReactNode => {
-                  return (
-                    <img
-                      className="h-7 aspect-square object-cover rounded-full"
-                      src={pfp}
-                      alt="photo"
-                    />
-                  );
-                })}
+                {followersPfps
+                  .slice(0, 4)
+                  .map((pfp: string, index): ReactNode => {
+                    return (
+                      <img
+                        key={index}
+                        className="h-7 aspect-square object-cover rounded-full"
+                        src={pfp}
+                        alt="photo"
+                      />
+                    );
+                  })}
                 <div className="font-thin text-textLightGrey ml-3">
                   {followersPfps.length > 4
                     ? followersPfps.length - 4 + "+"
@@ -270,9 +273,9 @@ const UserCard = ({ className, user }: UserCardProps) => {
           <div className="flex flex-col pl-0">
             {followersPfps
               .slice(1, followersPfps.length)
-              .map((pfp: string): ReactNode => {
+              .map((pfp: string, index): ReactNode => {
                 return (
-                  <div className="flex pb-2">
+                  <div key={index} className="flex pb-2">
                     <img
                       className="h-9 aspect-square object-cover rounded-full"
                       src={followersPfps[0]}
