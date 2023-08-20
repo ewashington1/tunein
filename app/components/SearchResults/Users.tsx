@@ -3,6 +3,7 @@ import axios from "axios";
 import { prisma } from "../../api/prisma";
 import { User } from "@prisma/client";
 import UserCard from "../cards/UserCard";
+import { useSession } from "next-auth/react";
 
 type UsersProps = {
   searchTerm: string;
@@ -12,6 +13,9 @@ const Users = ({ searchTerm }: UsersProps) => {
   const [userSearchResults, setUserSearchResults] = useState<User[] | null>(
     null
   );
+
+  const { data: session } = useSession();
+
   useEffect(() => {
     const getSearchResults = async () => {
       axios
@@ -27,6 +31,7 @@ const Users = ({ searchTerm }: UsersProps) => {
     };
     getSearchResults();
   }, [searchTerm]);
+
   if (userSearchResults === null) {
     return (
       <div className="flex mt-4 font-bold h-[80vh] overflow-y-scroll justify-center text-2xl lightGreyScrollbar">
@@ -43,7 +48,8 @@ const Users = ({ searchTerm }: UsersProps) => {
   return (
     <div className="flex flex-col mt-4 h-[80vh] overflow-y-scroll lightGreyScrollbar">
       {userSearchResults.map((user) => (
-        // fix type error
+        // why doesnt this work?
+        // {session?.user!.id != user.id ? (<UserCard key={user.id} user={user} />) : (<div/>)}
         <UserCard key={user.id} user={user} />
       ))}
     </div>

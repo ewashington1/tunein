@@ -7,7 +7,6 @@ export async function GET(
   { params }: { params: { followerId: string; followeeId: string } }
 ) {
   try {
-    console.log(params);
     const followerId = params.followerId;
     const followeeId = params.followeeId;
 

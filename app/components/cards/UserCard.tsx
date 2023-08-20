@@ -16,17 +16,6 @@ type UserCardProps = {
   user: User;
 };
 
-// hard coded
-const followersPfps: string[] = [
-  "/photos/defaultPfp.png",
-  "/photos/defaultPfp.png",
-  "/photos/defaultPfp.png",
-  "/photos/defaultPfp.png",
-  "/photos/defaultPfp.png",
-  "/photos/defaultPfp.png",
-  "/photos/defaultPfp.png",
-];
-
 const followersUserNames: string[] = ["Mutaz03"];
 
 const followersNames: string[] = ["Mutaz B"];
@@ -36,8 +25,28 @@ const UserCard = ({ className, user }: UserCardProps) => {
   const [topTracks, setTopTracks] = useState<Track[] | null>(null);
   const [albums, setAlbums] = useState<Album[] | null>(null);
   const [following, setFollowing] = useState<boolean>(false);
+  const [followers, setFollowers] = useState<User[]>(null);
 
   const { data: session } = useSession();
+
+  if (session?.user.id == user.id) {
+    return;
+  }
+
+  useEffect(() => {
+    const getFollowers = async () => {
+      axios
+        .get("/api/prisma/getFollowers/" + session?.user!.id + "/" + user.id)
+        .then((res) => {
+          console.log(res);
+          setFollowers(res.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    };
+    getFollowers();
+  }, []);
 
   const getFollow = async () => {
     axios
@@ -116,21 +125,22 @@ const UserCard = ({ className, user }: UserCardProps) => {
             {/* will get up to 4 followers pfps later and will have to do conditionals */}
             {!dropdown && (
               <div className="flex">
-                {followersPfps
-                  .slice(0, 4)
-                  .map((pfp: string, index): ReactNode => {
+                {followers != null &&
+                  followers.slice(0, 4).map((user: User, index): ReactNode => {
                     return (
                       <img
-                        key={index}
+                        key={index
                         className="h-7 aspect-square object-cover rounded-full"
-                        src={pfp}
+                        src={
+                          user.pfp != null ? user.pfp : "/photos/defaultPfp.png"
+                        }
                         alt="photo"
                       />
                     );
                   })}
                 <div className="font-thin text-textLightGrey ml-3">
-                  {followersPfps.length > 4
-                    ? followersPfps.length - 4 + "+"
+                  {followers != null && followers.length > 4
+                    ? followers.length - 4 + "+"
                     : ""}
                 </div>
               </div>
@@ -139,13 +149,17 @@ const UserCard = ({ className, user }: UserCardProps) => {
               <div className="flex">
                 <img
                   className="h-9 aspect-square object-cover rounded-full"
-                  src={followersPfps[0]}
+                  src={
+                    followers[0].pfp != null
+                      ? followers[0].pfp
+                      : "/photos/defaultPfp.png"
+                  }
                   alt="photo"
                 />
                 <div>
-                  <div className="ml-3">@{followersUserNames[0]}</div>
+                  <div className="ml-3">@{followers[0].username}</div>
                   <div className="font-thin text-sm text-textLightGrey ml-3">
-                    {followersNames[0]}
+                    {followers[0].name}
                   </div>
                 </div>
               </div>
@@ -271,20 +285,22 @@ const UserCard = ({ className, user }: UserCardProps) => {
           {/* vertical divider */}
           <div className="h-full w-[1px] poop bg-white self-center mx-4 ml-[8.6rem]"></div>
           <div className="flex flex-col pl-0">
-            {followersPfps
-              .slice(1, followersPfps.length)
-              .map((pfp: string, index): ReactNode => {
+            {followers
+              .slice(1, followers.length)
+              .map((user: User, index): ReactNode => {
                 return (
                   <div key={index} className="flex pb-2">
                     <img
                       className="h-9 aspect-square object-cover rounded-full"
-                      src={followersPfps[0]}
+                      src={
+                        user.pfp != null ? user.pfp : "/photos/defaultPfp.png"
+                      }
                       alt="photo"
                     />
                     <div>
-                      <div className="ml-3">@{followersUserNames[0]}</div>
+                      <div className="ml-3">@{user.username}</div>
                       <div className="font-thin text-sm text-textLightGrey ml-3">
-                        {followersNames[0]}
+                        {user.name}
                       </div>
                     </div>
                   </div>
