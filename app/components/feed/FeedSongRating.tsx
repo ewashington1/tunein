@@ -8,7 +8,8 @@ import { FeedItem } from "../../home/page";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar as filledStar } from "@fortawesome/free-solid-svg-icons";
 import axios, { AxiosResponse } from "axios";
-import Marquee from "react-marquee-slider";
+import Marquee from "react-fast-marquee";
+import NewStarRatingSong from "../MyStarRatingSong";
 
 type FeedSongRatingProps = {
   songRating: FeedItem;
@@ -17,6 +18,9 @@ type FeedSongRatingProps = {
 const FeedSongRating = ({ songRating }: FeedSongRatingProps) => {
   const [track, setTrack] = useState<Track | null>(null);
   //const [song, setSong] = useState();
+
+  const [playMarquee, setPlayMarquee] = useState(false);
+  const [titleMarqueeDirection, setTitleMarqueeDirection] = useState("right");
 
   useEffect(() => {
     const getSong = async () => {
@@ -41,19 +45,20 @@ const FeedSongRating = ({ songRating }: FeedSongRatingProps) => {
 
   return (
     <div
-      className="bg-boxLightGrey p-4 rounded drop-shadow my-4 h-[28vh] "
+      className="bg-boxLightGrey p-3 rounded drop-shadow my-4 h-auto max-h-full "
       style={{ boxShadow: "-3px 5px 5px rgba(0, 0, 0.0, 0.08)" }}
     >
       {/* top section */}
       {/* scrolling text */}
-      <div>
+      <div
+        className="h-auto w-auto"
+        onMouseEnter={() => setPlayMarquee(true)}
+        onMouseLeave={() => setPlayMarquee(false)}
+      >
         <Marquee
-          velocity={10}
-          direction={"rtl"}
-          scatterRandomly={false}
-          resetAfterTries={200}
-          onInit={() => {}}
-          onFinish={() => {}}
+          play={playMarquee}
+          speed={150}
+          onCycleComplete={() => alert("hi")}
         >
           {Array.from({ length: 5 }, (_, id) => (
             <div className="flex items-center mr-5" key={id}>
@@ -79,6 +84,7 @@ const FeedSongRating = ({ songRating }: FeedSongRatingProps) => {
         />
         {/* description */}
         <div className="self-center align-middle max-w-[22rem] overflow-x-hidden">
+          {/* name, dot, song */}
           <div className="flex items-center mb-3">
             <p className="font-bold text-4xl mr-3 whitespace-nowrap textSlide">
               {track?.name}
@@ -86,18 +92,23 @@ const FeedSongRating = ({ songRating }: FeedSongRatingProps) => {
             <div className="bg-white w-1 h-1 rounded-full" />
             <p className="ml-3 font-light text-textLightGrey">Song</p>
           </div>
+          {/* artists */}
           <p className="text-2xl font-extralight text-textLightGrey whitespace-nowrap textSlide">
             {track?.artists.map((artist) => artist.name).join(", ")}
           </p>
         </div>
-        <div className="self-center ml-auto">
-          <p className="text-xl font-extralight">My Rating:</p>
-          <div>
-            {Array.from({ length: 5 }, (_, index) => {
-              return <FontAwesomeIcon icon={filledStar} key={index} />;
-            })}
+        {/* song Rating */}
+        {/* put conditional where it is because eventually i want a loading animation on the stars and
+        we're gonna have a loading state when it fetches the song
+        like how it doesn't show anything when it's fetching the song for now*/}
+        {track !== null && (
+          <div className="self-center ml-auto text-center">
+            <div className="text-xl font-extralight">My Rating:</div>
+            <div>
+              <NewStarRatingSong track={track} />
+            </div>
           </div>
-        </div>
+        )}
       </div>
       <hr className="my-3" />
       {/* bottom section */}
