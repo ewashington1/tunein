@@ -9,7 +9,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar as filledStar } from "@fortawesome/free-solid-svg-icons";
 import axios, { AxiosResponse } from "axios";
 import Marquee from "react-fast-marquee";
-import NewStarRatingSong from "../MyStarRatingSong";
+import MyStarRatingSong from "../MyStarRatingSong";
 
 type FeedSongRatingProps = {
   songRating: FeedItem;
@@ -20,7 +20,6 @@ const FeedSongRating = ({ songRating }: FeedSongRatingProps) => {
   //const [song, setSong] = useState();
 
   const [playMarquee, setPlayMarquee] = useState(false);
-  const [titleMarqueeDirection, setTitleMarqueeDirection] = useState("right");
 
   useEffect(() => {
     const getSong = async () => {
@@ -105,7 +104,7 @@ const FeedSongRating = ({ songRating }: FeedSongRatingProps) => {
           <div className="self-center ml-auto text-center">
             <div className="text-xl font-extralight">My Rating:</div>
             <div>
-              <NewStarRatingSong track={track} />
+              <MyStarRatingSong track={track} />
             </div>
           </div>
         )}
