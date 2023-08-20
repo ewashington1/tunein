@@ -9,11 +9,11 @@ import { useSession } from "next-auth/react";
 import axios from "axios";
 import { Album } from "@spotify/web-api-ts-sdk";
 
-type NewStarRatingAlbumProps = {
+type MyStarRatingAlbumProps = {
   album: Album;
 };
 
-const NewStarRatingAlbum = ({ album }: NewStarRatingAlbumProps) => {
+const MyStarRatingAlbum = ({ album }: MyStarRatingAlbumProps) => {
   const { data: session } = useSession();
   //initialize this to your previous song rating instead
   const [rating, setRating] = useState<number | null>(null);
@@ -63,4 +63,4 @@ const NewStarRatingAlbum = ({ album }: NewStarRatingAlbumProps) => {
   );
 };
 
-export default NewStarRatingAlbum;
+export default MyStarRatingAlbum;

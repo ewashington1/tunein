@@ -9,11 +9,11 @@ import { useSession } from "next-auth/react";
 import axios from "axios";
 import { Track } from "@spotify/web-api-ts-sdk";
 
-type NewStarRatingSongProps = {
+type MyStarRatingSongProps = {
   track: Track;
 };
 
-const NewStarRatingSong = ({ track }: NewStarRatingSongProps) => {
+const MyStarRatingSong = ({ track }: MyStarRatingSongProps) => {
   const { data: session } = useSession();
 
   //initialize this to your previous song rating instead
@@ -65,4 +65,4 @@ const NewStarRatingSong = ({ track }: NewStarRatingSongProps) => {
   );
 };
 
-export default NewStarRatingSong;
+export default MyStarRatingSong;

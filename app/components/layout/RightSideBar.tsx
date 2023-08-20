@@ -11,7 +11,7 @@ const RightSideBar = () => {
   const [dropdown, setDropdown] = useState(false);
   const dropdownBackground = dropdown && "bg-boxDarkGrey rounded-lg";
   return (
-    <div className="flex h-screen w-[20vw] justify-around text-white bg-inherit">
+    <div className="flex h-screen w-[20vw] justify-around text-white bg-inherit fixed right-0">
       <div className="float-left my-4 mx-2">
         <FontAwesomeIcon className="h-16 align-top" icon={faMusic} />{" "}
       </div>
