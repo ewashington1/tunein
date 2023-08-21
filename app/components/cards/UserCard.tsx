@@ -129,7 +129,7 @@ const UserCard = ({ className, user }: UserCardProps) => {
                   followers.slice(0, 4).map((user: User, index): ReactNode => {
                     return (
                       <img
-                        key={index
+                        key={index}
                         className="h-7 aspect-square object-cover rounded-full"
                         src={
                           user.pfp != null ? user.pfp : "/photos/defaultPfp.png"
