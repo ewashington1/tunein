@@ -38,7 +38,6 @@ const UserCard = ({ className, user }: UserCardProps) => {
       axios
         .get("/api/prisma/getFollowers/" + session?.user!.id + "/" + user.id)
         .then((res) => {
-          console.log(res);
           setFollowers(res.data);
         })
         .catch((err) => {
@@ -89,105 +88,33 @@ const UserCard = ({ className, user }: UserCardProps) => {
   };
 
   return (
-    <div className={"bg-boxLightGrey mx-auto mb-4 w-4/5 h-auto"}>
-      {/* info at top -- picture, name, etc */}
-      <div className="w-full h-full max-h-[11.5vh] flex p-3">
-        {/* user image */}
-        <img
-          className="h-full aspect-square mr-2 object-cover rounded-full"
-          src={user.pfp != null ? user.pfp : "/photos/defaultPfp.png"}
-          alt="photo"
-        />
+    <div className={"flex bg-boxLightGrey mx-auto mb-4 w-4/5 h-auto"}>
+      {/* the left flex box*/}
+      <div className="max-w-[60%] h-full min-w-[60%]">
+        {/* info at top -- picture, name, etc */}
+        <div className="max-w-[60%] h-full max-h-[11.5vh] flex p-3">
+          {/* user image */}
+          <img
+            className="h-full aspect-square mr-2 object-cover rounded-full"
+            src={user.pfp != null ? user.pfp : "/photos/defaultPfp.png"}
+            alt="photo"
+          />
 
-        {/* user info */}
-        <div className="flex flex-col justify-center">
-          <div className="flex items-center">
-            <div className="font-bold text-xl mr-3">{user.username}</div>
-            <div className="bg-white w-1 h-1 rounded-full min-w-[.25rem]" />
-            <p className="ml-3 font-light text-textLightGrey">{user.name}</p>
-          </div>
-          <div className="font-light text-sm text-textLightGrey align-middle flex">
-            <div className="inline">{user.bio}</div>
-          </div>
-        </div>
-        <div className="flex ml-auto mr-2">
-          {/* vertical divider */}
-          {!dropdown ? (
-            <div className="h-4/5 w-[1px] bg-white self-center mx-4"></div>
-          ) : (
-            <div className="h-full w-[1px] bg-white self-center mx-4"></div>
-          )}
-          {/* followed by preview */}
-          <div className="min-w-[11rem] max-w-[11rem]">
-            <div className="font-thin text-textLightGrey m-auto">
-              Followed by:
+          {/* user info */}
+          <div className="flex flex-col justify-center">
+            <div className="flex items-center">
+              <div className="font-bold text-xl mr-3">{user.username}</div>
+              <div className="bg-white w-1 h-1 rounded-full min-w-[.25rem]" />
+              <p className="ml-3 font-light text-textLightGrey">{user.name}</p>
             </div>
-            {/* will get up to 4 followers pfps later and will have to do conditionals */}
-            {!dropdown && (
-              <div className="flex">
-                {followers != null &&
-                  followers.slice(0, 4).map((user: User, index): ReactNode => {
-                    return (
-                      <img
-                        key={index}
-                        className="h-7 aspect-square object-cover rounded-full"
-                        src={
-                          user.pfp != null ? user.pfp : "/photos/defaultPfp.png"
-                        }
-                        alt="photo"
-                      />
-                    );
-                  })}
-                <div className="font-thin text-textLightGrey ml-3">
-                  {followers != null && followers.length > 4
-                    ? followers.length - 4 + "+"
-                    : ""}
-                </div>
-              </div>
-            )}
-            {dropdown && (
-              <div className="flex">
-                <img
-                  className="h-9 aspect-square object-cover rounded-full"
-                  src={
-                    followers[0].pfp != null
-                      ? followers[0].pfp
-                      : "/photos/defaultPfp.png"
-                  }
-                  alt="photo"
-                />
-                <div>
-                  <div className="ml-3">@{followers[0].username}</div>
-                  <div className="font-thin text-sm text-textLightGrey ml-3">
-                    {followers[0].name}
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-          {/* drop down button */}
-          <div className="flex flex-col self-center text-lg items-center">
-            {/* dropdownsvg */}
-            {/* root it considered public folder, so didn't prefix w /public */}
-            {!dropdown && (
-              <button onClick={expandDropdown}>
-                <img src="/artistDropdown.svg" alt="dropdown" />
-              </button>
-            )}
-            {dropdown && (
-              <button onClick={() => setDropdown(false)}>
-                <img
-                  className=" rotate-180"
-                  src="/artistDropdown.svg"
-                  alt="dropdown"
-                />
-              </button>
-            )}
+            <div className="font-light text-sm text-textLightGrey align-middle flex">
+              <div className="inline">{user.bio}</div>
+            </div>
           </div>
         </div>
-      </div>
-      {dropdown && (
-        <div className="flex h-auto">
+
+        {/* drop down left side items */}
+        {dropdown && (
           <div className="p-3 dropdownTransition h-auto">
             {/* top songs div */}
             <div>
@@ -282,43 +209,102 @@ const UserCard = ({ className, user }: UserCardProps) => {
               </div>
             </div>
           </div>
-          {/* vertical divider */}
-          <div className="h-full w-[1px] poop bg-white self-center mx-4 ml-[8.6rem]"></div>
-          <div className="flex flex-col pl-0">
-            {followers
-              .slice(1, followers.length)
-              .map((user: User, index): ReactNode => {
-                return (
-                  <div key={index} className="flex pb-2">
-                    <img
-                      className="h-9 aspect-square object-cover rounded-full"
-                      src={
-                        user.pfp != null ? user.pfp : "/photos/defaultPfp.png"
-                      }
-                      alt="photo"
-                    />
-                    <div>
-                      <div className="ml-3">@{user.username}</div>
-                      <div className="font-thin text-sm text-textLightGrey ml-3">
-                        {user.name}
-                      </div>
+        )}
+      </div>
+      {/* right flex box */}
+      <div className="flex w-full">
+        {/* vertical divider */}
+        {followers !== null && followers.length > 0 && (
+          <div className="h-4/5 w-[1px] bg-white self-center mx-4"></div>
+        )}
+        {/* spacing for follow button if there is no followers */}
+        {(followers === null || followers.length <= 0) && (
+          <div className="ml-8"></div>
+        )}
+        <div className="flex flex-col">
+          {/* flex box that only appears when there should be followed by section */}
+          {followers !== null && followers.length > 0 && (
+            <div className="flex ml-auto mr-2 w-full">
+              {/* follower items */}
+              <div className="max-w-[8rem] h-auto w-full mt-4">
+                <div className="font-thin text-textLightGrey m-auto">
+                  Followed by:
+                </div>
+                {/* preview of followed by */}
+                {!dropdown && (
+                  <div className="flex">
+                    {followers != null &&
+                      followers.slice(0, 4).map((user: User): ReactNode => {
+                        return (
+                          <img
+                            key={user.id}
+                            className="h-7 aspect-square object-cover rounded-full"
+                            src={
+                              user.pfp != null
+                                ? user.pfp
+                                : "/photos/defaultPfp.png"
+                            }
+                            alt="photo"
+                          />
+                        );
+                      })}
+                    <div className="font-thin text-textLightGrey ml-3">
+                      {followers != null && followers.length > 4
+                        ? followers.length - 4 + "+"
+                        : ""}
                     </div>
                   </div>
-                );
-              })}
-            {/* conditional if following change button to unfollow */}
-            {!following ? (
+                )}
+                {/* full followers items */}
+                {dropdown &&
+                  followers !== null &&
+                  followers
+                    .slice(0, followers.length)
+                    .map((user: User): ReactNode => {
+                      return (
+                        <div key={user.id} className="flex pb-2">
+                          <img
+                            className="h-9 aspect-square object-cover rounded-full"
+                            src={
+                              user.pfp != null
+                                ? user.pfp
+                                : "/photos/defaultPfp.png"
+                            }
+                            alt="photo"
+                          />
+                          <div>
+                            <div className="ml-3">@{user.username}</div>
+                            <div className="font-thin text-sm text-textLightGrey ml-3">
+                              {user.name}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+              </div>
+            </div>
+          )}
+          {/* both follow buttons */}
+          <div className="mt-auto mb-7 ml-5">
+            {dropdown && !following && (
+              // follow button
               <div
-                className="flex bg-purple drop-shadow mb-7 mt-3 rounded-md justify-center ml-[1rem]"
-                style={{ boxShadow: "-3px 5px 0px rgba(142, 12, 181, .5)" }}
+                className="flex bg-purple rounded-md justify-center w-[5rem]"
+                style={{
+                  boxShadow: "-3px 5px 0px rgba(142, 12, 181, .5)",
+                }}
                 onClick={follow}
               >
                 <button className="font-bold text-lg">Follow</button>
               </div>
-            ) : (
+            )}
+            {dropdown && following && (
+              // unfollow button
               <div
-                className="flex bg-textLightGrey drop-shadow mb-7 mt-3 rounded-md justify-center ml-[1rem]"
-                style={{ boxShadow: "-3px 5px 0px rgba(137, 137, 137, .5)" }}
+                className="flex bg-textLightGrey rounded-md justify-center  w-[6rem]"
+                style={{
+                  boxShadow: "-3px 5px 0px rgba(137, 137, 137, .5)",
+                }}
                 onClick={unfollow}
               >
                 <button className="font-bold text-lg text-purple">
@@ -328,7 +314,26 @@ const UserCard = ({ className, user }: UserCardProps) => {
             )}
           </div>
         </div>
-      )}
+        {/* drop down button */}
+        <div className="text-lg ml-auto min-w-[4rem] mr-6 mt-3">
+          {/* dropdownsvg */}
+          {/* root it considered public folder, so didn't prefix w /public */}
+          {!dropdown && (
+            <button onClick={expandDropdown}>
+              <img src="/artistDropdown.svg" alt="dropdown" />
+            </button>
+          )}
+          {dropdown && (
+            <button onClick={() => setDropdown(false)}>
+              <img
+                className=" rotate-180"
+                src="/artistDropdown.svg"
+                alt="dropdown"
+              />
+            </button>
+          )}
+        </div>
+      </div>
     </div>
   );
 };
