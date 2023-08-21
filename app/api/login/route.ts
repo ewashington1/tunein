@@ -42,13 +42,11 @@ export async function POST(req: NextRequest) {
       //set auth if password matches
       return NextResponse.json(
         {
-          body: {
-            user: {
-              id: user!.id,
-              username: user!.username,
-              name: user!.name,
-              email: user!.email,
-            },
+          user: {
+            id: user!.id,
+            username: user!.username,
+            name: user!.name,
+            email: user!.email,
           },
         },
         { status: 200 }

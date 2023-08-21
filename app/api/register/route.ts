@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
 
     //set next auth b/c signed in
 
-    return NextResponse.json({ body: newUser });
+    return NextResponse.json({ user: newUser });
   } catch (err: any) {
     //error codes: https://themeisle.com/blog/what-are-http-error-codes/#gref
 

@@ -49,10 +49,10 @@ const Login = ({ className }: LoginProps) => {
       .then(async (res) => {
         const cred = await signIn("credentials", {
           // callbackUrl: "/home",
-          username: res.data.body.user.username,
-          id: res.data.body.user.id,
-          email: res.data.body.user.email,
-          name: res.data.body.user.name,
+          username: res.data.user.username,
+          id: res.data.user.id,
+          email: res.data.user.email,
+          name: res.data.user.name,
           redirect: false,
         });
       })
