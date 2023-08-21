@@ -1,13 +1,14 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { User } from "../api/register/route";
 import axios from "axios";
 import variables from "../variables.module.scss";
 import { useRouter } from "next/navigation";
-import { useContext } from "react";
 import { FormContext } from "./page";
+import { signIn } from "next-auth/react";
+import { useSession } from "next-auth/react";
 
 //types associated with useState -> https://www.carlrippon.com/typed-usestate-with-typescript/
 //hook form with ts: https://react-hook-form.com/get-started
@@ -35,13 +36,28 @@ const Register = ({ className }: RegisterProps) => {
 
   const router = useRouter();
 
+  const { data: session } = useSession();
+
+  //automatically takes user home if they're logged in
+  useEffect(() => {
+    if (session) {
+      router.push("/home");
+    }
+  }, [session]);
+
   const createUser: SubmitHandler<RegistrationInputs> = async (data) => {
     setBackendErrors({});
     axios
       .post("/api/register", data)
-      .then((res) => {
-        console.log(res);
-        router.push("/home");
+      .then(async (res) => {
+        const cred = await signIn("credentials", {
+          // callbackUrl: "/home",
+          username: res.data.user.username,
+          id: res.data.user.id,
+          email: res.data.user.email,
+          name: res.data.user.name,
+          redirect: false,
+        });
       })
       .catch((err) => {
         //username error is present

@@ -9,13 +9,15 @@ export async function GET(
 ) {
   try {
     const sessionId = params.sessionId;
-    const userId = params.userID;
+    const userId = params.userId;
 
     //creating a new follow relation between the two users
     const followers = await prisma.user.findMany({
       where: {
-        followee: {
-          contains: userId,
+        following: {
+          some: {
+            followeeId: userId,
+          },
         },
         NOT: {
           id: sessionId,
@@ -25,7 +27,6 @@ export async function GET(
 
     return NextResponse.json(followers, { status: 200 });
   } catch (err) {
-    console.log(err);
     return NextResponse.json(
       { errors: { login: "Follow unsuccessful." } },
       { status: 500 }
