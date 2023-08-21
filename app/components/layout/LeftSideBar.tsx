@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import SearchPage from "../SearchPage";
+import CreatePlaylistModal from "../playlists/CreatePlaylistModal";
 
 const LeftSideBar = () => {
   const pathname = usePathname();
@@ -15,10 +16,11 @@ const LeftSideBar = () => {
 
   const [searchPanel, setSearchPanel] = useState(false);
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [playlistModalOpen, setPlaylistModalOpen] = useState(false);
 
   return (
     <div className="fixed left-0 h-full z-50">
-      <div className="bg-boxDarkGrey h-screen w-[20vw] flex flex-col">
+      <div className="bg-boxDarkGrey h-full w-[20vw] flex flex-col">
         <div className={"font-extrabold text-6xl mx-4 my-4 " + paths.root}>
           <Link href="/">TuneIn</Link>
         </div>
@@ -44,9 +46,19 @@ const LeftSideBar = () => {
           type="text"
           placeholder="Search"
         />
+        <button
+          onClick={() => setPlaylistModalOpen(true)}
+          className=" bg-purple mt-auto mb-6 py-2 px-3 h-auto self-center text-lightGrey font-bold text-xl rounded-md text-center"
+        >
+          Create Playlist
+        </button>
       </div>
       {searchPanel && (
         <SearchPage searchTerm={searchTerm} setSearchPanel={setSearchPanel} />
+      )}
+
+      {playlistModalOpen && (
+        <CreatePlaylistModal setPlaylistModalOpen={setPlaylistModalOpen} />
       )}
     </div>
   );
