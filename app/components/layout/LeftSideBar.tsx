@@ -20,7 +20,7 @@ const LeftSideBar = () => {
   const [playlistModalOpen, setPlaylistModalOpen] = useState(false);
 
   return (
-    <div className="fixed left-0 h-full z-50">
+    <div className="fixed left-0 h-full z-40">
       <div className="bg-boxDarkGrey h-full w-[20vw] flex flex-col">
         <div className={"font-extrabold text-6xl mx-4 my-4 " + paths.root}>
           <Link href="/">TuneIn</Link>
@@ -47,13 +47,15 @@ const LeftSideBar = () => {
           type="text"
           placeholder="Search"
         />
-        <SidebarPlaylists />
-        <button
-          onClick={() => setPlaylistModalOpen(true)}
-          className=" bg-purple mt-auto mb-6 py-2 px-3 h-auto self-center text-lightGrey font-bold text-xl rounded-md text-center"
-        >
-          Create Playlist
-        </button>
+        <div className="h-auto flex flex-col mt-auto">
+          <SidebarPlaylists />
+          <button
+            onClick={() => setPlaylistModalOpen(true)}
+            className=" bg-purple mt-2 mb-6 py-2 px-3  h-auto self-center text-lightGrey font-bold text-xl rounded-md text-center"
+          >
+            Create Playlist
+          </button>
+        </div>
       </div>
       {searchPanel && (
         <SearchPage searchTerm={searchTerm} setSearchPanel={setSearchPanel} />

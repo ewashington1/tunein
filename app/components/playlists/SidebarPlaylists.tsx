@@ -20,10 +20,13 @@ const SidebarPlaylists = () => {
     }
   }, [session]);
 
-  if (playlists === null) return <div>NO</div>;
+  if (playlists === null)
+    return (
+      <div className=" overflow-y-scroll overflow-x-hidden lightGreyScrollbarForSidebar mx-1 max-h-[30%]"></div>
+    );
 
   return (
-    <div className=" overflow-y-scroll overflow-x-hidden lightGreyScrollbarForSidebar mx-1">
+    <div className=" overflow-y-scroll overflow-x-hidden lightGreyScrollbarForSidebar mx-1 max-h-[40%]">
       {playlists!.map((playlist) => {
         return <SidebarPlaylistCard key={playlist.id} playlist={playlist} />;
       })}

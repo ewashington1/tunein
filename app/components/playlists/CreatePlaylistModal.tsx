@@ -27,9 +27,9 @@ const CreatePlaylistModal = ({ setPlaylistModalOpen }: any) => {
     const formData = new FormData();
 
     formData.append("name", name!);
-    formData.append("description", description);
+    formData.append("description", description!);
     formData.append("userId", session?.user!.id);
-    formData.append("image", imageFile);
+    formData.append("image", imageFile!);
 
     axios
       .post("/api/prisma/createPlaylist", formData, {
