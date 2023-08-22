@@ -1,5 +1,7 @@
 "use client";
 
+import axios from "axios";
+import { useSession } from "next-auth/react";
 //MAYBE JUST USE REACT MODAL LIBRARY and react
 
 import React, { useState } from "react";
@@ -10,25 +12,48 @@ const CreatePlaylistModal = ({ setPlaylistModalOpen }: any) => {
       setPlaylistModalOpen(false);
   };
 
-  const [file, setFile] = useState<any>("/photos/defaultPlaylistImage.png");
+  const { data: session } = useSession();
+
+  const [imagePreview, setImagePreview] = useState<any>(
+    "/photos/defaultPlaylistImage.png"
+  );
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const [name, setName] = useState<string | null>(null);
   const [description, setDescription] = useState<string | null>(null);
 
-  const submit = (e: any) => {
+  const submit = async (e: any) => {
     e.preventDefault();
 
-    // save photo locally and send data to backend
-    console.log(name);
-    console.log(description);
+    const formData = new FormData();
 
-    setPlaylistModalOpen(false); //do this on successful response
+    formData.append("name", name!);
+    formData.append("description", description);
+    formData.append("userId", session?.user!.id);
+    formData.append("image", imageFile);
+
+    axios
+      .post("/api/prisma/createPlaylist", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((res) => {
+        setPlaylistModalOpen(false);
+        alert("Success!");
+      })
+      .catch((err) => {
+        alert("Failure!");
+      });
+
+    //do this on successful response
   };
 
   const changeImage = (e: any) => {
     if (e.target.files && e.target.files[0]) {
-      const newImg = URL.createObjectURL(e.target.files[0]);
-      console.log(newImg);
-      setFile(newImg);
+      const file = e.target.files[0];
+      const newImgPreview = URL.createObjectURL(file);
+      setImagePreview(newImgPreview);
+      setImageFile(file);
     }
   };
 
@@ -53,7 +78,7 @@ const CreatePlaylistModal = ({ setPlaylistModalOpen }: any) => {
           {/* left side with image and change image */}
           <div className=" flex justify-start flex-col h-auto">
             <img
-              src={file}
+              src={imagePreview}
               alt="image"
               className=" aspect-square w-auto max-w-[14rem]"
             />

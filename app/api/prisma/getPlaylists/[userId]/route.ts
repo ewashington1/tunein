@@ -5,27 +5,22 @@ import { useSession } from "next-auth/react";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { sessionId: string; userId: string } }
+  { params }: { params: { userId: string } }
 ) {
   try {
-    const sessionId = params.sessionId;
     const userId = params.userId;
 
-    //creating a new follow relation between the two users
-    const followers = await prisma.user.findMany({
+    //get playlists and send user name with them
+    const playlists = await prisma.playlist.findMany({
       where: {
-        following: {
-          some: {
-            followeeId: userId,
-          },
-        },
-        NOT: {
-          id: sessionId,
-        },
+        userId: userId,
+      },
+      include: {
+        user: { select: { name: true } },
       },
     });
 
-    return NextResponse.json(followers, { status: 200 });
+    return NextResponse.json(playlists, { status: 200 });
   } catch (err) {
     return NextResponse.json(
       { errors: { login: "Follow unsuccessful." } },
