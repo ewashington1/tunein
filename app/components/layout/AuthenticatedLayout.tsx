@@ -8,7 +8,7 @@ import RightSideBar from "./RightSideBar";
 import React from "react";
 
 type AuthenticatedLayoutProps = {
-  children: React.ReactNode;
+  children?: React.ReactNode;
 };
 
 const AuthenticatedLayout = ({ children }: AuthenticatedLayoutProps) => {

@@ -34,12 +34,8 @@ const MyStarRatingSong = ({ track }: MyStarRatingSongProps) => {
       .post("/api/prisma/rateSong", {
         //how to fix this error below
         userId: session?.user!.id,
-        songId: track.id,
         stars: stars,
-        name: track.name,
-        artists: track.artists, //array
-        preview_url: track.preview_url, //string url
-        image_url: track.album.images[0].url, //sgtring url
+        song: track,
       })
       .then((res) => {
         console.log(res);

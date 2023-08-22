@@ -1,26 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/app/api/prisma";
-import { User } from "@prisma/client";
-import { useSession } from "next-auth/react";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { userId: string } }
+  { params }: { params: { playlistId: string } }
 ) {
   try {
-    const userId = params.userId;
+    const playlistId = params.playlistId;
 
     //get playlists and send user name with them
-    const playlists = await prisma.playlist.findMany({
-      where: {
-        userId: userId,
-      },
+    const playlist = await prisma.playlist.findUnique({
+      where: { id: playlistId },
       include: {
         user: { select: { name: true } },
+        songs: { include: { song: true } },
       },
     });
 
-    return NextResponse.json(playlists, { status: 200 });
+    return NextResponse.json(playlist, { status: 200 });
   } catch (err) {
     return NextResponse.json(
       { errors: { login: "Playlist retreival unsuccessful." } },

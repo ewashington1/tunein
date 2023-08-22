@@ -1,18 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "../../prisma";
 import { Song, SongRating, User } from "@prisma/client";
-import { Artist } from "@spotify/web-api-ts-sdk";
+import { Artist, Track } from "@spotify/web-api-ts-sdk";
+import { createSong } from "../createSong/route";
 
 type RateSongRequest = NextRequest & {
   req: {
     body: {
       stars: string;
       userId: string;
-      songId: string;
-      name: string;
-      artists: Artist[];
-      preview_url: string;
-      image_url: string;
+      song: Track;
     };
   };
 };
@@ -26,11 +23,13 @@ export async function POST(req: RateSongRequest) {
     const userId = body.userId;
 
     //song stuff
-    const songDetails = body;
+    const song = body.song;
+
+    await createSong(song);
 
     //get users with matching username to search
     const songRating = await prisma.songRating.upsert({
-      where: { userId_songId: { userId: userId, songId: songDetails.songId } },
+      where: { userId_songId: { userId: userId, songId: song.id } },
       update: { stars: stars },
       create: {
         stars: stars,
@@ -38,23 +37,7 @@ export async function POST(req: RateSongRequest) {
           connect: { id: userId },
         },
         song: {
-          connectOrCreate: {
-            where: { id: songDetails.songId },
-            create: {
-              id: songDetails.songId,
-              name: songDetails.name,
-              preview_url: songDetails.preview_url,
-              image_url: songDetails.image_url,
-              artists: {
-                connectOrCreate: songDetails.artists.map((artist: Artist) => ({
-                  where: { id: artist.id },
-                  create: {
-                    id: artist.id,
-                  },
-                })),
-              },
-            },
-          },
+          connect: { id: song.id },
         },
       },
     });

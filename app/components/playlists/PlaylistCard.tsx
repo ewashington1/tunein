@@ -1,13 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 import { Playlist } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheck, faPlus } from "@fortawesome/free-solid-svg-icons";
 
-type SidebarPlaylistCardProps = {
+type PlaylistCardProps = {
   playlist: Playlist;
+  togglePlaylistSelect: (playlistId: string) => void;
 };
 
-const SidebarPlaylistCard = ({ playlist }: SidebarPlaylistCardProps) => {
+const PlaylistCard = ({
+  playlist,
+  togglePlaylistSelect,
+}: PlaylistCardProps) => {
   const router = useRouter();
   const visitUser = () => {
     router.push(`/users/${playlist.userId}`);
@@ -15,6 +21,8 @@ const SidebarPlaylistCard = ({ playlist }: SidebarPlaylistCardProps) => {
   const visitPlaylist = () => {
     router.push(`/playlists/${playlist.id}`);
   };
+
+  const [selected, setSelected] = useState<boolean>(false);
   return (
     <div className="flex p-2 bg-bgGrey my-1 mx-1 items-center">
       {/* image */}
@@ -49,8 +57,38 @@ const SidebarPlaylistCard = ({ playlist }: SidebarPlaylistCardProps) => {
           </h2>
         </div>
       </div>
+      {/* select button */}
+      <div className="ml-auto">
+        {!selected ? (
+          <button
+            className="self-center"
+            onClick={() => {
+              togglePlaylistSelect(playlist.id);
+              setSelected(!selected);
+            }}
+          >
+            <FontAwesomeIcon
+              className="align-middle w-8 h-8 p-2 rounded-full border border-white text-purple"
+              icon={faPlus}
+            />
+          </button>
+        ) : (
+          <button
+            className="self-center"
+            onClick={() => {
+              togglePlaylistSelect(playlist.id);
+              setSelected(!selected);
+            }}
+          >
+            <FontAwesomeIcon
+              className="align-middle w-8 h-8 p-2 rounded-full border bg-lightGrey border-white text-purple"
+              icon={faCheck}
+            />
+          </button>
+        )}
+      </div>
     </div>
   );
 };
 
-export default SidebarPlaylistCard;
+export default PlaylistCard;

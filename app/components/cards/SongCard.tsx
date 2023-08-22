@@ -10,6 +10,8 @@ import {
   faPause,
 } from "@fortawesome/free-solid-svg-icons";
 import NewStarRatingSong from "../MyStarRatingSong";
+import AddToPlaylistModal from "../playlists/AddToPlaylistModal";
+import { createPortal } from "react-dom";
 
 type SongCardProps = {
   className?: string;
@@ -18,6 +20,9 @@ type SongCardProps = {
 
 const SongCard = ({ className, track }: SongCardProps) => {
   const isPlayable = track.preview_url !== null || undefined;
+
+  const [addToPlaylistModalOpen, setAddToPlaylistModalOpen] =
+    useState<boolean>(false);
 
   //useRef will persist the audioRef object accross renders, so the pause will work
   //plays goofy goober song if not playable
@@ -85,12 +90,23 @@ const SongCard = ({ className, track }: SongCardProps) => {
             </div>
           )}
           {/* add to playlist button */}
-          <button className="self-center">
+          <button
+            className="self-center"
+            onClick={() => setAddToPlaylistModalOpen(true)}
+          >
             <FontAwesomeIcon
               className="align-middle w-8 h-8 p-2 rounded-full border border-white text-purple"
               icon={faPlus}
             />
           </button>
+          {addToPlaylistModalOpen &&
+            createPortal(
+              <AddToPlaylistModal
+                setAddToPlaylistModalOpen={setAddToPlaylistModalOpen}
+                song={track}
+              />,
+              document.body
+            )}
           {/* vertical divider between two */}
           <div className="h-4/5 w-[1px] bg-white self-center mx-4"></div>
           {/* my rating */}
