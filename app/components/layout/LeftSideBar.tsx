@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import SearchPage from "../SearchPage";
 import CreatePlaylistModal from "../playlists/CreatePlaylistModal";
+import SidebarPlaylists from "../playlists/SidebarPlaylists";
 
 const LeftSideBar = () => {
   const pathname = usePathname();
@@ -46,6 +47,7 @@ const LeftSideBar = () => {
           type="text"
           placeholder="Search"
         />
+        <SidebarPlaylists />
         <button
           onClick={() => setPlaylistModalOpen(true)}
           className=" bg-purple mt-auto mb-6 py-2 px-3 h-auto self-center text-lightGrey font-bold text-xl rounded-md text-center"

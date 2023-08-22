@@ -10,6 +10,7 @@ import { faStar as filledStar } from "@fortawesome/free-solid-svg-icons";
 import axios, { AxiosResponse } from "axios";
 import Marquee from "react-fast-marquee";
 import MyStarRatingSong from "../MyStarRatingSong";
+import Image from "next/image";
 
 type FeedSongRatingProps = {
   songRating: FeedItem;
@@ -76,10 +77,17 @@ const FeedSongRating = ({ songRating }: FeedSongRatingProps) => {
       <hr className="my-2" />
       {/* middle section */}
       <div className="flex">
-        <img
-          className="h-28 w-28 mr-5"
-          src={track?.album.images[0].url}
-          alt="picture"
+        <Image
+          className="mr-5 h-28 w-28"
+          src={
+            track !== null
+              ? track?.album!.images[0]!.url!
+              : "/photos/defaultPlaylistImage.png"
+          }
+          alt="cover"
+          height={112}
+          width={112}
+          loading="lazy"
         />
         {/* description */}
         <div className="self-center align-middle max-w-[22rem] overflow-x-hidden">
