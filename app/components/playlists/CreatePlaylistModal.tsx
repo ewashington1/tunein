@@ -39,10 +39,9 @@ const CreatePlaylistModal = ({ setPlaylistModalOpen }: any) => {
       })
       .then((res) => {
         setPlaylistModalOpen(false);
-        alert("Success!");
       })
       .catch((err) => {
-        alert("Failure!");
+        console.log(err);
       });
 
     //do this on successful response

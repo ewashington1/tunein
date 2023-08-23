@@ -7,7 +7,7 @@ import { Rating } from "react-simple-star-rating";
 import { prisma } from "../api/prisma";
 import { useSession } from "next-auth/react";
 import axios from "axios";
-import { song } from "@prisma/client";
+import { Song } from "@prisma/client";
 
 type MyStarRatingSongProps = {
   song: Song;
@@ -19,15 +19,10 @@ const MyStarRatingSong = ({ song }: MyStarRatingSongProps) => {
   //initialize this to your previous song rating instead
   const [rating, setRating] = useState<number | null>(null);
 
-  if (song.id === undefined) {
-    song.id = song.songId;
-  }
-
   useEffect(() => {
     axios
       .get("/api/prisma/songRatings/" + song.id + "/" + session?.user!.id)
       .then((res) => {
-        console.log(res);
         setRating(res.data.rating);
       })
       .catch((err) => console.log(err));
@@ -42,7 +37,6 @@ const MyStarRatingSong = ({ song }: MyStarRatingSongProps) => {
         song: song,
       })
       .then((res) => {
-        console.log(res);
         setRating(res.data.newRating);
       })
       .catch((err) => console.log(err));

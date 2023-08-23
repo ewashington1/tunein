@@ -9,84 +9,93 @@ export async function GET(
   try {
     const userId = params.userId;
 
-    //get the current session users following in object form
-    const followingUsers = await prisma.User.findUnique({
+    const ratedSongs = await prisma.song.findMany({
+      // find songs where session user is following the user who created a songRating for said song
       where: {
-        id: userId,
-      },
-      select: {
-        following: {
-          select: {
-            followeeId: true,
+        songRatings: {
+          some: {
+            user: {
+              followers: {
+                some: {
+                  followerId: userId,
+                },
+              },
+            },
           },
         },
       },
-    });
-
-    // convert from object form to array form
-    const followingIds = followingUsers?.following?.map(
-      (user) => user.followeeId
-    );
-
-    if (!followingIds || followingIds.length === 0) {
-      // user is not following anyone return an empty response
-      return NextResponse.json({ songs: followingIds }, { status: 200 });
-    }
-
-    // get the rated songs that are rated by people user is following
-    const ratedSongs = await prisma.songRating.findMany({
-      where: {
-        userId: {
-          in: followingIds,
-        },
-      },
-      // include the song details for the card
       include: {
-        song: {
+        songRatings: {
+          where: {
+            user: {
+              followers: {
+                some: {
+                  followerId: userId,
+                },
+              },
+            },
+          },
           include: {
-            artists: true,
+            user: {
+              select: {
+                username: true,
+              },
+            },
           },
         },
-        user: {
-          select: {
-            username: true,
-          },
-        },
+        artists: true,
       },
     });
 
-    const ratedAlbums = await prisma.albumRating.findMany({
+    const ratedAlbums = await prisma.album.findMany({
       where: {
-        userId: {
-          in: followingIds,
+        albumRatings: {
+          some: {
+            user: {
+              followers: {
+                some: {
+                  followerId: userId,
+                },
+              },
+            },
+          },
         },
       },
       // include the album details for the card
       include: {
-        album: {
+        albumRatings: {
+          where: {
+            user: {
+              followers: {
+                some: {
+                  followerId: userId,
+                },
+              },
+            },
+          },
           include: {
-            artists: true,
+            user: {
+              select: {
+                username: true,
+              },
+            },
           },
         },
-        user: {
-          select: {
-            username: true,
-          },
-        },
+        artists: true,
       },
     });
 
     const ratedItems = [...ratedSongs, ...ratedAlbums];
 
-    ratedItems.sort((a, b) => {
-      if (a.createdAt > b.createdAt) {
-        return -1;
-      }
-      if (a.createdAt < b.createdAt) {
-        return 1;
-      }
-      return 0;
-    });
+    // ratedItems.sort((a, b) => {
+    //   if (a.createdAt > b.createdAt) {
+    //     return -1;
+    //   }
+    //   if (a.createdAt < b.createdAt) {
+    //     return 1;
+    //   }
+    //   return 0;
+    // });
 
     return NextResponse.json({ feed: ratedItems }, { status: 200 });
   } catch (err) {
