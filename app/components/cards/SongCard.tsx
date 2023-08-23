@@ -112,7 +112,7 @@ const SongCard = ({ className, track }: SongCardProps) => {
           {/* my rating */}
           <div className="flex flex-col self-center text-lg items-center">
             <div>My rating:</div>
-            <NewStarRatingSong track={track} />
+            <NewStarRatingSong song={track} />
           </div>
         </div>
       </div>

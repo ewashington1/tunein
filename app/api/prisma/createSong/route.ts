@@ -20,6 +20,7 @@ export async function createSong(song: Track) {
           where: { id: artist.id },
           create: {
             id: artist.id,
+            name: artist.name,
           },
         })),
       },

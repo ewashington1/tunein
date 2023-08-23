@@ -20,8 +20,10 @@ const AlbumCard = ({ className, album }: AlbumCardProps) => {
       <div className="w-full h-full flex p-2 max-h-[10.5vh]">
         <img src={album.images[0].url} alt="" className="h-full mr-2" />
         {/* song info */}
-        <div className="flex flex-col justify-center">
-          <div className="font-bold text-xl">{album.name}</div>
+        <div className="flex flex-col justify-center overflow-hidden">
+          <div className="font-bold text-xl whitespace-nowrap">
+            {album.name}
+          </div>
           <div className="font-light text-sm text-textLightGrey align-middle flex">
             <div className="inline">Album</div>
             <div className="w-1 h-1 bg-textLightGrey rounded-full inline-block mx-1 my-auto"></div>

@@ -50,6 +50,7 @@ export async function POST(req: RateAlbumRequest) {
                   where: { id: artist.id },
                   create: {
                     id: artist.id,
+                    name: artist.name,
                   },
                 })),
               },

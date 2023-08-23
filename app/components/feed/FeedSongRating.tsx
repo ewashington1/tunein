@@ -11,37 +11,16 @@ import axios, { AxiosResponse } from "axios";
 import Marquee from "react-fast-marquee";
 import MyStarRatingSong from "../MyStarRatingSong";
 import Image from "next/image";
+import { Song } from "@prisma/client";
+import { Rating } from "react-simple-star-rating";
 
 type FeedSongRatingProps = {
   songRating: FeedItem;
 };
 
 const FeedSongRating = ({ songRating }: FeedSongRatingProps) => {
-  const [track, setTrack] = useState<Track | null>(null);
-  //const [song, setSong] = useState();
-
+  // could make feedSongRating and feedAlbum rating into one
   const [playMarquee, setPlayMarquee] = useState(false);
-
-  useEffect(() => {
-    const getSong = async () => {
-      try {
-        const response = await axios.post("/api/spotify_requests/getSong", {
-          id: songRating.songId,
-        });
-        const body = response.data.body;
-        setTrack(body);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    getSong();
-  }, []);
-
-  //getSong();
-
-  // track = axios()
-  //you'd make a fetch request using the songRating or albumRating id to set the associatedItems value
-  //and once the associatedItem values aren't null, you'd put whatever info you need to in the return value.
 
   return (
     <div
@@ -55,20 +34,20 @@ const FeedSongRating = ({ songRating }: FeedSongRatingProps) => {
         onMouseEnter={() => setPlayMarquee(true)}
         onMouseLeave={() => setPlayMarquee(false)}
       >
-        <Marquee
-          play={playMarquee}
-          speed={150}
-          onCycleComplete={() => alert("hi")}
-        >
+        <Marquee play={playMarquee} speed={150}>
           {Array.from({ length: 5 }, (_, id) => (
             <div className="flex items-center mr-5" key={id}>
               <h1 className="text-2xl mr-3 font-light">
-                Andre rated {track?.name}
+                {songRating.user.username} rated {songRating.name}
               </h1>
 
-              {Array.from({ length: 5 }, (_, index) => {
-                return <FontAwesomeIcon icon={filledStar} key={index} />;
-              })}
+              <Rating
+                disableFillHover={true}
+                fillColor="#a220c9"
+                initialValue={songRating.stars}
+                size={25}
+                allowFraction
+              />
             </div>
           ))}
         </Marquee>
@@ -79,11 +58,7 @@ const FeedSongRating = ({ songRating }: FeedSongRatingProps) => {
       <div className="flex">
         <Image
           className="mr-5 h-28 w-28"
-          src={
-            track !== null
-              ? track?.album!.images[0]!.url!
-              : "/photos/defaultPlaylistImage.png"
-          }
+          src={songRating.song.image_url}
           alt="cover"
           height={112}
           width={112}
@@ -94,28 +69,23 @@ const FeedSongRating = ({ songRating }: FeedSongRatingProps) => {
           {/* name, dot, song */}
           <div className="flex items-center mb-3">
             <p className="font-bold text-4xl mr-3 whitespace-nowrap textSlide">
-              {track?.name}
+              {songRating.song.name}
             </p>
             <div className="bg-white w-1 h-1 rounded-full" />
             <p className="ml-3 font-light text-textLightGrey">Song</p>
           </div>
           {/* artists */}
           <p className="text-2xl font-extralight text-textLightGrey whitespace-nowrap textSlide">
-            {track?.artists.map((artist) => artist.name).join(", ")}
+            {songRating.song.artists.map((artist) => artist.name).join(", ")}
           </p>
         </div>
         {/* song Rating */}
-        {/* put conditional where it is because eventually i want a loading animation on the stars and
-        we're gonna have a loading state when it fetches the song
-        like how it doesn't show anything when it's fetching the song for now*/}
-        {track !== null && (
-          <div className="self-center ml-auto text-center">
-            <div className="text-xl font-extralight">My Rating:</div>
-            <div>
-              <MyStarRatingSong track={track} />
-            </div>
+        <div className="self-center ml-auto text-center">
+          <div className="text-xl font-extralight">My Rating:</div>
+          <div>
+            <MyStarRatingSong song={songRating} />
           </div>
-        )}
+        </div>
       </div>
       <hr className="my-3" />
       {/* bottom section */}

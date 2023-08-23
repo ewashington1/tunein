@@ -7,7 +7,7 @@ import { Rating } from "react-simple-star-rating";
 import { prisma } from "../api/prisma";
 import { useSession } from "next-auth/react";
 import axios from "axios";
-import { Album } from "@spotify/web-api-ts-sdk";
+import { Album } from "@prisma/client";
 
 type MyStarRatingAlbumProps = {
   album: Album;
@@ -17,6 +17,10 @@ const MyStarRatingAlbum = ({ album }: MyStarRatingAlbumProps) => {
   const { data: session } = useSession();
   //initialize this to your previous song rating instead
   const [rating, setRating] = useState<number | null>(null);
+
+  if (album.id === undefined) {
+    album.id = album.albumId;
+  }
 
   useEffect(() => {
     axios

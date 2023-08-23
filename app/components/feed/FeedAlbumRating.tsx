@@ -1,50 +1,96 @@
 "use client";
 
 import React from "react";
-import { Album } from "@spotify/web-api-ts-sdk";
-import { useState } from "react";
+import { SongRating } from "@prisma/client";
+import { Track } from "@spotify/web-api-ts-sdk";
+import { useState, useEffect } from "react";
 import { FeedItem } from "../../home/page";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faStar as filledStar } from "@fortawesome/free-solid-svg-icons";
+import axios, { AxiosResponse } from "axios";
+import Marquee from "react-fast-marquee";
+import MyStarRatingAlbum from "../MyStarRatingAlbum";
+import Image from "next/image";
+import { Album } from "@prisma/client";
+import { Rating } from "react-simple-star-rating";
 
-type FeedAlbumRatingProps = {
+type FeedSongRatingProps = {
   albumRating: FeedItem;
 };
 
-const FeedAlbumRating = ({ albumRating }: FeedAlbumRatingProps) => {
-  let album = useState<Album | null>(null);
-
-  //you'd make a fetch request using the songRating or albumRating id to set the associatedItems value
-  //and once the associatedItem values aren't null, you'd put whatever info you need to in the return value.
+const FeedSongRating = ({ albumRating }: FeedSongRatingProps) => {
+  // could make feedSongRating and feedAlbum rating into one
+  const [playMarquee, setPlayMarquee] = useState(false);
 
   return (
-    <div className="bg-boxLightGrey p-10 rounded w-2/5 h-2/5 pt-5 ">
-      <div className="flex">
-        <h1 className="text-l font-semibold mb-4 pr-3">Andre rated Utopia</h1>
-        <p className="text-purple">******</p>
-      </div>
-      <hr className="w-9/10 pb-3" />
-      <div className="flex pb-3">
-        <img
-          className="w-1/4 pr-5"
-          src="https://media.pitchfork.com/photos/64c3bee4a7c2659c4cdcf382/1:1/w_320,c_limit/Travis%20Scott%20-%20Utopia.jpeg"
-          alt="picture"
-        />
-        <div>
-          <div className="flex pb-3 pt-3 align-items">
-            <p className="font-bold text-2xl pr-3">Utopia</p>
-            <div className="bg-white w-1 h-1 rounded-full" />
-            <p className="font-thin pl-3 font-thin text-textLightGrey">Album</p>
-            <div className="flex-end pl-20">
-              <p>My Rating:</p>
-              <p className="text-purple pl-3">* * * * *</p>
+    <div
+      className="bg-boxLightGrey p-3 rounded drop-shadow my-4 h-auto max-h-full "
+      style={{ boxShadow: "-3px 5px 5px rgba(0, 0, 0.0, 0.08)" }}
+    >
+      {/* top section */}
+      {/* scrolling text */}
+      <div
+        className="h-auto w-auto"
+        onMouseEnter={() => setPlayMarquee(true)}
+        onMouseLeave={() => setPlayMarquee(false)}
+      >
+        <Marquee play={playMarquee} speed={150}>
+          {Array.from({ length: 5 }, (_, id) => (
+            <div className="flex items-center mr-5" key={id}>
+              <h1 className="text-2xl mr-3 font-light">
+                {albumRating.user.username} rated {albumRating.album.name}
+              </h1>
+              <Rating
+                disableFillHover={true}
+                fillColor="#a220c9"
+                initialValue={albumRating.stars}
+                size={25}
+                allowFraction
+              />
             </div>
+          ))}
+        </Marquee>
+      </div>
+
+      <hr className="my-2" />
+      {/* middle section */}
+      <div className="flex">
+        <Image
+          className="mr-5 h-28 w-28"
+          src={albumRating.album.image_url}
+          alt="cover"
+          height={112}
+          width={112}
+          loading="lazy"
+        />
+        {/* description */}
+        <div className="self-center align-middle max-w-[22rem] overflow-x-hidden">
+          {/* name, dot, song */}
+          <div className="flex items-center mb-3">
+            <p className="font-bold text-4xl mr-3 whitespace-nowrap textSlide">
+              {albumRating.album.name}
+            </p>
+            <div className="bg-white w-1 h-1 rounded-full" />
+            <p className="ml-3 font-light text-textLightGrey">Album</p>
           </div>
-          <p className="text-2xl font-thin text-textLightGrey">Travis Scott</p>
+          {/* artists */}
+          <p className="text-2xl font-extralight text-textLightGrey whitespace-nowrap textSlide">
+            {albumRating.album.artists.map((artist) => artist.name).join(", ")}
+          </p>
+        </div>
+        {/* song Rating */}
+        <div className="self-center ml-auto text-center">
+          <div className="text-xl font-extralight">My Rating:</div>
+          <div>
+            <MyStarRatingAlbum album={albumRating} />
+          </div>
         </div>
       </div>
-      <hr className="w-9/10" />
-      <p className="pt-3">Add comment...</p>
+      <hr className="my-3" />
+      {/* bottom section */}
+      <p>Add comment...</p>
     </div>
   );
 };
 
-export default FeedAlbumRating;
+export default FeedSongRating;

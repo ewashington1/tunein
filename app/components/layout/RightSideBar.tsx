@@ -6,6 +6,7 @@ import {
   faAnglesUp,
 } from "@fortawesome/free-solid-svg-icons";
 import { signOut } from "next-auth/react";
+import Link from "next/link";
 
 const RightSideBar = () => {
   const [dropdown, setDropdown] = useState(false);
@@ -31,7 +32,9 @@ const RightSideBar = () => {
         {dropdown && (
           <div className="flex flex-col">
             <hr />
-            <div className="p-4">Profile</div>
+            <Link className="p-4" href="/profile">
+              Profile
+            </Link>
             <hr />
             <div className="p-4">Settings</div>
             <hr />
