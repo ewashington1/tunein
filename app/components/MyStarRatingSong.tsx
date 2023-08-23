@@ -7,21 +7,25 @@ import { Rating } from "react-simple-star-rating";
 import { prisma } from "../api/prisma";
 import { useSession } from "next-auth/react";
 import axios from "axios";
-import { Track } from "@spotify/web-api-ts-sdk";
+import { song } from "@prisma/client";
 
 type MyStarRatingSongProps = {
-  track: Track;
+  song: Song;
 };
 
-const MyStarRatingSong = ({ track }: MyStarRatingSongProps) => {
+const MyStarRatingSong = ({ song }: MyStarRatingSongProps) => {
   const { data: session } = useSession();
 
   //initialize this to your previous song rating instead
   const [rating, setRating] = useState<number | null>(null);
 
+  if (song.id === undefined) {
+    song.id = song.songId;
+  }
+
   useEffect(() => {
     axios
-      .get("/api/prisma/songRatings/" + track.id + "/" + session?.user!.id)
+      .get("/api/prisma/songRatings/" + song.id + "/" + session?.user!.id)
       .then((res) => {
         console.log(res);
         setRating(res.data.rating);
@@ -35,7 +39,7 @@ const MyStarRatingSong = ({ track }: MyStarRatingSongProps) => {
         //how to fix this error below
         userId: session?.user!.id,
         stars: stars,
-        song: track,
+        song: song,
       })
       .then((res) => {
         console.log(res);

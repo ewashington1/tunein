@@ -149,6 +149,7 @@ model AlbumArtist {
 //can add artists to playlist (favorite artist playlist)
 model Artist {
   id          String        @id
+  name        String
   songs       Song[]
   SongArtist  SongArtist[]
   AlbumArtist AlbumArtist[]

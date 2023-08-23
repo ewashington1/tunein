@@ -288,29 +288,27 @@ const UserCard = ({ className, user }: UserCardProps) => {
           <div className="mt-auto mb-7 ml-5">
             {dropdown && !following && (
               // follow button
-              <div
-                className="flex bg-purple rounded-md justify-center w-[5rem]"
+              <button
+                className="flex bg-purple rounded-md justify-center w-[5rem] font-bold text-lg"
                 style={{
                   boxShadow: "-3px 5px 0px rgba(142, 12, 181, .5)",
                 }}
                 onClick={follow}
               >
-                <button className="font-bold text-lg">Follow</button>
-              </div>
+                Follow
+              </button>
             )}
             {dropdown && following && (
               // unfollow button
-              <div
-                className="flex bg-textLightGrey rounded-md justify-center  w-[6rem]"
+              <button
+                className="flex bg-textLightGrey rounded-md justify-center w-[6rem] font-bold text-lg text-purple"
                 style={{
                   boxShadow: "-3px 5px 0px rgba(137, 137, 137, .5)",
                 }}
                 onClick={unfollow}
               >
-                <button className="font-bold text-lg text-purple">
-                  Unfollow
-                </button>
-              </div>
+                Unfollow
+              </button>
             )}
           </div>
         </div>
