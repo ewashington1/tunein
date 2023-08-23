@@ -24,6 +24,29 @@ const page = ({ params }: { params: { playlistId: string } }) => {
 
   const { data: session, status } = useSession();
 
+  const removeFromPlaylists = async (songId: string, playlistId: string) => {
+    axios
+      .post("/api/prisma/removeFromPlaylists", {
+        playlistIds: [playlistId],
+        songId: songId,
+      })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+    setPlaylist((prevPlaylist: any) => {
+      if (!prevPlaylist || !prevPlaylist.songs) return prevPlaylist; // Return previous state if null or songs undefined
+
+      return {
+        ...prevPlaylist,
+        songs: prevPlaylist.songs.filter((song: any) => song.songId !== songId),
+      };
+    });
+  };
+
   const toggleSave = () => {
     setIsSaved(!isSaved);
   };
@@ -52,9 +75,9 @@ const page = ({ params }: { params: { playlistId: string } }) => {
   return (
     <AuthenticatedLayout>
       {/* full container */}
-      <div className="w-1/2 h-auto my-4 relative">
+      <div className="w-1/2 h-[95vh] my-4 relative flex flex-col">
         {/* top - title, owner, description, edit option, save btn */}
-        <div className="w-full min-h-[22.5vh] h-1/3 bg-boxDarkGrey rounded-lg flex p-4 relative">
+        <div className="w-full min-h-[22.5vh] h-[22.5vh] bg-boxDarkGrey rounded-lg flex p-4 relative">
           <Image
             loading="lazy"
             src={
@@ -75,9 +98,10 @@ const page = ({ params }: { params: { playlistId: string } }) => {
             </div>
             <div className="font-extralight text-textLightGrey text-sm">
               {playlist.description !== "null" &&
-              playlist.description !== undefined
-                ? playlist.description?.slice(0, 150).concat("...")
-                : ""}
+                playlist.description !== undefined &&
+                (playlist.description!.length > 150
+                  ? playlist.description?.slice(0, 150).concat("...")
+                  : playlist.description)}
             </div>
           </div>
           {/* save button */}
@@ -127,17 +151,20 @@ const page = ({ params }: { params: { playlistId: string } }) => {
             )}
         </div>
         {/* actual song cards -- maps through pivot table objects (SongPlaylist)*/}
-        {playlist.songs &&
-          playlist.songs.map((playlistSong: PlaylistSongWithSong) => {
-            return (
-              <PlaylistSongCard
-                key={playlistSong.songId}
-                playlistSong={playlistSong}
-                editMode={editMode}
-              />
-            );
-          })}
-        <div></div>
+
+        <div className="h-auto overflow-y-scroll flex-grow darkGreyScrollbar">
+          {playlist.songs &&
+            playlist.songs.map((playlistSong: PlaylistSongWithSong) => {
+              return (
+                <PlaylistSongCard
+                  key={playlistSong.songId}
+                  playlistSong={playlistSong}
+                  editMode={editMode}
+                  removeFromPlaylists={removeFromPlaylists}
+                />
+              );
+            })}
+        </div>
         {/* save button */}
       </div>
     </AuthenticatedLayout>
