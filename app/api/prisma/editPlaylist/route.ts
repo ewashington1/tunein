@@ -20,9 +20,12 @@ export async function POST(req: NextRequest) {
     const name = body.get("name")?.toString();
     const description = body.get("description")?.toString();
     const userId = body.get("userId")?.toString();
+    const playlistId = body.get("playlistId")?.toString() as string;
 
     //create playlist, get id, and use id to upload image to s3
-    const playlist = await prisma.playlist.create({
+    const playlist = await prisma.playlist.update({
+      where: { id: playlistId },
+
       data: {
         name: name!,
         description: description !== "null" ? description : undefined,
@@ -69,13 +72,13 @@ export async function POST(req: NextRequest) {
       });
     }
     return NextResponse.json(
-      { message: "Created playlist " + name + "!" },
+      { message: "Edited playlist " + name + "!" },
       { status: 200 }
     );
   } catch (err) {
     console.log(err);
     return NextResponse.json(
-      { errors: { login: "Playlist couldn't be created." } },
+      { errors: { login: "Playlist couldn't be edited." } },
       { status: 500 }
     );
   }
