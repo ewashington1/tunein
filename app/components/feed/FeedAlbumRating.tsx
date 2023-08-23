@@ -15,10 +15,10 @@ import { Album } from "@prisma/client";
 import { Rating } from "react-simple-star-rating";
 
 type FeedSongRatingProps = {
-  albumRating: FeedItem;
+  album: FeedItem;
 };
 
-const FeedSongRating = ({ albumRating }: FeedSongRatingProps) => {
+const FeedSongRating = ({ album }: FeedSongRatingProps) => {
   // could make feedSongRating and feedAlbum rating into one
   const [playMarquee, setPlayMarquee] = useState(false);
 
@@ -35,18 +35,21 @@ const FeedSongRating = ({ albumRating }: FeedSongRatingProps) => {
         onMouseLeave={() => setPlayMarquee(false)}
       >
         <Marquee play={playMarquee} speed={150}>
-          {Array.from({ length: 5 }, (_, id) => (
-            <div className="flex items-center mr-5" key={id}>
+          {album.albumRatings.map((albumRating) => (
+            <div className="flex items-center mr-5" key={albumRating.id}>
               <h1 className="text-2xl mr-3 font-light">
-                {albumRating.user.username} rated {albumRating.album.name}
+                {albumRating.user.username} rated {album.name}
               </h1>
-              <Rating
-                disableFillHover={true}
-                fillColor="#a220c9"
-                initialValue={albumRating.stars}
-                size={25}
-                allowFraction
-              />
+              <div className="pointer-events-none">
+                <Rating
+                  allowHover={false}
+                  disableFillHover={true}
+                  fillColor="#a220c9"
+                  initialValue={albumRating.stars}
+                  size={25}
+                  allowFraction
+                />
+              </div>
             </div>
           ))}
         </Marquee>
@@ -57,7 +60,7 @@ const FeedSongRating = ({ albumRating }: FeedSongRatingProps) => {
       <div className="flex">
         <Image
           className="mr-5 h-28 w-28"
-          src={albumRating.album.image_url}
+          src={album.image_url}
           alt="cover"
           height={112}
           width={112}
@@ -68,21 +71,21 @@ const FeedSongRating = ({ albumRating }: FeedSongRatingProps) => {
           {/* name, dot, song */}
           <div className="flex items-center mb-3">
             <p className="font-bold text-4xl mr-3 whitespace-nowrap textSlide">
-              {albumRating.album.name}
+              {album.name}
             </p>
             <div className="bg-white w-1 h-1 rounded-full" />
             <p className="ml-3 font-light text-textLightGrey">Album</p>
           </div>
           {/* artists */}
           <p className="text-2xl font-extralight text-textLightGrey whitespace-nowrap textSlide">
-            {albumRating.album.artists.map((artist) => artist.name).join(", ")}
+            {album.artists.map((artist) => artist.name).join(", ")}
           </p>
         </div>
         {/* song Rating */}
         <div className="self-center ml-auto text-center">
           <div className="text-xl font-extralight">My Rating:</div>
           <div>
-            <MyStarRatingAlbum album={albumRating} />
+            <MyStarRatingAlbum album={album} />
           </div>
         </div>
       </div>

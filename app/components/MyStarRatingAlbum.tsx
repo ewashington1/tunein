@@ -18,15 +18,10 @@ const MyStarRatingAlbum = ({ album }: MyStarRatingAlbumProps) => {
   //initialize this to your previous song rating instead
   const [rating, setRating] = useState<number | null>(null);
 
-  if (album.id === undefined) {
-    album.id = album.albumId;
-  }
-
   useEffect(() => {
     axios
       .get("/api/prisma/albumRatings/" + album.id + "/" + session?.user!.id)
       .then((res) => {
-        console.log(res);
         setRating(res.data.rating);
       })
       .catch((err) => console.log(err));
@@ -41,7 +36,8 @@ const MyStarRatingAlbum = ({ album }: MyStarRatingAlbumProps) => {
         stars: stars,
         name: album.name,
         artists: album.artists, //array
-        image_url: album.images[0].url, //sgtring url
+        image_url:
+          album.images === undefined ? album.image_url : album.images[0].url, //sgtring url
       })
       .then((res) => {
         // console.log(res);

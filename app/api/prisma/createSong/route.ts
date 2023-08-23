@@ -1,12 +1,13 @@
 import { Artist, SimplifiedArtist, Track } from "@spotify/web-api-ts-sdk";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "../../prisma";
+import { Song } from "@prisma/client";
 
 type CreateSongRequest = NextRequest & {
-  req: { body: { song: Track } };
+  req: { body: { song: Song } };
 };
 
-export async function createSong(song: Track) {
+export async function createSong(song: Song) {
   const result = await prisma.song.upsert({
     where: { id: song.id },
     update: {},
@@ -14,7 +15,8 @@ export async function createSong(song: Track) {
       id: song.id,
       name: song.name,
       preview_url: song.preview_url,
-      image_url: song.album.images[0].url,
+      image_url:
+        song.album === undefined ? song.image_url : song.album.images[0].url,
       artists: {
         connectOrCreate: song.artists.map((artist: SimplifiedArtist) => ({
           where: { id: artist.id },
