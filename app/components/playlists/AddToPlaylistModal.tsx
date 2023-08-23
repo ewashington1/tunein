@@ -1,17 +1,8 @@
 "use client";
 
 //MAYBE JUST USE REACT MODAL LIBRARY and react
-import { Playlist } from "@prisma/client";
-import { useSession } from "next-auth/react";
-import React, {
-  Dispatch,
-  SetStateAction,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import React, { Dispatch, SetStateAction, useContext } from "react";
 import PlaylistCard from "./PlaylistCard";
-import getPlaylists from "../functions/getPlaylists";
 import { Track } from "@spotify/web-api-ts-sdk";
 import axios from "axios";
 import PlaylistsContext from "@/app/PlaylistContext";
