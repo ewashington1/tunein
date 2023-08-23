@@ -5,7 +5,7 @@ import axios from "axios";
 import { createSong } from "../createSong/route";
 
 type AddToPlaylistRequest = NextRequest & {
-  req: { body: { playlistIds: string[]; songId: Track } };
+  req: { body: { playlistIds: string[]; song: Track } };
 };
 
 export async function POST(req: AddToPlaylistRequest) {
@@ -21,10 +21,7 @@ export async function POST(req: AddToPlaylistRequest) {
       const psid = await prisma.playlistSong.create({
         data: { playlistId: playlistId, songId: song.id },
       });
-      console.log(psid);
     });
-
-    console.log(result);
 
     return NextResponse.json("Successfully added!", { status: 200 });
   } catch (err) {

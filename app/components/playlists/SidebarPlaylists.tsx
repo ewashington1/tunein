@@ -1,32 +1,20 @@
 import { Playlist } from "@prisma/client";
 import axios from "axios";
 import { useSession } from "next-auth/react";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import SidebarPlaylistCard from "./SidebarPlaylistCard";
+import PlaylistsContext from "@/app/PlaylistContext";
 
 const SidebarPlaylists = () => {
-  const [playlists, setPlaylists] = useState<Playlist[] | null>(null);
-  const { data: session } = useSession();
-  useEffect(() => {
-    if (session !== null && session !== undefined) {
-      axios
-        .get("/api/prisma/getPlaylists/" + session!.user!.id)
-        .then((res) => {
-          setPlaylists(res.data);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
-  }, [session]);
+  const playlists = useContext(PlaylistsContext);
 
   if (playlists === null)
     return (
-      <div className=" overflow-y-scroll overflow-x-hidden lightGreyScrollbarForSidebar mx-1 max-h-[30%]"></div>
+      <div className=" overflow-y-scroll overflow-x-hidden lightGreyScrollbarForSidebar mx-1 max-h-[45%] min-h-[45vh]"></div>
     );
 
   return (
-    <div className=" overflow-y-scroll overflow-x-hidden lightGreyScrollbarForSidebar mx-1 max-h-[40%]">
+    <div className=" overflow-y-scroll overflow-x-hidden lightGreyScrollbarForSidebar mx-1 max-h-[55vh] min-h-[55vh]">
       {playlists!.map((playlist) => {
         return <SidebarPlaylistCard key={playlist.id} playlist={playlist} />;
       })}

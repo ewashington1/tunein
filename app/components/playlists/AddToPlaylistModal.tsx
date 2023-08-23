@@ -3,11 +3,18 @@
 //MAYBE JUST USE REACT MODAL LIBRARY and react
 import { Playlist } from "@prisma/client";
 import { useSession } from "next-auth/react";
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import PlaylistCard from "./PlaylistCard";
 import getPlaylists from "../functions/getPlaylists";
 import { Track } from "@spotify/web-api-ts-sdk";
 import axios from "axios";
+import PlaylistsContext from "@/app/PlaylistContext";
 
 interface AddToPlaylistModalProps {
   setAddToPlaylistModalOpen: Dispatch<SetStateAction<boolean>>;
@@ -18,7 +25,7 @@ const AddToPlaylistModal = ({
   setAddToPlaylistModalOpen,
   song,
 }: AddToPlaylistModalProps) => {
-  const [playlists, setPlaylists] = useState<Playlist[] | null>();
+  const playlists = useContext(PlaylistsContext);
   //all the playlists that you've decided to add the song to
   const addTo = new Set();
 
@@ -50,17 +57,6 @@ const AddToPlaylistModal = ({
         alert("Failure!");
       });
   };
-
-  const { data: session, status } = useSession();
-
-  useEffect(() => {
-    if (status === "authenticated") {
-      getPlaylists(session.user!.id).then((res) => {
-        console.log(res);
-        setPlaylists(res);
-      });
-    }
-  }, [session]);
 
   return (
     // background
