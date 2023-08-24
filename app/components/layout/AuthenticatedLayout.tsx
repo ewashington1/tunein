@@ -10,6 +10,7 @@ import axios from "axios";
 import PlaylistsContext from "@/app/PlaylistContext";
 
 import React from "react";
+import { PlaylistWithUsername } from "@/app/types";
 
 type AuthenticatedLayoutProps = {
   children?: React.ReactNode;
@@ -19,12 +20,12 @@ const AuthenticatedLayout = ({ children }: AuthenticatedLayoutProps) => {
   //renaming data to session
   const { data: session, status } = useSession();
 
-  const [playlists, setPlaylists] = useState<Playlist[] | null>(null);
+  const [playlists, setPlaylists] = useState<PlaylistWithUsername[]>([]);
 
-  useEffect(() => {
-    if (session !== null && session !== undefined) {
+  const updatePlaylists = async () => {
+    if (status === "authenticated") {
       axios
-        .get("/api/prisma/getPlaylists/" + session!.user!.id)
+        .get("/api/prisma/getPlaylists/" + session.user.id)
         .then((res) => {
           setPlaylists(res.data);
         })
@@ -32,6 +33,10 @@ const AuthenticatedLayout = ({ children }: AuthenticatedLayoutProps) => {
           console.log(err);
         });
     }
+  };
+
+  useEffect(() => {
+    updatePlaylists();
   }, [session]);
 
   if (status === "loading") {
@@ -51,7 +56,9 @@ const AuthenticatedLayout = ({ children }: AuthenticatedLayoutProps) => {
 
   return (
     <div className="flex justify-center">
-      <PlaylistsContext.Provider value={playlists !== null ? playlists : []}>
+      <PlaylistsContext.Provider
+        value={{ playlists: playlists, updatePlaylists: updatePlaylists }}
+      >
         <LeftSideBar />
         {children}
         <RightSideBar />

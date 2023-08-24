@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faPlus } from "@fortawesome/free-solid-svg-icons";
 
 type PlaylistCardProps = {
-  playlist: Playlist;
+  playlist: Playlist & { user: { name: string } };
   togglePlaylistSelect: (playlistId: string) => void;
 };
 

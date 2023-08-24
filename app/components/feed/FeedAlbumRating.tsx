@@ -1,17 +1,11 @@
 "use client";
 
 import React from "react";
-import { SongRating } from "@prisma/client";
-import { Track } from "@spotify/web-api-ts-sdk";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { FeedItem } from "../../home/page";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faStar as filledStar } from "@fortawesome/free-solid-svg-icons";
-import axios, { AxiosResponse } from "axios";
 import Marquee from "react-fast-marquee";
 import MyStarRatingAlbum from "../MyStarRatingAlbum";
 import Image from "next/image";
-import { Album } from "@prisma/client";
 import { Rating } from "react-simple-star-rating";
 
 type FeedSongRatingProps = {

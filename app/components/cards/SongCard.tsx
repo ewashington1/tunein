@@ -1,14 +1,7 @@
 import React, { ReactNode, useEffect, useRef, useState } from "react";
 import { Track } from "@spotify/web-api-ts-sdk";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faStar as unfilledStar } from "@fortawesome/free-regular-svg-icons";
-import {
-  faStar as filledStar,
-  faCheck,
-  faPlus,
-  faPlay,
-  faPause,
-} from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faPlay, faPause } from "@fortawesome/free-solid-svg-icons";
 import NewStarRatingSong from "../MyStarRatingSong";
 import AddToPlaylistModal from "../playlists/AddToPlaylistModal";
 import { createPortal } from "react-dom";

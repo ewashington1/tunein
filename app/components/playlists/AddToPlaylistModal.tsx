@@ -16,7 +16,7 @@ const AddToPlaylistModal = ({
   setAddToPlaylistModalOpen,
   song,
 }: AddToPlaylistModalProps) => {
-  const playlists = useContext(PlaylistsContext);
+  const { playlists } = useContext(PlaylistsContext);
   //all the playlists that you've decided to add the song to
   const addTo = new Set();
 

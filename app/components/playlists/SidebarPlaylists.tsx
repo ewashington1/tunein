@@ -6,7 +6,7 @@ import SidebarPlaylistCard from "./SidebarPlaylistCard";
 import PlaylistsContext from "@/app/PlaylistContext";
 
 const SidebarPlaylists = () => {
-  const playlists = useContext(PlaylistsContext);
+  const { playlists, updatePlaylists } = useContext(PlaylistsContext);
 
   if (playlists === null)
     return (

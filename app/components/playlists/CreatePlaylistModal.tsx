@@ -1,10 +1,11 @@
 "use client";
 
+import PlaylistsContext from "@/app/PlaylistContext";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 //MAYBE JUST USE REACT MODAL LIBRARY and react
 
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 
 const CreatePlaylistModal = ({ setPlaylistModalOpen }: any) => {
   const close = (e: any) => {
@@ -13,6 +14,8 @@ const CreatePlaylistModal = ({ setPlaylistModalOpen }: any) => {
   };
 
   const { data: session } = useSession();
+
+  const { updatePlaylists } = useContext(PlaylistsContext);
 
   const [imagePreview, setImagePreview] = useState<any>(
     "/photos/defaultPlaylistImage.png"
@@ -39,6 +42,7 @@ const CreatePlaylistModal = ({ setPlaylistModalOpen }: any) => {
       })
       .then((res) => {
         setPlaylistModalOpen(false);
+        updatePlaylists();
       })
       .catch((err) => {
         console.log(err);
