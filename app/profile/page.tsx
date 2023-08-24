@@ -10,13 +10,22 @@ const page = () => {
   const { data: session, status } = useSession();
   const [user, setUser] = useState<User | null>(null);
 
+  //only for if we want to allow username changes
+  const [username, setUsername] = useState<string>("");
+  const [name, setName] = useState<string>("");
+  const [bio, setBio] = useState<string>("");
+  const [changeImageModalOpen, setChangeImageModalOpen] =
+    useState<boolean>(false);
+
   useEffect(() => {
-    if (status === "authenticated" && session?.user) {
+    if (status === "authenticated") {
       const getUser = async () => {
         axios
           .get("/api/prisma/getUser/" + session?.user.id)
           .then((res) => {
             setUser(res.data.user);
+            setName(res.data.user.name);
+            setBio(res.data.user.bio);
           })
           .catch((err) => {
             console.log(err);
@@ -24,13 +33,19 @@ const page = () => {
       };
       getUser();
     }
-  }, [status, session]);
+  }, [status]);
 
-  const updateUser = async () => {
+  const updateUser = async (e: any) => {
+    e.preventDefault();
     axios
-      .get("/api/prisma/updateUser/" + session?.user!.id + "/" + user.id)
+      .patch("/api/prisma/updateUser", {
+        userId: session?.user.id,
+        name: name,
+        bio: bio,
+      })
       .then((res) => {
-        setFollowing(!following);
+        console.log(res.data);
+        setUser(res.data);
       })
       .catch((err) => {
         console.log(err);
@@ -41,11 +56,11 @@ const page = () => {
     <AuthenticatedLayout>
       {/* main box */}
       <form
-        className="bg-boxLightGrey p-10 mt-12 w-[35rem] h-[45rem]"
+        className="bg-boxLightGrey p-10 mt-12 w-[35rem] h-auto h-max-[45rem]"
         style={{ boxShadow: "-3px 5px 5px rgba(0, 0, 0.0, 0.5)" }}
       >
         {/* header portion */}
-        <div className="flex mb-10">
+        <div className="flex">
           {/* image */}
           <div className="flex flex-col mr-2 overflow-clip">
             <img
@@ -54,8 +69,11 @@ const page = () => {
               alt="photo"
             />
             {/* add s3client stuff */}
-            <button className="bg-boxLightGrey relative bottom-7 left-2 pb-1 w-24 opacity-[65%] hover:opacity-[85%] rounded-b-full">
-              edit
+            <button
+              onClick={() => setChangeImageModalOpen(true)}
+              className="bg-boxLightGrey relative bottom-7 left-2 pb-1 w-24 opacity-[65%] hover:opacity-[85%] rounded-b-full"
+            >
+              Edit
             </button>
           </div>
           <div className="ml-7">
@@ -63,22 +81,28 @@ const page = () => {
             <div className="text-3xl font-bold mb-5">@{user?.username}</div>
             {/* name */}
             <input
-              className="bg-neutral-700 pl-5 py-1 text-lg rounded-full text-neutral-300"
+              className=" bg-[#303030] pl-5 py-1 text-lg rounded-full text-neutral-400"
               type="text"
-              value={user?.name}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+              placeholder="Name"
             />
           </div>
         </div>
         {/* rest of the form */}
-        <textArea
-          className="bg-neutral-700 rounded-lg resize-none px-5 py-1 w-full h-72"
-          value={user?.bio}
+        <textarea
+          className="text-neutral-400 bg-[#303030] rounded-lg resize-none px-5 py-3 w-full h-72"
+          value={bio}
+          onChange={(e) => setBio(e.target.value)}
+          placeholder="A brief description of yourself"
         />
         <button
           className="flex bg-purple rounded-md justify-center w-[5rem] font-bold text-lg ml-auto mt-7"
           style={{
             boxShadow: "-3px 5px 0px rgba(142, 12, 181, .5)",
           }}
+          type="submit"
           onClick={updateUser}
         >
           Save
