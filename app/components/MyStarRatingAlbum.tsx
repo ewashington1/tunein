@@ -7,7 +7,7 @@ import { Rating } from "react-simple-star-rating";
 import { prisma } from "../api/prisma";
 import { useSession } from "next-auth/react";
 import axios from "axios";
-import { Album } from "@prisma/client";
+import { Album } from "@spotify/web-api-ts-sdk";
 
 type MyStarRatingAlbumProps = {
   album: Album;
@@ -32,12 +32,8 @@ const MyStarRatingAlbum = ({ album }: MyStarRatingAlbumProps) => {
       .post("/api/prisma/rateAlbum", {
         //how to fix this error below
         userId: session?.user!.id,
-        albumId: album.id,
         stars: stars,
-        name: album.name,
-        artists: album.artists, //array
-        image_url:
-          album.images === undefined ? album.image_url : album.images[0].url, //sgtring url
+        album: album,
       })
       .then((res) => {
         // console.log(res);

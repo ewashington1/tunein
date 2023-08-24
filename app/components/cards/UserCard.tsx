@@ -25,7 +25,7 @@ const UserCard = ({ className, user }: UserCardProps) => {
   const [topTracks, setTopTracks] = useState<Track[] | null>(null);
   const [albums, setAlbums] = useState<Album[] | null>(null);
   const [following, setFollowing] = useState<boolean>(false);
-  const [followers, setFollowers] = useState<User[]>(null);
+  const [followers, setFollowers] = useState<User[] | null>(null);
 
   const { data: session } = useSession();
 

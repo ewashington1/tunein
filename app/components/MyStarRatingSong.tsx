@@ -7,10 +7,10 @@ import { Rating } from "react-simple-star-rating";
 import { prisma } from "../api/prisma";
 import { useSession } from "next-auth/react";
 import axios from "axios";
-import { Song } from "@prisma/client";
+import { Track } from "@spotify/web-api-ts-sdk";
 
 type MyStarRatingSongProps = {
-  song: Song;
+  song: Track;
 };
 
 const MyStarRatingSong = ({ song }: MyStarRatingSongProps) => {
@@ -31,8 +31,7 @@ const MyStarRatingSong = ({ song }: MyStarRatingSongProps) => {
   const rate = async (stars: number) => {
     axios
       .post("/api/prisma/rateSong", {
-        //how to fix this error below
-        userId: session?.user!.id,
+        userId: session!.user.id,
         stars: stars,
         song: song,
       })

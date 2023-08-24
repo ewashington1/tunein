@@ -1,6 +1,7 @@
 import axios from "axios";
-import React, { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction, useContext } from "react";
 import { useRouter } from "next/navigation";
+import PlaylistsContext from "@/app/PlaylistContext";
 
 const DeletePlaylistModal = ({
   playlistId,
@@ -13,11 +14,14 @@ const DeletePlaylistModal = ({
 }) => {
   const router = useRouter();
 
+  const { updatePlaylists } = useContext(PlaylistsContext);
+
   const deletePlaylist = () => {
     axios
       .delete("/api/prisma/deletePlaylist/" + playlistId)
       .then((res) => {
         setDeletePlaylistModalOpen(false);
+        updatePlaylists();
         if (redirectHome) {
           router.push("/home");
         }

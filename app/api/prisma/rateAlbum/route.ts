@@ -1,17 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "../../prisma";
-import { Album, Song, SongRating, User } from "@prisma/client";
-import { Artist } from "@spotify/web-api-ts-sdk";
+import { Song, SongRating, User } from "@prisma/client";
+import { Artist, Album } from "@spotify/web-api-ts-sdk";
 
 type RateAlbumRequest = NextRequest & {
   req: {
     body: {
       stars: string;
       userId: string;
-      albumId: string;
-      name: string;
-      artists: Artist[];
-      image_url: string;
+      album: Album;
     };
   };
 };
@@ -25,12 +22,12 @@ export async function POST(req: RateAlbumRequest) {
     const userId = body.userId;
 
     //song stuff
-    const albumDetails = body;
+    const albumDetails: Album = body.album;
 
     //upsert inserts or modifies current if exists
     const albumRating = await prisma.albumRating.upsert({
       where: {
-        userId_albumId: { userId: userId, albumId: albumDetails.albumId },
+        userId_albumId: { userId: userId, albumId: albumDetails.id },
       },
       update: { stars: stars },
       create: {
@@ -40,11 +37,11 @@ export async function POST(req: RateAlbumRequest) {
         },
         album: {
           connectOrCreate: {
-            where: { id: albumDetails.albumId },
+            where: { id: albumDetails.id },
             create: {
-              id: albumDetails.albumId,
+              id: albumDetails.id,
               name: albumDetails.name,
-              image_url: albumDetails.image_url,
+              image_url: albumDetails.images[0].url,
               artists: {
                 connectOrCreate: albumDetails.artists.map((artist: Artist) => ({
                   where: { id: artist.id },

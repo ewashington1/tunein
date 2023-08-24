@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { useSession } from "next-auth/react";
+import PlaylistsContext from "@/app/PlaylistContext";
 
 const EditPlaylistModal = ({ setPlaylistModalOpen, playlist }: any) => {
   const close = (e: any) => {
@@ -11,6 +12,8 @@ const EditPlaylistModal = ({ setPlaylistModalOpen, playlist }: any) => {
   };
 
   const { data: session } = useSession();
+
+  const { updatePlaylists } = useContext(PlaylistsContext);
 
   const [imagePreview, setImagePreview] = useState<any>(
     playlist.image !== undefined
@@ -42,6 +45,7 @@ const EditPlaylistModal = ({ setPlaylistModalOpen, playlist }: any) => {
       })
       .then((res) => {
         setPlaylistModalOpen(false);
+        updatePlaylists();
       })
       .catch((err) => {
         console.log(err);
@@ -80,7 +84,9 @@ const EditPlaylistModal = ({ setPlaylistModalOpen, playlist }: any) => {
           {/* left side with image and change image */}
           <div className=" flex justify-start flex-col h-auto">
             <img
-              src={imagePreview}
+              src={
+                imagePreview ? imagePreview : "/photos/defaultPlaylistImage.png"
+              }
               alt="image"
               className=" aspect-square w-auto max-w-[14rem]"
             />
@@ -103,13 +109,13 @@ const EditPlaylistModal = ({ setPlaylistModalOpen, playlist }: any) => {
             <input
               type="text"
               required
-              value={name}
+              value={name as string}
               onChange={(e) => setName(e.target.value)}
               placeholder="Playlist Name"
               className="w-full bg-[#4e4e4e] py-3 px-2 rounded-lg text-xl font-bold ring-transparent outline-none"
             />
             <textarea
-              value={description}
+              value={description as string}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Playlist Description"
               className="resize-none w-full bg-[#4e4e4e] py-3 px-2 rounded-lg text-sm font-light my-1 h-full ring-transparent outline-none"

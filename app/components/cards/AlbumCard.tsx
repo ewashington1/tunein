@@ -1,12 +1,7 @@
-import React, { ReactNode } from "react";
-import { Album, Track } from "@spotify/web-api-ts-sdk";
+import React from "react";
+import { Album } from "@spotify/web-api-ts-sdk";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faCheck,
-  faPlus,
-  faStar as unfilledStar,
-} from "@fortawesome/free-solid-svg-icons";
-import { faStar as filledStar } from "@fortawesome/free-solid-svg-icons";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import NewStarRatingAlbum from "../MyStarRatingAlbum";
 
 type AlbumCardProps = {

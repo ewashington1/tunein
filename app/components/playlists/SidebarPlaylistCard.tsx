@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 
 type SidebarPlaylistCardProps = {
-  playlist: Playlist;
+  playlist: Playlist & { user: { name: string } };
 };
 
 const SidebarPlaylistCard = ({ playlist }: SidebarPlaylistCardProps) => {
