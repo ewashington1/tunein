@@ -1,14 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/app/api/prisma";
-import { User } from "@prisma/client";
-import { useSession } from "next-auth/react";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { getServerSession } from "next-auth/next";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { sessionId: string; userId: string } }
+  { params }: { params: { userId: string } }
 ) {
   try {
-    const sessionId = params.sessionId;
+    const session = await getServerSession(authOptions);
+    const sessionId = session!.user.id;
+
     const userId = params.userId;
 
     //creating a new follow relation between the two users
@@ -27,6 +29,7 @@ export async function GET(
 
     return NextResponse.json(followers, { status: 200 });
   } catch (err) {
+    console.log(err);
     return NextResponse.json(
       { errors: { login: "Follow unsuccessful." } },
       { status: 500 }

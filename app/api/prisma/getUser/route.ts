@@ -1,16 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "../../../prisma";
+import { prisma } from "../../prisma";
 import { User } from "@prisma/client";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { getServerSession } from "next-auth/next";
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { userId: string } }
-) {
+export async function GET(req: NextRequest) {
   try {
-    const userId = params.userId;
+    const session = await getServerSession(authOptions);
+    const userId = session!.user.id;
 
     //get the current session users information
-    const user = await prisma.User.findUnique({
+    const user = await prisma.user.findUnique({
       where: {
         id: userId,
       },

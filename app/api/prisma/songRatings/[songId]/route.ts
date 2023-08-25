@@ -1,14 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/app/api/prisma";
 import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { songId: string; userId: string } }
+  { params }: { params: { songId: string } }
 ) {
   try {
+    const session = await getServerSession(authOptions);
+    const userId = session!.user.id;
     const songId = params.songId;
-    const userId = params.userId;
 
     const rating = await prisma.songRating.findUnique({
       where: {

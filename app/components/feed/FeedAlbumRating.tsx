@@ -2,19 +2,26 @@
 
 import React from "react";
 import { useState } from "react";
-import { FeedItem } from "../../home/page";
+import { FeedItem } from "@/app/home/page";
 import Marquee from "react-fast-marquee";
-import MyStarRatingAlbum from "../MyStarRatingAlbum";
+import MyStarRatingAlbumPrisma from "../MyStarRatingAlbumPrisma";
 import Image from "next/image";
 import { Rating } from "react-simple-star-rating";
+import { Album } from "@prisma/client";
 
-type FeedSongRatingProps = {
+type FeedAlbumRatingProps = {
   album: FeedItem;
 };
 
-const FeedSongRating = ({ album }: FeedSongRatingProps) => {
+const FeedAlbumRating = ({ album }: FeedAlbumRatingProps) => {
   // could make feedSongRating and feedAlbum rating into one
   const [playMarquee, setPlayMarquee] = useState(false);
+
+  const simplifiedAlbum: Album = {
+    id: album.id,
+    name: album.name,
+    image_url: album.image_url,
+  };
 
   return (
     <div
@@ -29,8 +36,8 @@ const FeedSongRating = ({ album }: FeedSongRatingProps) => {
         onMouseLeave={() => setPlayMarquee(false)}
       >
         <Marquee play={playMarquee} speed={150}>
-          {album.albumRatings.map((albumRating) => (
-            <div className="flex items-center mr-5" key={albumRating.id}>
+          {album.albumRatings!.map((albumRating) => (
+            <div className="flex items-center mr-5" key={albumRating.userId}>
               <h1 className="text-2xl mr-3 font-light">
                 {albumRating.user.username} rated {album.name}
               </h1>
@@ -79,7 +86,7 @@ const FeedSongRating = ({ album }: FeedSongRatingProps) => {
         <div className="self-center ml-auto text-center">
           <div className="text-xl font-extralight">My Rating:</div>
           <div>
-            <MyStarRatingAlbum album={album} />
+            <MyStarRatingAlbumPrisma album={simplifiedAlbum} />
           </div>
         </div>
       </div>
@@ -90,4 +97,4 @@ const FeedSongRating = ({ album }: FeedSongRatingProps) => {
   );
 };
 
-export default FeedSongRating;
+export default FeedAlbumRating;

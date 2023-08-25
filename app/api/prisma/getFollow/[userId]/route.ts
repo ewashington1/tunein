@@ -1,14 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "../../../../prisma";
-import { User } from "@prisma/client";
+import { prisma } from "@/app/api/prisma";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { getServerSession } from "next-auth/next";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { followerId: string; followeeId: string } }
+  { params }: { params: { userId: string } }
 ) {
   try {
-    const followerId = params.followerId;
-    const followeeId = params.followeeId;
+    const session = await getServerSession(authOptions);
+    const followerId = session!.user.id;
+
+    const followeeId = params.userId;
 
     //get if user is following other user
     const follow = await prisma.follow.findUnique({
