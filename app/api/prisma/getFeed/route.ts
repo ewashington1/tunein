@@ -1,15 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "../../../prisma";
-import { User } from "@prisma/client";
+import { prisma } from "../../prisma";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { getServerSession } from "next-auth/next";
+import { FeedItem } from "../../../home/page";
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { userId: string } }
-) {
+export async function GET(req: NextRequest) {
   try {
-    const userId = params.userId;
+    const session = await getServerSession(authOptions);
+    const userId = session!.user.id;
 
-    const ratedSongs = await prisma.song.findMany({
+    const ratedSongs: FeedItem[] = await prisma.song.findMany({
       // find songs where session user is following the user who created a songRating for said song
       where: {
         songRatings: {
@@ -25,6 +25,7 @@ export async function GET(
         },
       },
       include: {
+        // for rating info on feed card
         songRatings: {
           where: {
             user: {
@@ -35,6 +36,7 @@ export async function GET(
               },
             },
           },
+          // for rater info on feed card
           include: {
             user: {
               select: {
@@ -42,12 +44,24 @@ export async function GET(
               },
             },
           },
+          // sort to get the most recent song rating first
+          orderBy: {
+            createdAt: "desc",
+          },
         },
+        // for artist info on feed card
         artists: true,
       },
+      // sort to get the most recent song first based on the song rating
+      //   doesnt work but it should as its in the prisma documentation
+      //   orderBy: {
+      //     songRatings: {
+      //       createdAt: "desc",
+      //     },
+      //   },
     });
 
-    const ratedAlbums = await prisma.album.findMany({
+    const ratedAlbums: FeedItem[] = await prisma.album.findMany({
       where: {
         albumRatings: {
           some: {
@@ -80,28 +94,45 @@ export async function GET(
               },
             },
           },
+          orderBy: {
+            createdAt: "desc",
+          },
         },
         artists: true,
       },
+      //   orderBy: {
+      //     albumRatings: {
+      //       createdAt: "desc",
+      //     },
+      //   },
     });
 
     const ratedItems = [...ratedSongs, ...ratedAlbums];
 
-    // ratedItems.sort((a, b) => {
-    //   if (a.createdAt > b.createdAt) {
-    //     return -1;
-    //   }
-    //   if (a.createdAt < b.createdAt) {
-    //     return 1;
-    //   }
-    //   return 0;
-    // });
+    // sorting ratedItems by the most recent ratings
+    ratedItems.sort((a, b) => {
+      const latestRatingA =
+        a.songRatings !== undefined
+          ? a.songRatings[0].createdAt
+          : a.albumRatings![0].createdAt;
+      const latestRatingB =
+        b.songRatings !== undefined
+          ? b.songRatings[0].createdAt
+          : b.albumRatings![0].createdAt;
+      if (latestRatingA > latestRatingB) {
+        return -1;
+      }
+      if (latestRatingA < latestRatingB) {
+        return 1;
+      }
+      return 0;
+    });
 
     return NextResponse.json({ feed: ratedItems }, { status: 200 });
   } catch (err) {
     console.log(err);
     return NextResponse.json(
-      { errors: { login: "Unable to retreive users." } },
+      { errors: "Unable to retreive feed." },
       { status: 500 }
     );
   }

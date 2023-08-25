@@ -1,17 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "../../../../prisma";
-import { User } from "@prisma/client";
+import { prisma } from "@/app/api/prisma";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { getServerSession } from "next-auth/next";
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { followerId: string; followeeId: string } }
-) {
+export async function POST(req: NextRequest & { followeeId: string }) {
   try {
-    const followerId = params.followerId;
-    const followeeId = params.followeeId;
+    const session = await getServerSession(authOptions);
+    const followerId = session!.user.id;
+
+    const body = await req.json();
+    const followeeId = body.followeeId;
 
     //creating a new follow relation between the two users
-    const follow = await prisma.follow.create({
+    await prisma.follow.create({
       data: {
         follower: { connect: { id: followerId } },
         followee: { connect: { id: followeeId } },

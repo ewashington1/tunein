@@ -2,23 +2,12 @@ import React, { ReactNode, useState, useEffect } from "react";
 import { User } from "@prisma/client";
 import { Album, Artist, Track } from "@spotify/web-api-ts-sdk";
 import axios from "axios";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faCheck,
-  faPlus,
-  faStar as unfilledStar,
-} from "@fortawesome/free-solid-svg-icons";
-import { faStar as filledStar } from "@fortawesome/free-solid-svg-icons";
 import { useSession } from "next-auth/react";
 
 type UserCardProps = {
   className?: string;
   user: User;
 };
-
-const followersUserNames: string[] = ["Mutaz03"];
-
-const followersNames: string[] = ["Mutaz B"];
 
 const UserCard = ({ className, user }: UserCardProps) => {
   const [dropdown, setDropdown] = useState<boolean>(false);
@@ -36,7 +25,7 @@ const UserCard = ({ className, user }: UserCardProps) => {
   useEffect(() => {
     const getFollowers = async () => {
       axios
-        .get("/api/prisma/getFollowers/" + session?.user!.id + "/" + user.id)
+        .get("/api/prisma/getFollowers/" + user.id)
         .then((res) => {
           setFollowers(res.data);
         })
@@ -49,7 +38,7 @@ const UserCard = ({ className, user }: UserCardProps) => {
 
   const getFollow = async () => {
     axios
-      .get("/api/prisma/getFollow/" + session?.user!.id + "/" + user.id)
+      .get("/api/prisma/getFollow/" + user.id)
       .then((res) => {
         setFollowing(res.data);
       })
@@ -67,7 +56,7 @@ const UserCard = ({ className, user }: UserCardProps) => {
 
   const follow = async () => {
     axios
-      .get("/api/prisma/follow/" + session?.user!.id + "/" + user.id)
+      .post("/api/prisma/follow", { followeeId: user.id })
       .then((res) => {
         setFollowing(!following);
       })
@@ -78,7 +67,7 @@ const UserCard = ({ className, user }: UserCardProps) => {
 
   const unfollow = async () => {
     axios
-      .get("/api/prisma/unfollow/" + session?.user!.id + "/" + user.id)
+      .delete("/api/prisma/unfollow/" + user.id)
       .then((res) => {
         setFollowing(!following);
       })

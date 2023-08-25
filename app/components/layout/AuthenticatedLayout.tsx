@@ -25,7 +25,7 @@ const AuthenticatedLayout = ({ children }: AuthenticatedLayoutProps) => {
   const updatePlaylists = async () => {
     if (status === "authenticated") {
       axios
-        .get("/api/prisma/getPlaylists/" + session.user.id)
+        .get("/api/prisma/getPlaylists")
         .then((res) => {
           setPlaylists(res.data);
         })

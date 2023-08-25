@@ -1,17 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "../../../../prisma";
-import { User } from "@prisma/client";
+import { prisma } from "@/app/api/prisma";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { getServerSession } from "next-auth/next";
 
-export async function GET(
+export async function DELETE(
   req: NextRequest,
-  { params }: { params: { followerId: string; followeeId: string } }
+  { params }: { params: { followeeId: string } }
 ) {
   try {
-    const followerId = params.followerId;
+    const session = await getServerSession(authOptions);
+    const followerId = session!.user.id;
+
     const followeeId = params.followeeId;
 
     //deleting a follow relation between the two users
-    const unfollow = await prisma.follow.delete({
+    await prisma.follow.delete({
       where: {
         followerId_followeeId: {
           followerId: followerId,

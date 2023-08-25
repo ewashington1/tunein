@@ -7,20 +7,19 @@ import { Rating } from "react-simple-star-rating";
 import { prisma } from "../api/prisma";
 import { useSession } from "next-auth/react";
 import axios from "axios";
-import { Album } from "@spotify/web-api-ts-sdk";
+import { Album } from "@prisma/client";
 
 type MyStarRatingAlbumProps = {
   album: Album;
 };
 
-const MyStarRatingAlbum = ({ album }: MyStarRatingAlbumProps) => {
-  const { data: session } = useSession();
+const MyStarRatingAlbumPrisma = ({ album }: MyStarRatingAlbumProps) => {
   //initialize this to your previous song rating instead
   const [rating, setRating] = useState<number | null>(null);
 
   useEffect(() => {
     axios
-      .get("/api/prisma/albumRatings/" + album.id + "/" + session?.user!.id)
+      .get("/api/prisma/albumRatings/" + album.id)
       .then((res) => {
         setRating(res.data.rating);
       })
@@ -29,9 +28,7 @@ const MyStarRatingAlbum = ({ album }: MyStarRatingAlbumProps) => {
 
   const rate = async (stars: number) => {
     axios
-      .post("/api/prisma/rateAlbum", {
-        //how to fix this error below
-        userId: session?.user!.id,
+      .post("/api/prisma/rateAlbumFeed", {
         stars: stars,
         album: album,
       })
@@ -59,4 +56,4 @@ const MyStarRatingAlbum = ({ album }: MyStarRatingAlbumProps) => {
   );
 };
 
-export default MyStarRatingAlbum;
+export default MyStarRatingAlbumPrisma;

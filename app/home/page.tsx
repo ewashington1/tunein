@@ -8,25 +8,28 @@ import FeedSongRating from "../components/feed/FeedSongRating";
 import FeedAlbumRating from "../components/feed/FeedAlbumRating";
 import { Artist, AlbumRating, SongRating } from "@prisma/client";
 
+type SongRatingWithUsername = SongRating & { user: { username: string } };
+type AlbumRatingWithUsername = AlbumRating & { user: { username: string } };
+
 export type FeedItem = {
-  id: String;
-  name: String;
-  preview_url?: String;
-  image_url: String;
-  songRating?: SongRating;
-  albumRating?: AlbumRating;
-  artists: Artist;
+  id: string;
+  name: string;
+  preview_url?: string | null;
+  image_url: string;
+  songRatings?: SongRatingWithUsername[];
+  albumRatings?: AlbumRatingWithUsername[];
+  artists: Artist[];
 };
 
 const page = () => {
-  const { data: session, status } = useSession();
-  const [feedItems, setFeedItems] = useState<FeedItem[]>(null);
+  const { status } = useSession();
+  const [feedItems, setFeedItems] = useState<FeedItem[] | null>(null);
 
   useEffect(() => {
-    if (status === "authenticated" && session?.user) {
+    if (status === "authenticated") {
       const getSongs = async () => {
         axios
-          .get("/api/prisma/getSongs/" + session?.user.id)
+          .get("/api/prisma/getFeed")
           .then((res) => {
             setFeedItems(res.data.feed);
           })
@@ -36,7 +39,7 @@ const page = () => {
       };
       getSongs();
     }
-  }, [status, session]);
+  }, [status]);
 
   //const feedItems = await request that gets all following recent ratings (that were not seen yet)
 

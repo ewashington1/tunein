@@ -1,27 +1,22 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faStarHalf, faStar } from "@fortawesome/free-solid-svg-icons";
 import { Rating } from "react-simple-star-rating";
-import { prisma } from "../api/prisma";
 import { useSession } from "next-auth/react";
 import axios from "axios";
-import { Track } from "@spotify/web-api-ts-sdk";
+import { Song } from "@prisma/client";
 
-type MyStarRatingSongProps = {
-  song: Track;
+type MyStarRatingSongPrismaProps = {
+  song: Song;
 };
 
-const MyStarRatingSong = ({ song }: MyStarRatingSongProps) => {
-  const { data: session } = useSession();
-
+const MyStarRatingSongPrisma = ({ song }: MyStarRatingSongPrismaProps) => {
   //initialize this to your previous song rating instead
   const [rating, setRating] = useState<number | null>(null);
 
   useEffect(() => {
     axios
-      .get("/api/prisma/songRatings/" + song.id + "/" + session?.user!.id)
+      .get("/api/prisma/songRatings/" + song.id)
       .then((res) => {
         setRating(res.data.rating);
       })
@@ -30,8 +25,7 @@ const MyStarRatingSong = ({ song }: MyStarRatingSongProps) => {
 
   const rate = async (stars: number) => {
     axios
-      .post("/api/prisma/rateSong", {
-        userId: session!.user.id,
+      .put("/api/prisma/rateSongPrisma", {
         stars: stars,
         song: song,
       })
@@ -58,4 +52,4 @@ const MyStarRatingSong = ({ song }: MyStarRatingSongProps) => {
   );
 };
 
-export default MyStarRatingSong;
+export default MyStarRatingSongPrisma;

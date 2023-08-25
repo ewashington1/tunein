@@ -2,7 +2,7 @@ import React, { ReactNode, useEffect, useRef, useState } from "react";
 import { Track } from "@spotify/web-api-ts-sdk";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faPlay, faPause } from "@fortawesome/free-solid-svg-icons";
-import NewStarRatingSong from "../MyStarRatingSong";
+import NewStarRatingSongSpotify from "../MyStarRatingSongSpotify";
 import AddToPlaylistModal from "../playlists/AddToPlaylistModal";
 import { createPortal } from "react-dom";
 
@@ -105,7 +105,7 @@ const SongCard = ({ className, track }: SongCardProps) => {
           {/* my rating */}
           <div className="flex flex-col self-center text-lg items-center">
             <div>My rating:</div>
-            <NewStarRatingSong song={track} />
+            <NewStarRatingSongSpotify song={track} />
           </div>
         </div>
       </div>

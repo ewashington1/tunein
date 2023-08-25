@@ -5,6 +5,7 @@ import AuthenticatedLayout from "../components/layout/AuthenticatedLayout";
 import { useSession } from "next-auth/react";
 import { User } from "@prisma/client";
 import axios from "axios";
+import ChangeImageModal from "./ChangeImageModal";
 
 const page = () => {
   const { data: session, status } = useSession();
@@ -21,11 +22,11 @@ const page = () => {
     if (status === "authenticated") {
       const getUser = async () => {
         axios
-          .get("/api/prisma/getUser/" + session?.user.id)
+          .get("/api/prisma/getUser")
           .then((res) => {
             setUser(res.data.user);
             setName(res.data.user.name);
-            setBio(res.data.user.bio);
+            setBio(res.data.user.bio === null ? undefined : res.data.user.bio);
           })
           .catch((err) => {
             console.log(err);
@@ -70,7 +71,10 @@ const page = () => {
             />
             {/* add s3client stuff */}
             <button
-              onClick={() => setChangeImageModalOpen(true)}
+              onClick={(e) => {
+                e.preventDefault();
+                setChangeImageModalOpen(true);
+              }}
               className="bg-boxLightGrey relative bottom-7 left-2 pb-1 w-24 opacity-[65%] hover:opacity-[85%] rounded-b-full"
             >
               Edit
@@ -108,6 +112,12 @@ const page = () => {
           Save
         </button>
       </form>
+      {changeImageModalOpen && (
+        <ChangeImageModal
+          setChangeImageModalOpen={setChangeImageModalOpen}
+          imagePath={user && user.pfp}
+        />
+      )}
     </AuthenticatedLayout>
   );
 };

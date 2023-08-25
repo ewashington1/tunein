@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
       },
     });
     const image = body.get("image") as Blob | null;
-    if (image !== "null") {
+    if (image !== ("null" as unknown)) {
       //only do if image isn't null
       const imageBuffer = await convert(
         Buffer.from(await image!.arrayBuffer())

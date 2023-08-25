@@ -1,43 +1,38 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "../../prisma";
-import { Song, SongRating, User } from "@prisma/client";
-import { Artist, Track } from "@spotify/web-api-ts-sdk";
-import { createSong } from "../createSong/route";
+import { Song } from "@prisma/client";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "../../auth/[...nextauth]/route";
 
 type RateSongRequest = NextRequest & {
   req: {
     body: {
       stars: string;
-      userId: string;
-      song: Track;
+      song: Song;
     };
   };
 };
 
-export async function POST(req: RateSongRequest) {
+export async function PUT(req: RateSongRequest) {
   try {
     const body = await req.json();
 
     //rating stuff
-    const stars = body.stars;
     const session = await getServerSession(authOptions);
-    const sessionId = session!.user!.id;
+    const userId = session!.user.id;
+    const stars = body.stars;
 
     //song stuff
     const song = body.song;
 
-    await createSong(song);
-
     //get users with matching username to search
     const songRating = await prisma.songRating.upsert({
-      where: { userId_songId: { userId: sessionId, songId: song.id } },
+      where: { userId_songId: { userId: userId, songId: song.id } },
       update: { stars: stars },
       create: {
         stars: stars,
         user: {
-          connect: { id: sessionId },
+          connect: { id: userId },
         },
         song: {
           connect: { id: song.id },

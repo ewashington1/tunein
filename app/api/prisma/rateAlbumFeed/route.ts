@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "../../prisma";
-import { Artist as SpotifyArtist, Album } from "@spotify/web-api-ts-sdk";
+import { Album } from "@prisma/client";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { getServerSession } from "next-auth/next";
 
@@ -38,24 +38,8 @@ export async function POST(req: RateAlbumRequest) {
           connect: { id: userId },
         },
         album: {
-          connectOrCreate: {
-            where: { id: albumDetails.id },
-            create: {
-              id: albumDetails.id,
-              name: albumDetails.name,
-              image_url: albumDetails.images[0].url,
-              artists: {
-                connectOrCreate: albumDetails.artists.map(
-                  (artist: SpotifyArtist) => ({
-                    where: { id: artist.id },
-                    create: {
-                      id: artist.id,
-                      name: artist.name,
-                    },
-                  })
-                ),
-              },
-            },
+          connect: {
+            id: albumDetails.id,
           },
         },
       },

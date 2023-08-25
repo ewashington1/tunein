@@ -2,7 +2,7 @@ import React from "react";
 import { Album } from "@spotify/web-api-ts-sdk";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import NewStarRatingAlbum from "../MyStarRatingAlbum";
+import NewStarRatingAlbum from "../MyStarRatingAlbumSpotify";
 
 type AlbumCardProps = {
   className?: string;

@@ -1,18 +1,13 @@
 "use client";
 
 import React from "react";
-import { SongRating } from "@prisma/client";
-import { Track } from "@spotify/web-api-ts-sdk";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { FeedItem } from "../../home/page";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faStar as filledStar } from "@fortawesome/free-solid-svg-icons";
-import axios, { AxiosResponse } from "axios";
 import Marquee from "react-fast-marquee";
-import MyStarRatingSong from "../MyStarRatingSong";
+import MyStarRatingSongPrisma from "../MyStarRatingSongPrisma";
 import Image from "next/image";
-import { Song } from "@prisma/client";
 import { Rating } from "react-simple-star-rating";
+import { Song } from "@prisma/client";
 
 type FeedSongRatingProps = {
   song: FeedItem;
@@ -21,6 +16,13 @@ type FeedSongRatingProps = {
 const FeedSongRating = ({ song }: FeedSongRatingProps) => {
   // could make feedSongRating and feedAlbum rating into one
   const [playMarquee, setPlayMarquee] = useState(false);
+
+  const simplifiedSong: Song = {
+    id: song.id,
+    name: song.name,
+    image_url: song.image_url,
+    preview_url: song.preview_url as string | null,
+  };
 
   return (
     <div
@@ -35,7 +37,7 @@ const FeedSongRating = ({ song }: FeedSongRatingProps) => {
         onMouseLeave={() => setPlayMarquee(false)}
       >
         <Marquee play={playMarquee} speed={150}>
-          {song.songRatings.map((songRating) => (
+          {song.songRatings!.map((songRating) => (
             <div className="flex items-center mr-5" key={songRating.userId}>
               <h1 className="text-2xl mr-3 font-light">
                 {songRating.user.username} rated {song.name}
@@ -84,7 +86,7 @@ const FeedSongRating = ({ song }: FeedSongRatingProps) => {
         <div className="self-center ml-auto text-center">
           <div className="text-xl font-extralight">My Rating:</div>
           <div>
-            <MyStarRatingSong song={song} />
+            <MyStarRatingSongPrisma song={simplifiedSong} />
           </div>
         </div>
       </div>

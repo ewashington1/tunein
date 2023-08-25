@@ -4,6 +4,8 @@ import { s3Client } from "@/app/api/s3client";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import sharp from "sharp";
 import { Prisma } from "@prisma/client";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../../auth/[...nextauth]/route";
 
 async function convert(file: Buffer) {
   const resizedImageBuffer = await sharp(file)
@@ -13,35 +15,23 @@ async function convert(file: Buffer) {
   return resizedImageBuffer;
 }
 
-export async function POST(req: NextRequest) {
+export async function PATCH(req: NextRequest) {
   try {
+    const session = await getServerSession(authOptions);
+
     const body = await req.formData();
 
-    const name = body.get("name")?.toString();
-    const description = body.get("description")?.toString();
-    const userId = body.get("userId")?.toString();
-
-    //create playlist, get id, and use id to upload image to s3
-    const playlist = await prisma.playlist.create({
-      data: {
-        name: name!,
-        description: description !== "null" ? description : undefined,
-        userId: userId!,
-      },
-    });
-    const image = body.get("image") as Blob | null;
-    if (image !== ("null" as unknown)) {
+    const pfp = body.get("pfp") as Blob | null;
+    if (pfp !== ("null" as unknown)) {
       //only do if image isn't null
-      const imageBuffer = await convert(
-        Buffer.from(await image!.arrayBuffer())
-      );
+      const imageBuffer = await convert(Buffer.from(await pfp!.arrayBuffer()));
 
-      const mimeType = image!.type;
+      const mimeType = pfp!.type;
       const fileExtension = mimeType.split("/")[1];
 
       //upload image to s3 to the playlistImages folder
       const commandParams = {
-        Key: `playlistImages/${playlist.id}.${fileExtension}`,
+        Key: `pfps/${session!.user.id}.${fileExtension}`,
         Bucket: "tune-in",
         Body: imageBuffer,
         //setting cache to 1 minute
@@ -56,26 +46,23 @@ export async function POST(req: NextRequest) {
       //set image in prisma playlist object
       const imageUrl =
         process.env.CDN_DOMAIN +
-        "playlistImages/" +
-        playlist.id +
+        "pfps/" +
+        session!.user.id +
         "." +
         fileExtension;
 
-      await prisma.playlist.update({
+      await prisma.user.update({
         where: {
-          id: playlist.id,
+          id: session!.user.id,
         },
-        data: { image: imageUrl },
+        data: { pfp: imageUrl },
       });
     }
-    return NextResponse.json(
-      { message: "Created playlist " + name + "!" },
-      { status: 200 }
-    );
+    return NextResponse.json({ message: "Changed pfp!" }, { status: 200 });
   } catch (err) {
     console.log(err);
     return NextResponse.json(
-      { errors: { login: "Playlist couldn't be created." } },
+      { errors: { login: "PFP couldn't be edited." } },
       { status: 500 }
     );
   }
