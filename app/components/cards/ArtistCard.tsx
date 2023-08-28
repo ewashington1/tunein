@@ -8,6 +8,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { faStar as filledStar } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
+import { createPortal } from "react-dom";
+import AddToTopArtistsModal from "./AddToTopArtistsModal";
 
 type ArtistCardProps = {
   className?: string;
@@ -18,6 +20,8 @@ const ArtistCard = ({ className, artist }: ArtistCardProps) => {
   const [dropdown, setDropdown] = useState<boolean>(false);
   const [topTracks, setTopTracks] = useState<Track[] | null>(null);
   const [albums, setAlbums] = useState<Album[] | null>(null);
+  const [addToTopArtistsOpen, setAddToTopArtistsOpen] =
+    useState<boolean>(false);
 
   const getTopTracks = async () => {
     if (topTracks !== null) return;
@@ -78,7 +82,10 @@ const ArtistCard = ({ className, artist }: ArtistCardProps) => {
         </div>
         <div className="flex ml-auto mr-2">
           {/* add to favorite artists button */}
-          <button className="self-center">
+          <button
+            className="self-center"
+            onClick={() => setAddToTopArtistsOpen(true)}
+          >
             <FontAwesomeIcon
               className="align-middle w-8 h-8 p-2 rounded-full border border-white text-purple"
               icon={faPlus}
@@ -173,6 +180,14 @@ const ArtistCard = ({ className, artist }: ArtistCardProps) => {
           </div>
         </div>
       )}
+      {addToTopArtistsOpen &&
+        createPortal(
+          <AddToTopArtistsModal
+            artist={artist}
+            setAddToTopArtistsOpen={setAddToTopArtistsOpen}
+          />,
+          document.body
+        )}
     </div>
   );
 };

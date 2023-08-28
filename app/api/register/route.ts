@@ -18,18 +18,44 @@ export async function POST(req: NextRequest) {
     const password = body.password;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-    const newUser = await prisma.user.create({
-      data: {
-        username: body.username,
-        email: body.email,
-        password: hashedPassword,
-        name: body.name,
-      },
+    // https://www.prisma.io/docs/concepts/components/prisma-client/transactions
+
+    const initUser = prisma.$transaction(async (prisma) => {
+      const newUser = await prisma.user.create({
+        data: {
+          username: body.username,
+          email: body.email,
+          password: hashedPassword,
+          name: body.name,
+        },
+      });
+      await prisma.topSongs.create({
+        data: {
+          id: newUser.id,
+          userId: newUser.id,
+        },
+      });
+
+      await prisma.topAlbums.create({
+        data: {
+          id: newUser.id,
+          userId: newUser.id,
+        },
+      });
+
+      await prisma.topArtists.create({
+        data: {
+          id: newUser.id,
+          userId: newUser.id,
+        },
+      });
+
+      return newUser;
     });
 
     //set next auth b/c signed in
 
-    return NextResponse.json({ user: newUser });
+    return NextResponse.json({ user: initUser }, { status: 200 });
   } catch (err: any) {
     //error codes: https://themeisle.com/blog/what-are-http-error-codes/#gref
 

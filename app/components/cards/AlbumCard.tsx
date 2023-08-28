@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { Album } from "@spotify/web-api-ts-sdk";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import NewStarRatingAlbum from "../MyStarRatingAlbumSpotify";
+import { createPortal } from "react-dom";
+import AddToTopAlbumsModal from "./AddToTopAlbumsModal";
 
 type AlbumCardProps = {
   className?: string;
@@ -10,6 +12,7 @@ type AlbumCardProps = {
 };
 
 const AlbumCard = ({ className, album }: AlbumCardProps) => {
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
   return (
     <div className="bg-boxLightGrey mx-auto mb-4 w-4/5 h-auto">
       <div className="w-full h-full flex p-2 max-h-[10.5vh]">
@@ -30,7 +33,7 @@ const AlbumCard = ({ className, album }: AlbumCardProps) => {
         </div>
         <div className="flex ml-auto mr-2">
           {/* add to playlist button */}
-          <button className="self-center">
+          <button className="self-center" onClick={() => setModalOpen(true)}>
             <FontAwesomeIcon
               className="align-middle w-8 h-8 p-2 rounded-full border border-white text-purple"
               icon={faPlus}
@@ -45,6 +48,14 @@ const AlbumCard = ({ className, album }: AlbumCardProps) => {
           </div>
         </div>
       </div>
+      {modalOpen &&
+        createPortal(
+          <AddToTopAlbumsModal
+            album={album}
+            setAddToTopAlbumsOpen={setModalOpen}
+          />,
+          document.body
+        )}
     </div>
   );
 };

@@ -27,7 +27,6 @@ export async function createSong(song: Track) {
       },
     },
   });
-  console.log(result);
   return result;
 }
 
