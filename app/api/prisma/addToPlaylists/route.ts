@@ -12,13 +12,13 @@ export async function POST(req: AddToPlaylistRequest) {
   try {
     const body = await req.json();
 
-    const playlists = body.playlists;
+    const playlists: Set<string> = body.playlists;
     const song = body.song;
 
     await createSong(song);
 
-    const result = await playlists.forEach(async (playlistId: string) => {
-      const psid = await prisma.playlistSong.create({
+    await playlists.forEach(async (playlistId: string) => {
+      await prisma.playlistSong.create({
         data: { playlistId: playlistId, songId: song.id },
       });
     });
