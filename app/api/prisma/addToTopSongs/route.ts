@@ -17,9 +17,6 @@ export async function POST(req: AddToTopSongsRequest) {
 
     const song: Track = body.song;
 
-    console.log(song.id);
-    console.log(session?.user.id);
-
     await createSong(song);
 
     await prisma.topSongsSong.create({

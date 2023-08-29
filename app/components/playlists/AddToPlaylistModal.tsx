@@ -40,8 +40,9 @@ const AddToPlaylistModal = ({
     const promises: Promise<AxiosResponse>[] = [];
 
     if (addTo.size !== 0) {
+      const playlists = Array.from(addTo);
       const addToPlaylistPromise = axios.post("/api/prisma/addToPlaylists", {
-        playlists: addTo,
+        playlists: playlists,
         song: song,
       });
       promises.push(addToPlaylistPromise);
@@ -60,7 +61,8 @@ const AddToPlaylistModal = ({
         setAddToPlaylistModalOpen(false);
       })
       .catch((err) => {
-        alert("goofy goober");
+        alert("Failure");
+        setAddToPlaylistModalOpen(false);
       });
   };
 
