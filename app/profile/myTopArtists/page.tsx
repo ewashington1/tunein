@@ -1,46 +1,51 @@
 "use client";
+
 import AuthenticatedLayout from "@/app/components/layout/AuthenticatedLayout";
 import { faStar } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Album, TopAlbums, TopAlbumsAlbum, User } from "@prisma/client";
+import { Artist, TopArtists, TopArtistsArtist, User } from "@prisma/client";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
-import TopAlbumsAlbumCard from "./TopAlbumsAlbumCard";
+import TopArtistsArtistCard from "./TopArtistsArtistCard";
 
-interface TopAlbumsAlbumWithAlbum extends TopAlbumsAlbum {
-  album: Album;
+interface TopArtistsArtistWithArtist extends TopArtistsArtist {
+  artist: Artist;
 }
 
-interface TopAlbumsWithAlbum extends TopAlbums {
-  albums: [TopAlbumsAlbumWithAlbum];
+interface TopArtistsWithArtist extends TopArtists {
+  artists: [TopArtistsArtistWithArtist];
   user: User;
 }
 
 const page = () => {
   const { data: session, status } = useSession();
 
-  const [topAlbums, setTopAlbums] = useState<TopAlbumsWithAlbum | null>(null);
+  const [topArtists, setTopArtists] = useState<TopArtistsWithArtist | null>(
+    null
+  );
   const [editMode, setEditMode] = useState<boolean>(false);
 
   const toggleEditMode = () => {
     setEditMode(!editMode);
   };
 
-  const getTopAlbums = async () => {
+  const getTopArtists = async () => {
     axios
-      .get(`/api/prisma/getTopAlbumsWithAlbums/${session!.user.id}`)
+      .get(`/api/prisma/getTopArtistsWithArtists/${session!.user.id}`)
       .then((res) => {
-        setTopAlbums(res.data);
+        setTopArtists(res.data);
       })
       .then((err) => {
         console.log(err);
       });
   };
 
-  const removeFromTopAlbums = async (albumId: string) => {
+  const removeFromTopArtists = async (artistId: string) => {
+    console.log(topArtists);
+
     axios
-      .delete("/api/prisma/removeFromTopAlbums/" + albumId)
+      .delete("/api/prisma/removeFromTopArtists/" + artistId)
       .then((res) => {
         console.log(res);
       })
@@ -48,13 +53,13 @@ const page = () => {
         console.log(err);
       });
 
-    setTopAlbums((prevTopAlbums: any) => {
-      if (!prevTopAlbums || !prevTopAlbums.albums) return prevTopAlbums; // Return previous state if null or songs undefined
+    setTopArtists((prevTopArtists: any) => {
+      if (!prevTopArtists || !prevTopArtists.artists) return prevTopArtists; // Return previous state if null or songs undefined
 
       return {
-        ...prevTopAlbums,
-        albums: prevTopAlbums.albums.filter(
-          (album: any) => album.albumId !== albumId
+        ...prevTopArtists,
+        artists: prevTopArtists.artists.filter(
+          (artist: any) => artist.artistId !== artistId
         ),
       };
     });
@@ -62,11 +67,11 @@ const page = () => {
 
   useEffect(() => {
     if (status === "authenticated") {
-      getTopAlbums();
+      getTopArtists();
     }
   }, [session]);
 
-  if (topAlbums === null) return <AuthenticatedLayout></AuthenticatedLayout>;
+  if (topArtists === null) return <AuthenticatedLayout></AuthenticatedLayout>;
 
   return (
     <AuthenticatedLayout>
@@ -82,12 +87,12 @@ const page = () => {
           </div>
           {/* name, owner name, description */}
           <div className="flex flex-col ml-4 justify-center">
-            <div className="font-bold text-6xl">My Top Albums</div>
+            <div className="font-bold text-6xl">My Top Artists</div>
           </div>
 
           {/* edit button */}
           {status === "authenticated" &&
-            session!.user!.id === topAlbums.userId && (
+            session!.user!.id === topArtists.userId && (
               <>
                 {!editMode ? (
                   <button
@@ -118,17 +123,19 @@ const page = () => {
         {/* actual song cards -- maps through pivot table objects (SongPlaylist)*/}
 
         <div className="h-auto overflow-y-scroll flex-grow darkGreyScrollbar">
-          {topAlbums.albums &&
-            topAlbums.albums.map((topAlbumsAlbum: TopAlbumsAlbumWithAlbum) => {
-              return (
-                <TopAlbumsAlbumCard
-                  key={topAlbumsAlbum.albumId}
-                  topAlbumsAlbum={topAlbumsAlbum}
-                  editMode={editMode}
-                  removeFromTopAlbums={removeFromTopAlbums}
-                />
-              );
-            })}
+          {topArtists.artists &&
+            topArtists.artists.map(
+              (topArtistsArtist: TopArtistsArtistWithArtist) => {
+                return (
+                  <TopArtistsArtistCard
+                    key={topArtistsArtist.artistId}
+                    topArtistsArtist={topArtistsArtist}
+                    editMode={editMode}
+                    removeFromTopArtists={removeFromTopArtists}
+                  />
+                );
+              }
+            )}
         </div>
       </div>
     </AuthenticatedLayout>
