@@ -8,14 +8,31 @@ import MyStarRatingSongPrisma from "../MyStarRatingSongPrisma";
 import Image from "next/image";
 import { Rating } from "react-simple-star-rating";
 import { Song } from "@prisma/client";
+import CommentPage from "../CommentPage";
+import { createPortal } from "react-dom";
+import { useRouter } from "next/navigation";
 
 type FeedSongRatingProps = {
   song: FeedItem;
 };
 
 const FeedSongRating = ({ song }: FeedSongRatingProps) => {
+  //CODE FOR WHEN SHALLOW ROUTING COMES OUT
+  // const router = useRouter();
+  // const openComments = () => {
+  //   setCommentModalOpen(true);
+  //   router.push(`/p/${song.id}`);
+  // };
+
+  // const closeComments = () => {
+  //   setCommentModalOpen(false);
+  //   router.push("/home");
+  // };
+
   // could make feedSongRating and feedAlbum rating into one
   const [playMarquee, setPlayMarquee] = useState(false);
+
+  const [commentModalOpen, setCommentModalOpen] = useState<boolean>(false);
 
   const simplifiedSong: Song = {
     id: song.id,
@@ -92,7 +109,12 @@ const FeedSongRating = ({ song }: FeedSongRatingProps) => {
       </div>
       <hr className="my-3" />
       {/* bottom section */}
-      <p>Add comment...</p>
+      <button onClick={() => setCommentModalOpen(true)}>Add comment...</button>
+      {commentModalOpen &&
+        createPortal(
+          <CommentPage song={song} setCommentModalOpen={setCommentModalOpen} />,
+          document.body
+        )}
     </div>
   );
 };

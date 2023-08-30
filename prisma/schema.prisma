@@ -32,6 +32,7 @@ model User {
   TopAlbums        TopAlbums[]
   TopArtists       TopArtists[]
   TopSongs         TopSongs[]
+  Comment          Comment[]
 }
 
 model Follow {
@@ -100,6 +101,7 @@ model Song {
   artists      Artist[]
   SongArtist   SongArtist[]
   TopSongsSong TopSongsSong[]
+  comments     Comment[]
 }
 
 model PlaylistSong {
@@ -219,4 +221,17 @@ model TopSongsSong {
   createdAt DateTime @default(now())
 
   @@id([songId, topSongsId])
+}
+
+model Comment {
+  comment String
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  song    Song   @relation(fields: [songId], references: [id])
+  userId  String
+  songId  String
+
+  createdAt DateTime @default(now())
+
+  //user can only comment on song once
+  @@id([songId, userId])
 }
