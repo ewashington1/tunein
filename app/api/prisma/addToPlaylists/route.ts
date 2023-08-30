@@ -3,14 +3,20 @@ import { prisma } from "../../prisma";
 import { Track } from "@spotify/web-api-ts-sdk";
 import axios from "axios";
 import { createSong } from "../createSong/route";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../../auth/[...nextauth]/route";
 
 type AddToPlaylistRequest = NextRequest & {
   req: { body: { playlistIds: string[]; song: Track } };
 };
 
+//GET SERVER SESSIOn
+
 export async function POST(req: AddToPlaylistRequest) {
   try {
     const body = await req.json();
+
+    const session = await getServerSession(authOptions);
 
     const playlists: Set<string> = body.playlists;
     const song = body.song;
