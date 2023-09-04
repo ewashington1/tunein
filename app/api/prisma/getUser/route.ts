@@ -20,7 +20,7 @@ export async function GET(req: NextRequest) {
   } catch (err) {
     console.log(err);
     return NextResponse.json(
-      { errors: { login: "Unable to retreive users." } },
+      { errors: { login: "Unable to retreive user." } },
       { status: 500 }
     );
   }
