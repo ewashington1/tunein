@@ -28,12 +28,11 @@ const MyStarRatingAlbumPrisma = ({ album }: MyStarRatingAlbumProps) => {
 
   const rate = async (stars: number) => {
     axios
-      .post("/api/prisma/rateAlbumFeed", {
+      .post("/api/prisma/rateAlbumPrisma", {
         stars: stars,
         album: album,
       })
       .then((res) => {
-        // console.log(res);
         setRating(res.data.newRating);
       })
       .catch((err) => console.log(err));

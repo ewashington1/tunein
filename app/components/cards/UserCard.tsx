@@ -63,6 +63,17 @@ const UserCard = ({ className, user }: UserCardProps) => {
       .catch((err) => {
         console.log(err);
       });
+    axios
+      .post("/api/prisma/createNoti", {
+        inNotiId: user.id,
+        message: "followed you",
+      })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   const unfollow = async () => {
@@ -70,6 +81,14 @@ const UserCard = ({ className, user }: UserCardProps) => {
       .delete("/api/prisma/unfollow/" + user.id)
       .then((res) => {
         setFollowing(!following);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    axios
+      .delete("/api/prisma/deleteNoti/" + user.id)
+      .then((res) => {
+        console.log(res);
       })
       .catch((err) => {
         console.log(err);

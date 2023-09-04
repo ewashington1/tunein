@@ -13,9 +13,14 @@ export async function GET(
 
     const userId = params.userId;
 
-    //creating a new follow relation between the two users
+    //finding the followers of the card's user (who session user is following)
     const followers = await prisma.user.findMany({
       where: {
+        followers: {
+          some: {
+            followerId: sessionId,
+          },
+        },
         following: {
           some: {
             followeeId: userId,
@@ -31,7 +36,7 @@ export async function GET(
   } catch (err) {
     console.log(err);
     return NextResponse.json(
-      { errors: { login: "Follow unsuccessful." } },
+      { errors: { login: "Unable to retrieve followers." } },
       { status: 500 }
     );
   }
