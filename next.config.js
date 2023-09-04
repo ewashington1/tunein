@@ -17,7 +17,11 @@ const nextConfig = {
     CDN_DOMAIN: process.env.CDN_DOMAIN,
   },
   images: {
-    domains: ["dn90gatzygp4b.cloudfront.net", "i.scdn.co"],
+    domains: [
+      "dn90gatzygp4b.cloudfront.net",
+      "i.scdn.co",
+      "static.thenounproject.com",
+    ],
   },
 };
 

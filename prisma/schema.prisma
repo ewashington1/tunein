@@ -30,6 +30,10 @@ model User {
   createdAt    DateTime       @default(now())
   inNotis      Notification[] @relation("in")
   outNotis     Notification[] @relation("out")
+  TopAlbums    TopAlbums[]
+  TopArtists   TopArtists[]
+  TopSongs     TopSongs[]
+  Comment      Comment[]
 }
 
 model Follow {
@@ -103,14 +107,16 @@ model Notification {
 // }
 
 model Song {
-  id          String         @id
-  name        String
-  preview_url String?
-  image_url   String
-  playlists   PlaylistSong[]
-  songRatings SongRating[]
-  artists     Artist[]
-  SongArtist  SongArtist[]
+  id           String         @id
+  name         String
+  preview_url  String?
+  image_url    String
+  playlists    PlaylistSong[]
+  songRatings  SongRating[]
+  artists      Artist[]
+  SongArtist   SongArtist[]
+  TopSongsSong TopSongsSong[]
+  comments     Comment[]
 }
 
 model PlaylistSong {
@@ -137,12 +143,13 @@ model Playlist {
 }
 
 model Album {
-  id           String        @id
-  name         String
-  image_url    String
-  albumRatings AlbumRating[]
-  artists      Artist[]
-  AlbumArtist  AlbumArtist[]
+  id             String           @id
+  name           String
+  image_url      String
+  albumRatings   AlbumRating[]
+  artists        Artist[]
+  AlbumArtist    AlbumArtist[]
+  TopAlbumsAlbum TopAlbumsAlbum[]
 }
 
 model SongArtist {
@@ -165,10 +172,81 @@ model AlbumArtist {
 
 //can add artists to playlist (favorite artist playlist)
 model Artist {
-  id          String        @id
-  name        String
-  songs       Song[]
-  SongArtist  SongArtist[]
-  AlbumArtist AlbumArtist[]
-  albums      Album[]
+  id               String             @id
+  name             String
+  songs            Song[]
+  SongArtist       SongArtist[]
+  AlbumArtist      AlbumArtist[]
+  albums           Album[]
+  TopArtistsArtist TopArtistsArtist[]
+}
+
+model TopAlbums {
+  id     String           @id
+  albums TopAlbumsAlbum[]
+  user   User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+}
+
+model TopArtists {
+  id      String             @id
+  artists TopArtistsArtist[]
+  user    User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId  String
+}
+
+model TopSongs {
+  id     String         @id
+  songs  TopSongsSong[]
+  user   User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+}
+
+model TopAlbumsAlbum {
+  TopAlbums   TopAlbums @relation(fields: [topAlbumsId], references: [id], onDelete: Cascade)
+  topAlbumsId String
+
+  album   Album  @relation(fields: [albumId], references: [id])
+  albumId String
+
+  createdAt DateTime @default(now())
+
+  @@id([albumId, topAlbumsId])
+}
+
+model TopArtistsArtist {
+  TopArtists   TopArtists @relation(fields: [topArtistsId], references: [id], onDelete: Cascade)
+  topArtistsId String
+
+  artist   Artist @relation(fields: [artistId], references: [id])
+  artistId String
+
+  createdAt DateTime @default(now())
+
+  @@id([artistId, topArtistsId])
+}
+
+model TopSongsSong {
+  TopSongs   TopSongs @relation(fields: [topSongsId], references: [id], onDelete: Cascade)
+  topSongsId String
+
+  song   Song   @relation(fields: [songId], references: [id])
+  songId String
+
+  createdAt DateTime @default(now())
+
+  @@id([songId, topSongsId])
+}
+
+model Comment {
+  comment String
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  song    Song   @relation(fields: [songId], references: [id])
+  userId  String
+  songId  String
+
+  createdAt DateTime @default(now())
+
+  //user can only comment on song once
+  @@id([songId, userId])
 }

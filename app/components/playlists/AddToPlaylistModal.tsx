@@ -1,11 +1,12 @@
 "use client";
 
 //MAYBE JUST USE REACT MODAL LIBRARY and react
-import React, { Dispatch, SetStateAction, useContext } from "react";
+import React, { Dispatch, SetStateAction, useContext, useRef } from "react";
 import PlaylistCard from "./PlaylistCard";
 import { Track } from "@spotify/web-api-ts-sdk";
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import PlaylistsContext from "@/app/PlaylistContext";
+import TopSongsCard from "./TopSongsCard";
 
 interface AddToPlaylistModalProps {
   setAddToPlaylistModalOpen: Dispatch<SetStateAction<boolean>>;
@@ -33,19 +34,35 @@ const AddToPlaylistModal = ({
     }
   };
 
+  const topSongsSelected = useRef<boolean>(false);
+
   const confirm = () => {
-    const addToArray = Array.from(addTo);
-    axios
-      .post("/api/prisma/addToPlaylists", {
-        playlists: addToArray,
+    const promises: Promise<AxiosResponse>[] = [];
+
+    if (addTo.size !== 0) {
+      const playlists = Array.from(addTo);
+      const addToPlaylistPromise = axios.post("/api/prisma/addToPlaylists", {
+        playlists: playlists,
         song: song,
-      })
-      .then((res) => {
-        alert("Success!");
+      });
+      promises.push(addToPlaylistPromise);
+    }
+
+    if (topSongsSelected.current === true) {
+      const addToTopSongsPromise = axios.post("/api/prisma/addToTopSongs", {
+        song: song,
+      });
+      promises.push(addToTopSongsPromise);
+    }
+
+    Promise.all(promises)
+      .then(() => {
+        alert("Success");
         setAddToPlaylistModalOpen(false);
       })
       .catch((err) => {
-        alert("Failure!");
+        alert("Failure");
+        setAddToPlaylistModalOpen(false);
       });
   };
 
@@ -68,6 +85,7 @@ const AddToPlaylistModal = ({
         {/* main part */}
         <div className="h-full flex flex-col my-3 mx-4 overflow-y-scroll darkGreyScrollbar p-1">
           {/* playlist cards */}
+          <TopSongsCard topSongsSelected={topSongsSelected} />
           {playlists &&
             playlists.map((playlist) => {
               return (
