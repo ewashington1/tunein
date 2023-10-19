@@ -118,7 +118,7 @@ const Login = ({ className }: LoginProps) => {
       <input
         type="submit"
         value="Sign In"
-        className="text-white self-end rounded-md px-3 py-2 w-min bg-purple"
+        className="text-white self-end rounded-md px-3 py-2 w-min bg-purple cursor-pointer"
       />
       {backendErrors.login && (
         <span className=" text-sm mt-1 text-purple self-center">

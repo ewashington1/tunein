@@ -15,6 +15,27 @@ const LeftSideBar = () => {
     explore: pathname === "/explore" ? "text-purple" : "text-white",
   };
 
+  const Input = () => {
+    const handleKeyDown = (event: any) => {
+      if (event.key === "Enter") {
+        setSearchTerm(event.target.value);
+      }
+    };
+
+    return (
+      <input
+        onClick={() => setSearchPanel(true)}
+        // onChange={(e) => }
+        onBlur={(e) => setSearchTerm(e.target.value)}
+        className="mx-4 my-4 bg-bgGrey rounded-full py-2 px-4 w-4/5 caret-lightGrey outline-none text-lightGrey"
+        type="text"
+        placeholder="Search"
+        onKeyDown={handleKeyDown}
+        defaultValue={searchTerm}
+      />
+    );
+  };
+
   const [searchPanel, setSearchPanel] = useState(false);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [playlistModalOpen, setPlaylistModalOpen] = useState(false);
@@ -40,13 +61,7 @@ const LeftSideBar = () => {
           <Link href="/explore">Explore</Link>
         </div>
         <hr className="mx-4 w-3/5" />
-        <input
-          onClick={() => setSearchPanel(true)}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="mx-4 my-4 bg-bgGrey rounded-full py-2 px-4 w-4/5 caret-lightGrey outline-none text-lightGrey"
-          type="text"
-          placeholder="Search"
-        />
+        <Input />
         <div className="h-auto flex flex-col mt-auto">
           <SidebarPlaylists />
           <button

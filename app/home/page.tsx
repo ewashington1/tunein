@@ -62,7 +62,11 @@ const page = () => {
             return <FeedAlbumRating key={item.id} album={item} />;
           }
         })}
-        {feedItems?.length == 0 && <div>No Posts, Try Following People</div>}
+        {feedItems?.length == 0 && (
+          <div className=" mt-4 text-2xl font-semibold">
+            No posts... try following some users to get started :)
+          </div>
+        )}
       </div>
       {/* <FeedItem /> */}
     </AuthenticatedLayout>

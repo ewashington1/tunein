@@ -43,7 +43,7 @@ const AuthenticatedLayout = ({ children }: AuthenticatedLayoutProps) => {
     return (
       <div className="flex justify-center">
         <LeftSideBar />
-        <div className="text-white self-center font-bold text-4xl">
+        <div className="text-white self-center font-bold text-4xl mt-4">
           Loading...
         </div>
         <RightSideBar />
