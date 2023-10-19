@@ -27,7 +27,7 @@ export async function POST(req: RateAlbumRequest) {
     const albumDetails: Album = body.album;
 
     //upsert inserts or modifies current if exists
-    const albumRating = await prisma.albumRating.upsert({
+    await prisma.albumRating.upsert({
       where: {
         userId_albumId: { userId: userId, albumId: albumDetails.id },
       },

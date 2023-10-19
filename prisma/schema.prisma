@@ -11,28 +11,29 @@ datasource db {
 }
 
 model User {
-  id               String             @id @default(uuid())
-  email            String             @unique
-  password         String
-  name             String
-  username         String             @unique
-  bio              String?
-  pfp              String?
-  songRatings      SongRating[]
-  albumRatings     AlbumRating[]
+  id           String         @id @default(uuid())
+  email        String         @unique
+  password     String
+  name         String
+  username     String         @unique
+  bio          String?
+  pfp          String?
+  songRatings  SongRating[]
+  albumRatings AlbumRating[]
   //user followers is all the people following the user
   //it's getting every one where the current user is the "following"
-  followers        Follow[]           @relation("following")
+  followers    Follow[]       @relation("following")
   //user following is all the people they're following
   //it's getting every follow where the current user is the "follower" 
-  following        Follow[]           @relation("followers")
-  Playlist         Playlist[]
-  createdAt        DateTime           @default(now())
-  NotificationUser NotificationUser[]
-  TopAlbums        TopAlbums[]
-  TopArtists       TopArtists[]
-  TopSongs         TopSongs[]
-  Comment          Comment[]
+  following    Follow[]       @relation("followers")
+  Playlist     Playlist[]
+  createdAt    DateTime       @default(now())
+  inNotis      Notification[] @relation("in")
+  outNotis     Notification[] @relation("out")
+  TopAlbums    TopAlbums[]
+  TopArtists   TopArtists[]
+  TopSongs     TopSongs[]
+  Comment      Comment[]
 }
 
 model Follow {
@@ -76,20 +77,34 @@ model AlbumRating {
   @@id([userId, albumId])
 }
 
+// only works for follow notis for now
 model Notification {
-  id               String             @id @default(uuid())
-  NotificationUser NotificationUser[]
+  fromUserId String
+  fromUser   User     @relation("out", fields: [fromUserId], references: [id], onDelete: Cascade)
+  toUserId   String
+  toUser     User     @relation("in", fields: [toUserId], references: [id], onDelete: Cascade)
+  message    String
+  createdAt  DateTime @default(now())
+
+  @@id([fromUserId, toUserId])
 }
 
-model NotificationUser {
-  notification   Notification @relation(fields: [notificationId], references: [id])
-  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  notificationId String
-  userId         String
-  createdAt      DateTime     @default(now())
+// model Notification {
+//   id               String             @id @default(uuid())
+//   NotificationUser NotificationUser[]
+//   User             User?              @relation(fields: [userId], references: [id])
+//   userId           String?
+// }
 
-  @@id([notificationId, userId])
-}
+// model NotificationUser {
+//   notification   Notification @relation(fields: [notificationId], references: [id])
+//   user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+//   notificationId String
+//   userId         String
+//   createdAt      DateTime     @default(now())
+
+//   @@id([notificationId, userId])
+// }
 
 model Song {
   id           String         @id

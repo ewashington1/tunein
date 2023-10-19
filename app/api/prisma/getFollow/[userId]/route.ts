@@ -13,7 +13,7 @@ export async function GET(
 
     const followeeId = params.userId;
 
-    //get if user is following other user
+    //get if session user is following card's user
     const follow = await prisma.follow.findUnique({
       where: {
         followerId_followeeId: {
@@ -29,7 +29,7 @@ export async function GET(
   } catch (err) {
     console.log(err);
     return NextResponse.json(
-      { errors: { login: "Unable to retreive users." } },
+      { errors: { login: "Unable to retrive following status." } },
       { status: 500 }
     );
   }
