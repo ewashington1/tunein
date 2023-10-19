@@ -12,6 +12,7 @@ import { Artist, SongRating } from "@prisma/client";
 import { FeedItem } from "../home/page";
 import axios from "axios";
 import { CommentsWithUsernames } from "../types";
+import { useSession } from "next-auth/react";
 
 const CommentPage = ({
   setCommentModalOpen,
@@ -26,10 +27,14 @@ const CommentPage = ({
     }
   };
 
+  const { data: session } = useSession();
+
   const [playMarquee, setPlayMarquee] = useState<boolean>(false);
   const [comment, setComment] = useState<string>("");
 
-  const [comments, setComments] = useState<CommentsWithUsernames[]>([]);
+  const [comments, setComments] = useState<CommentsWithUsernames[] | null>(
+    null
+  );
 
   const fetchComments = async () => {
     axios
@@ -56,7 +61,11 @@ const CommentPage = ({
         console.log(res.data);
         alert("Success");
         setComments((prevComments) => {
-          return [...prevComments, res.data];
+          if (prevComments) {
+            return [...prevComments, res.data];
+          } else {
+            return res.data;
+          }
         });
         setComment("");
       })
@@ -128,16 +137,22 @@ const CommentPage = ({
           </div>
         </div>
         <div>
-          {comments.map((existingComment) => {
-            return (
+          {comments ? (
+            comments.map((existingComment) => (
               <div className="flex gap-1 py-1 border-b-[1px] border-white text-center">
-                <div className="ml-2 font-bold text-lg">{`@${existingComment.user.username}:`}</div>
+                <div
+                  className={`ml-2 font-bold text-lg ${
+                    session?.user.id === existingComment.userId && "text-purple"
+                  }`}
+                >{`@${existingComment.user.username}:`}</div>
                 <div className="text-textLightGrey text-lg">
                   {existingComment.comment}
                 </div>
               </div>
-            );
-          })}
+            ))
+          ) : (
+            <div>Loading comments...</div>
+          )}
         </div>
         <div className="h-[1px] w-auto bg-white mt-auto" />
         <input
