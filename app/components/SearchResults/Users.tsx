@@ -23,6 +23,7 @@ const Users = ({ searchTerm }: UsersProps) => {
           searchTerm: searchTerm,
         })
         .then((res) => {
+          console.log(res.data);
           setUserSearchResults(res.data);
         })
         .catch((err) => {

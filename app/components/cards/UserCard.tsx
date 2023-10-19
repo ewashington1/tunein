@@ -1,26 +1,24 @@
 import React, { ReactNode, useState, useEffect } from "react";
 import { User } from "@prisma/client";
-import { Album, Artist, Track } from "@spotify/web-api-ts-sdk";
+import { Album, Artist, Song } from "@prisma/client";
 import axios from "axios";
-import { useSession } from "next-auth/react";
 
 type UserCardProps = {
   className?: string;
   user: User;
 };
 
+type ArtistWithPfp = Artist & {
+  img: string;
+};
+
 const UserCard = ({ className, user }: UserCardProps) => {
   const [dropdown, setDropdown] = useState<boolean>(false);
-  const [topTracks, setTopTracks] = useState<Track[] | null>(null);
+  const [topArtists, setTopArtists] = useState<Artist[] | null>(null);
+  const [topTracks, setTopTracks] = useState<Song[] | null>(null);
   const [albums, setAlbums] = useState<Album[] | null>(null);
   const [following, setFollowing] = useState<boolean>(false);
   const [followers, setFollowers] = useState<User[] | null>(null);
-
-  const { data: session } = useSession();
-
-  if (session?.user.id == user.id) {
-    return;
-  }
 
   useEffect(() => {
     const getFollowers = async () => {
@@ -47,9 +45,34 @@ const UserCard = ({ className, user }: UserCardProps) => {
       });
   };
 
+  // how should i get image of artist?
+  // axios
+  // .get("/api/spotify_requests/getArtistImage/" + topArtistsArtist.artistId)
+  // .then((res) => {
+  //   setImageUrl(res.data);
+  // })
+  // .catch((err) => {
+  //   console.log("No artist image");
+  // });
+
+  const getArtists = async () => {
+    axios
+      .get("/api/prisma/getTopArtists/" + user.id)
+      .then((res) => {
+        console.log(res.data);
+        setTopArtists(res.data);
+        console.log("hello");
+        console.log(topArtists);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   const expandDropdown = async () => {
     // await getTopTracks();
     // await getAlbums();
+    await getArtists();
     await getFollow();
     setDropdown(true);
   };
@@ -124,68 +147,6 @@ const UserCard = ({ className, user }: UserCardProps) => {
         {/* drop down left side items */}
         {dropdown && (
           <div className="p-3 dropdownTransition h-auto">
-            {/* top songs div */}
-            <div>
-              <h1 className="pr-3 w-fit border-b border-b-textLightGrey">
-                Top Songs:
-              </h1>
-              {/* div for top song photos and text below */}
-              <div className="flex pt-3">
-                {/* if top tracks is null, not loaded yet, if 0 length, no results, else show results */}
-                {topTracks !== null ? (
-                  topTracks.length === 0 ? (
-                    <div>No songs</div>
-                  ) : (
-                    topTracks.slice(0, 5).map((track: Track): ReactNode => {
-                      return (
-                        <div
-                          className="flex flex-col w-[15%] text-sm mr-4"
-                          key={track.id}
-                        >
-                          <img src={track.album.images[0].url} alt="photo" />
-                          <div>{track.name}</div>
-                        </div>
-                      );
-                    })
-                  )
-                ) : (
-                  <div className="flex justify-start">
-                    <div>Loading... Not Implemented Yet</div>
-                  </div>
-                )}
-              </div>
-            </div>
-            <div className=" w-full bg-textLightGrey my-3"></div>
-            {/* top albums div */}
-            <div>
-              <h1 className="pr-3 w-fit border-b border-b-textLightGrey">
-                Top Albums:
-              </h1>
-              {/* div for top album photos and text below */}
-              <div className="flex pt-3">
-                {albums !== null ? (
-                  albums.length === 0 ? (
-                    <div>No albums</div>
-                  ) : (
-                    albums.slice(0, 5).map((album: Album): ReactNode => {
-                      return (
-                        <div
-                          className="flex flex-col w-[15%] text-sm mr-4"
-                          key={album.id}
-                        >
-                          <img src={album.images[0].url} alt="photo" />
-                          <div>{album.name}</div>
-                        </div>
-                      );
-                    })
-                  )
-                ) : (
-                  <div className="flex justify-start">
-                    <div>Loading... Not Implemented Yet</div>
-                  </div>
-                )}
-              </div>
-            </div>
             {/* top artists div */}
             <div>
               <h1 className="pr-3 w-fit border-b border-b-textLightGrey">
@@ -203,7 +164,7 @@ const UserCard = ({ className, user }: UserCardProps) => {
                           className="flex flex-col w-[15%] text-sm mr-4"
                           key={album.id}
                         >
-                          <img src={album.images[0].url} alt="photo" />
+                          <img src={album.image_url} alt="photo" />
                           <div>{album.name}</div>
                         </div>
                       );
@@ -216,6 +177,68 @@ const UserCard = ({ className, user }: UserCardProps) => {
                 )}
               </div>
             </div>
+            {/* top albums div */}
+            <div>
+              <h1 className="pr-3 w-fit border-b border-b-textLightGrey">
+                Top Albums:
+              </h1>
+              {/* div for top album photos and text below */}
+              <div className="flex pt-3">
+                {albums !== null ? (
+                  albums.length === 0 ? (
+                    <div>No albums</div>
+                  ) : (
+                    albums.slice(0, 5).map((album: Album): ReactNode => {
+                      return (
+                        <div
+                          className="flex flex-col w-[15%] text-sm mr-4"
+                          key={album.id}
+                        >
+                          <img src={album.image_url} alt="photo" />
+                          <div>{album.name}</div>
+                        </div>
+                      );
+                    })
+                  )
+                ) : (
+                  <div className="flex justify-start">
+                    <div>Loading... Not Implemented Yet</div>
+                  </div>
+                )}
+              </div>
+            </div>
+            {/* top songs div */}
+            <div>
+              <h1 className="pr-3 w-fit border-b border-b-textLightGrey">
+                Top Songs:
+              </h1>
+              {/* div for top song photos and text below */}
+              <div className="flex pt-3">
+                {/* if top tracks is null, not loaded yet, if 0 length, no results, else show results */}
+                {topTracks !== null ? (
+                  topTracks.length === 0 ? (
+                    <div>No songs</div>
+                  ) : (
+                    topTracks.slice(0, 5).map((song: Song): ReactNode => {
+                      return (
+                        <div
+                          className="flex flex-col w-[15%] text-sm mr-4"
+                          key={song.id}
+                        >
+                          <img src={song.image_url} alt="photo" />
+                          <div>{song.name}</div>
+                        </div>
+                      );
+                    })
+                  )
+                ) : (
+                  <div className="flex justify-start">
+                    <div>Loading... Not Implemented Yet</div>
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className=" w-full bg-textLightGrey my-3"></div>
           </div>
         )}
       </div>
