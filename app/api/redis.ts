@@ -1,8 +1,11 @@
-import { Redis } from "@upstash/redis";
+import { createClient } from "redis";
 
-const redis = new Redis({
-  url: "https://us1-enough-moray-41280.upstash.io",
-  token: process.env.REDIS_TOKEN!, //had to put ! to guarantee not null
-});
+export const redis = createClient();
 
-export default redis;
+redis.on("error", (err) => console.log("Redis Client Error", err));
+
+async function connect() {
+  await redis.connect();
+}
+
+connect();

@@ -13,6 +13,7 @@ export async function GET(req: NextRequest) {
       // find songs where session user is following the user who created a songRating for said song
       where: {
         songRatings: {
+          //song ratings that contains a user whos followers contain the current user
           some: {
             user: {
               followers: {
@@ -27,6 +28,7 @@ export async function GET(req: NextRequest) {
       include: {
         // for rating info on feed card
         songRatings: {
+          //INCLUDE song ratings (include song ratings in song we're getting) where the logged in user follows the "rater"
           where: {
             user: {
               followers: {
@@ -36,7 +38,7 @@ export async function GET(req: NextRequest) {
               },
             },
           },
-          // for rater info on feed card
+          // for rater info on feed card - include song rating's user
           include: {
             user: {
               select: {
@@ -109,7 +111,7 @@ export async function GET(req: NextRequest) {
 
     const ratedItems = [...ratedSongs, ...ratedAlbums];
 
-    // sorting ratedItems by the most recent ratings
+    // sorting ratedItems by the most recent ratings (interlacing songs and albums)
     ratedItems.sort((a, b) => {
       const latestRatingA =
         a.songRatings !== undefined

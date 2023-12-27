@@ -1,5 +1,5 @@
 import React, { ReactNode, useState, useEffect } from "react";
-import { User } from "@prisma/client";
+import { TopArtistsArtist, User } from "@prisma/client";
 import { Album, Artist, Song } from "@prisma/client";
 import axios from "axios";
 
@@ -12,9 +12,17 @@ type ArtistWithPfp = Artist & {
   img: string;
 };
 
+type TopArtistsArtistWithArtist = TopArtistsArtist & {
+  artist: {
+    name: string;
+  };
+};
+
 const UserCard = ({ className, user }: UserCardProps) => {
   const [dropdown, setDropdown] = useState<boolean>(false);
-  const [topArtists, setTopArtists] = useState<Artist[] | null>(null);
+  const [topArtists, setTopArtists] = useState<
+    TopArtistsArtistWithArtist[] | null
+  >(null);
   const [topTracks, setTopTracks] = useState<Song[] | null>(null);
   const [albums, setAlbums] = useState<Album[] | null>(null);
   const [following, setFollowing] = useState<boolean>(false);
@@ -61,8 +69,8 @@ const UserCard = ({ className, user }: UserCardProps) => {
       .then((res) => {
         console.log(res.data);
         setTopArtists(res.data);
-        console.log("hello");
-        console.log(topArtists);
+        // console.log("hello");
+        // console.log(topArtists);
       })
       .catch((err) => {
         console.log(err);
@@ -154,25 +162,32 @@ const UserCard = ({ className, user }: UserCardProps) => {
               </h1>
               {/* div for top artists photos and text below */}
               <div className="flex pt-3">
-                {albums !== null ? (
-                  albums.length === 0 ? (
-                    <div>No Artits</div>
+                {topArtists !== null ? (
+                  topArtists.length === 0 ? (
+                    <div>No Artists</div>
                   ) : (
-                    albums.slice(0, 5).map((album: Album): ReactNode => {
-                      return (
-                        <div
-                          className="flex flex-col w-[15%] text-sm mr-4"
-                          key={album.id}
-                        >
-                          <img src={album.image_url} alt="photo" />
-                          <div>{album.name}</div>
-                        </div>
-                      );
-                    })
+                    topArtists
+                      .slice(0, 5)
+                      .map(
+                        (topArtist: TopArtistsArtistWithArtist): ReactNode => {
+                          console.log(topArtist);
+                          return (
+                            <div
+                              className="flex flex-col w-[15%] text-sm mr-4"
+                              key={topArtist.artistId}
+                            >
+                              {/* <img src={album.image_url} alt="photo" /> */}
+                              <div className="text-purple">
+                                {topArtist.artist.name}
+                              </div>
+                            </div>
+                          );
+                        }
+                      )
                   )
                 ) : (
                   <div className="flex justify-start">
-                    <div>Loading... Not Implemented Yet</div>
+                    <div>Loading...</div>
                   </div>
                 )}
               </div>

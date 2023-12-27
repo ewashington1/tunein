@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from "axios";
-import redis from "../redis";
+import { redis } from "../redis";
 
 export type SpotifyAuthHeaders = {
   headers: {
@@ -76,8 +76,8 @@ export async function setSpotifyToken(): Promise<string> {
     "spotify_access_token",
     spotify_access_token_response!.access_token,
     {
-      ex: 3600, //set to expire in 60 min
-      nx: true, //only set if key is not existing (nx)
+      EX: 3600, //set to expire in 60 min
+      NX: true, //only set if key is not existing (nx)
     }
   );
   return spotify_access_token_response!.access_token;

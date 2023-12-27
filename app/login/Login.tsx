@@ -41,8 +41,10 @@ const Login = ({ className }: LoginProps) => {
   }, [session]);
 
   const [backendErrors, setBackendErrors] = useState<LoginErrors>({});
+  const [loading, setLoading] = useState<boolean>(false);
 
   const login: SubmitHandler<LoginInputs> = async (data) => {
+    setLoading(true);
     setBackendErrors({});
     axios
       .post("/api/login", data)
@@ -63,6 +65,7 @@ const Login = ({ className }: LoginProps) => {
           setBackendErrors(err.response.data.errors);
         }
       });
+    setLoading(false);
   };
 
   const router = useRouter();
@@ -115,11 +118,20 @@ const Login = ({ className }: LoginProps) => {
         )}
       </div>
 
-      <input
-        type="submit"
-        value="Sign In"
-        className="text-white self-end rounded-md px-3 py-2 w-min bg-purple cursor-pointer"
-      />
+      {loading ? (
+        <input
+          type="submit"
+          value="Signing In"
+          className="text-white self-end rounded-md px-3 py-2 w-min bg-purple cursor-pointer"
+        />
+      ) : (
+        <input
+          type="submit"
+          value="Sign In"
+          className="text-white self-end rounded-md px-3 py-2 w-min bg-purple cursor-pointer"
+        />
+      )}
+
       {backendErrors.login && (
         <span className=" text-sm mt-1 text-purple self-center">
           {backendErrors.login}

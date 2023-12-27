@@ -11,14 +11,29 @@ export async function GET(
     // create user doesnt work that well
     // shouldnt be findMany how to fix?
 
-    const topArtists = await prisma.topArtists.findMany({
+    // const topArtists = await prisma.topArtists.findMany({
+    //   where: {
+    //     userId: userId,
+    //   },
+    //   select: {
+    //     artists: {
+    //       select: {
+    //         artist: true,
+    //       },
+    //     },
+    //   },
+    // });
+
+    const topArtists = await prisma.topArtistsArtist.findMany({
       where: {
-        userId: userId,
+        TopArtists: {
+          userId: userId,
+        },
       },
       select: {
-        artists: {
+        artist: {
           select: {
-            artist: true,
+            name: true,
           },
         },
       },
@@ -26,13 +41,13 @@ export async function GET(
 
     console.log(topArtists);
 
-    topArtists.forEach((artists) => {
-      artists.artists.forEach((artist) => {
-        console.log(artist);
-      });
-    });
+    // topArtists.forEach((artists) => {
+    //   artists.artists.forEach((artist) => {
+    //     console.log(artist);
+    //   });
+    // });
 
-    return NextResponse.json(topArtists[0].artists, { status: 200 });
+    return NextResponse.json(topArtists, { status: 200 });
   } catch (err) {
     console.log(err);
     return NextResponse.json("Error", { status: 500 });

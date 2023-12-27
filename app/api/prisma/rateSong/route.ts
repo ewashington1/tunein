@@ -28,6 +28,7 @@ export async function POST(req: RateSongRequest) {
     //song stuff
     const song = body.song;
 
+    //creates song in db
     await createSong(song);
 
     //get users with matching username to search
