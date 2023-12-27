@@ -2,13 +2,14 @@
 
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import AuthenticatedLayout from "../components/layout/AuthenticatedLayout";
 import { useSession } from "next-auth/react";
 import FeedSongRating from "../components/feed/FeedSongRating";
 import FeedAlbumRating from "../components/feed/FeedAlbumRating";
 import { Artist, AlbumRating, SongRating } from "@prisma/client";
 
-type SongRatingWithUsername = SongRating & { user: { username: string } };
+export type SongRatingWithUsername = SongRating & {
+  user: { username: string };
+};
 type AlbumRatingWithUsername = AlbumRating & { user: { username: string } };
 
 export type FeedItem = {
@@ -52,24 +53,21 @@ const page = () => {
   // }, [session]);
 
   return (
-    <AuthenticatedLayout>
-      <div className="flex flex-col max-h-[100vh] overflow-y-scroll pr-5 w-1/2 darkGreyScrollbar">
-        {feedItems?.map((item) => {
-          // if typeof item === songRating render song card, otherwise render album rating card
-          if (item.songRatings !== undefined) {
-            return <FeedSongRating key={item.id} song={item} />;
-          } else if (item.albumRatings !== undefined) {
-            return <FeedAlbumRating key={item.id} album={item} />;
-          }
-        })}
-        {feedItems?.length == 0 && (
-          <div className=" mt-4 text-2xl font-semibold">
-            No posts... try following some users to get started :)
-          </div>
-        )}
-      </div>
-      {/* <FeedItem /> */}
-    </AuthenticatedLayout>
+    <div className="flex flex-col max-h-[100vh] overflow-y-scroll pr-5 w-1/2 darkGreyScrollbar">
+      {feedItems?.map((item) => {
+        // if typeof item === songRating render song card, otherwise render album rating card
+        if (item.songRatings !== undefined) {
+          return <FeedSongRating key={item.id} song={item} />;
+        } else if (item.albumRatings !== undefined) {
+          return <FeedAlbumRating key={item.id} album={item} />;
+        }
+      })}
+      {feedItems?.length == 0 && (
+        <div className=" mt-4 text-2xl font-semibold">
+          No posts... try following some users to get started :)
+        </div>
+      )}
+    </div>
   );
 };
 

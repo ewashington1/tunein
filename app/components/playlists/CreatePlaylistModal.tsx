@@ -35,7 +35,7 @@ const CreatePlaylistModal = ({ setPlaylistModalOpen }: any) => {
     formData.append("image", imageFile!);
 
     axios
-      .post("/api/prisma/createPlaylist", formData, {
+      .post("/api/prisma/playlists/createPlaylist", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

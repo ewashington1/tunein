@@ -8,6 +8,7 @@ import { FormContext } from "./page";
 import axios from "axios";
 import { signIn } from "next-auth/react";
 import { useSession } from "next-auth/react";
+import { oAuthButtonStyle } from "./styles";
 
 //Login.tsx
 
@@ -47,7 +48,7 @@ const Login = ({ className }: LoginProps) => {
     setLoading(true);
     setBackendErrors({});
     axios
-      .post("/api/login", data)
+      .post("/api/prisma/auth/login", data)
       .then(async (res) => {
         const cred = await signIn("credentials", {
           // callbackUrl: "/home",
@@ -64,8 +65,10 @@ const Login = ({ className }: LoginProps) => {
         if (err.response.data.errors.login) {
           setBackendErrors(err.response.data.errors);
         }
+      })
+      .finally(() => {
+        setLoading(false);
       });
-    setLoading(false);
   };
 
   const router = useRouter();
@@ -76,7 +79,7 @@ const Login = ({ className }: LoginProps) => {
     <form
       onSubmit={handleSubmit(login)}
       className={
-        `text-black flex flex-col gap-8 p-6 w-[25%] h-min mr-56 rounded-md bg-boxDarkGrey ` +
+        `text-black flex flex-col gap-6 p-6 w-[25%] h-min mr-56 rounded-md bg-boxDarkGrey ` +
         className
       }
       style={{
@@ -88,7 +91,7 @@ const Login = ({ className }: LoginProps) => {
           Username or Email
         </label>
         <input
-          className="h-6 py-6 px-3 rounded-md bg-lightGrey"
+          className="h-6 py-6 px-3 rounded-md bg-lightGrey focus:outline-none focus:ring-purple focus:ring-2"
           placeholder="Username or Email"
           id="usernameOrEmail"
           type="text"
@@ -105,7 +108,7 @@ const Login = ({ className }: LoginProps) => {
           Password
         </label>
         <input
-          className="h-6 py-6 px-3 rounded-md bg-lightGrey"
+          className="h-6 py-6 px-3 rounded-md bg-lightGrey focus:outline-none focus:border-purple focus:border-2"
           placeholder="Password"
           type="password"
           id="password"
@@ -145,6 +148,46 @@ const Login = ({ className }: LoginProps) => {
         >
           Sign Up
         </button>
+      </div>
+
+      <hr />
+
+      {/* different Oauth methods */}
+      <div className="flex flex-col self-center">
+        <p className="mb-3 self-center text-white text-lg block">
+          ...or sign in with:
+        </p>
+        <div className="self-center gap-4 flex ">
+          <button
+            className={oAuthButtonStyle}
+            onClick={() => {
+              signIn("spotify")
+                .then(() => {
+                  console.log("Signed in via Spotify");
+                })
+                .catch((err) => {
+                  console.log(err);
+                });
+            }}
+          >
+            <img src="spotify_logo.png" alt="Spotify" />
+          </button>
+          <button
+            className={oAuthButtonStyle}
+            onClick={() => {
+              signIn("google")
+                .then(() => {
+                  console.log("Signed in via Google");
+                })
+                .catch((err) => {
+                  console.log(err);
+                });
+            }}
+          >
+            <img src="google_logo.png" alt="Spotify" />
+          </button>
+          <button className={oAuthButtonStyle}></button>
+        </div>
       </div>
     </form>
   );

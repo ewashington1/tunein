@@ -79,14 +79,13 @@ model AlbumRating {
 
 // only works for follow notis for now
 model Notification {
+  id         String   @id @default(uuid())
   fromUserId String
   fromUser   User     @relation("out", fields: [fromUserId], references: [id], onDelete: Cascade)
   toUserId   String
   toUser     User     @relation("in", fields: [toUserId], references: [id], onDelete: Cascade)
   message    String
   createdAt  DateTime @default(now())
-
-  @@id([fromUserId, toUserId])
 }
 
 // model Notification {

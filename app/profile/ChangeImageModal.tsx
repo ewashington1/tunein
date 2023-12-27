@@ -26,7 +26,7 @@ const ChangeImageModal = ({ setChangeImageModalOpen, imagePath }: any) => {
     console.log(imageFile);
 
     axios
-      .patch("/api/prisma/changePfp", formData, {
+      .patch("/api/prisma/profile/changePfp", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

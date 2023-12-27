@@ -4,7 +4,7 @@ import React from "react";
 import { useState } from "react";
 import { FeedItem } from "@/app/home/page";
 import Marquee from "react-fast-marquee";
-import MyStarRatingAlbumPrisma from "../MyStarRatingAlbumPrisma";
+import MyStarRatingAlbumPrisma from "@/app/components/myRatings/MyStarRatingAlbumPrisma";
 import Image from "next/image";
 import { Rating } from "react-simple-star-rating";
 import { Album } from "@prisma/client";

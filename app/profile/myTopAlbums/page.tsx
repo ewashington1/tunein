@@ -29,7 +29,7 @@ const page = () => {
 
   const getTopAlbums = async () => {
     axios
-      .get(`/api/prisma/getTopAlbumsWithAlbums/${session!.user.id}`)
+      .get(`/api/prisma/top/getTopAlbumsWithAlbums/${session!.user.id}`)
       .then((res) => {
         setTopAlbums(res.data);
       })
@@ -40,7 +40,7 @@ const page = () => {
 
   const removeFromTopAlbums = async (albumId: string) => {
     axios
-      .delete("/api/prisma/removeFromTopAlbums/" + albumId)
+      .delete("/api/prisma/top/removeFromTopAlbums/" + albumId)
       .then((res) => {
         console.log(res);
       })
@@ -66,10 +66,10 @@ const page = () => {
     }
   }, [session]);
 
-  if (topAlbums === null) return <AuthenticatedLayout></AuthenticatedLayout>;
+  if (topAlbums === null) return <></>;
 
   return (
-    <AuthenticatedLayout>
+    <>
       {/* full container */}
       <div className="w-1/2 h-[95vh] my-4 relative flex flex-col">
         {/* top - title, owner, description, edit option, save btn */}
@@ -131,7 +131,7 @@ const page = () => {
             })}
         </div>
       </div>
-    </AuthenticatedLayout>
+    </>
   );
 };
 

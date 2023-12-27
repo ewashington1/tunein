@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import SearchPage from "../SearchPage";
 import CreatePlaylistModal from "../playlists/CreatePlaylistModal";
 import SidebarPlaylists from "../playlists/SidebarPlaylists";
+import { setTimeout } from "timers";
 
 const LeftSideBar = () => {
   const pathname = usePathname();

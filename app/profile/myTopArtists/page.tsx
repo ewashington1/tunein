@@ -1,6 +1,5 @@
 "use client";
 
-import AuthenticatedLayout from "@/app/components/layout/AuthenticatedLayout";
 import { faStar } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Artist, TopArtists, TopArtistsArtist, User } from "@prisma/client";
@@ -32,7 +31,7 @@ const page = () => {
 
   const getTopArtists = async () => {
     axios
-      .get(`/api/prisma/getTopArtistsWithArtists/${session!.user.id}`)
+      .get(`/api/prisma/top/getTopArtistsWithArtists/${session!.user.id}`)
       .then((res) => {
         setTopArtists(res.data);
       })
@@ -45,7 +44,7 @@ const page = () => {
     console.log(topArtists);
 
     axios
-      .delete("/api/prisma/removeFromTopArtists/" + artistId)
+      .delete("/api/prisma/top/removeFromTopArtists/" + artistId)
       .then((res) => {
         console.log(res);
       })
@@ -71,10 +70,10 @@ const page = () => {
     }
   }, [session]);
 
-  if (topArtists === null) return <AuthenticatedLayout></AuthenticatedLayout>;
+  if (topArtists === null) return <></>;
 
   return (
-    <AuthenticatedLayout>
+    <>
       {/* full container */}
       <div className="w-1/2 h-[95vh] my-4 relative flex flex-col">
         {/* top - title, owner, description, edit option, save btn */}
@@ -138,7 +137,7 @@ const page = () => {
             )}
         </div>
       </div>
-    </AuthenticatedLayout>
+    </>
   );
 };
 

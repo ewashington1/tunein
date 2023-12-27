@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 import NextAuthSessionProvider from "./NextAuthSessionProvider";
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
+import AuthenticatedLayout from "./components/layout/AuthenticatedLayout";
 config.autoAddCss = false;
 
 const inter = Inter({
@@ -21,10 +22,13 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  console.log("render");
   return (
     <html lang="en">
       <body className={inter.className}>
-        <NextAuthSessionProvider>{children}</NextAuthSessionProvider>
+        <NextAuthSessionProvider>
+          <AuthenticatedLayout>{children}</AuthenticatedLayout>
+        </NextAuthSessionProvider>
       </body>
     </html>
   );

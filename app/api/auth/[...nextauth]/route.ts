@@ -1,6 +1,11 @@
 import CredentialsProvider from "next-auth/providers/credentials";
+import SpotifyProvider from "next-auth/providers/spotify";
+import GoogleProvider from "next-auth/providers/google";
 import { NextAuthOptions } from "next-auth";
 import NextAuth from "next-auth/next";
+import { prisma } from "@/app/api/prisma";
+import { createUser } from "@/app/api/prisma/auth/register/route";
+import { generateUsername } from "unique-username-generator";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -27,27 +32,45 @@ export const authOptions: NextAuthOptions = {
         return user;
       },
     }),
+    SpotifyProvider({
+      clientId: process.env.SPOTIFY_CLIENT_ID!,
+      clientSecret: process.env.SPOTIFY_CLIENT_SECRET!,
+    }),
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
   ],
   pages: {
     signIn: "/login",
   },
   secret: process.env.NEXTAUTH_SECRET,
-  //   JWT: When a user logs in, next-auth generates a JWT that contains user information. This token can be customized with the jwt callback in your configuration. This token is signed, sent to the client, and stored securely in an HTTP-only cookie. On each request, this token is sent to the server, decoded, and the user information is extracted.
 
-  // Session: When you fetch the session on the client side using the useSession hook or getSession method, you're actually getting a representation of the user derived from the aforementioned JWT. The session callback in your next-auth configuration allows you to shape what this representation looks like. The session is a client-friendly way of looking at the user's data without exposing the raw JWT or all of its contents.
   callbacks: {
-    //returned user initializes jwt
-    async jwt({ token, user }) {
-      if (user) {
-        token.id = user.id;
-        token.name = user.name;
-        token.email = user.email;
-        token.username = user.username; // works even though error
+    // called after sign in or when session is accessed in client
+    async jwt({ token }) {
+      // create jwt using data from matching user
+      const matchingUser = await prisma.user.findFirst({
+        where: {
+          email: token.email!,
+        },
+        select: {
+          id: true,
+          email: true,
+          username: true,
+          name: true,
+        },
+      });
+      if (matchingUser) {
+        token.id = matchingUser!.id;
+        token.name = matchingUser!.name;
+        token.email = matchingUser!.email;
+        token.username = matchingUser!.username; // works even though error
       }
       return token;
     },
 
-    //jwt info is stored in session, fields based on this
+    // called whenever session is checked. sends properties to client
     async session({ session, token }) {
       if (token && session.user) {
         session.user.name = token.name;
@@ -55,8 +78,55 @@ export const authOptions: NextAuthOptions = {
         session.user.username = token.username; // works even though error
         session.user.id = token.id;
       }
-
       return session;
+    },
+
+    // returns whether user can sign in
+    async signIn({ user, account, profile, email, credentials }) {
+      const matchingUser = await prisma.user.findFirst({
+        where: {
+          email: user.email!,
+        },
+        select: {
+          id: true,
+        },
+      });
+
+      // if there is a user with a matching account (same email as spotify email), connect the accounts
+      if (matchingUser) {
+        return true;
+      }
+      // if there isn't an account with a matching email
+      else {
+        const randomStrings = crypto.getRandomValues(new BigUint64Array(2));
+
+        const randomPassword =
+          randomStrings[0].toString(36) +
+          randomStrings[1].toString(36).toUpperCase();
+        try {
+          await createUser({
+            username: user.id, //spotify id is username basically
+            email: user.email,
+            password: randomPassword,
+            name: user.name,
+          });
+          return true;
+        } catch (err: any) {
+          // if username fails unique constraint
+          if (err.code === "P2002") {
+            const randomUsername = generateUsername("", 3);
+            await createUser({
+              username: randomUsername, //spotify id is username basically
+              email: user.email,
+              password: randomPassword,
+              name: user.name,
+            });
+            return true;
+          } else {
+            return false;
+          }
+        }
+      }
     },
   },
 };

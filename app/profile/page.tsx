@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import AuthenticatedLayout from "../components/layout/AuthenticatedLayout";
 import { useSession } from "next-auth/react";
 import { User } from "@prisma/client";
 import axios from "axios";
@@ -23,7 +22,7 @@ const page = () => {
     if (status === "authenticated") {
       const getUser = async () => {
         axios
-          .get("/api/prisma/getUser")
+          .get("/api/prisma/profile/getUser")
           .then((res) => {
             setUser(res.data.user);
             setName(res.data.user.name);
@@ -40,7 +39,7 @@ const page = () => {
   const updateUser = async (e: any) => {
     e.preventDefault();
     axios
-      .patch("/api/prisma/updateUser", {
+      .patch("/api/prisma/profile/updateUser", {
         userId: session?.user.id,
         name: name,
         bio: bio,
@@ -55,7 +54,7 @@ const page = () => {
   };
 
   return (
-    <AuthenticatedLayout>
+    <>
       <div>
         <div
           className="mt-12 flex p-3 items-center justify-center gap-x-2 bg-boxLightGrey"
@@ -145,7 +144,7 @@ const page = () => {
           imagePath={user && user.pfp}
         />
       )}
-    </AuthenticatedLayout>
+    </>
   );
 };
 

@@ -26,7 +26,7 @@ const AddToTopAlbumsModal = ({
 
   const submit = async () => {
     axios
-      .post("/api/prisma/addToTopAlbums", { album: album })
+      .post("/api/prisma/top/addToTopAlbums", { album: album })
       .then((res) => {
         setAddToTopAlbumsOpen(false);
       })

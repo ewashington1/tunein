@@ -41,15 +41,18 @@ const AddToPlaylistModal = ({
 
     if (addTo.size !== 0) {
       const playlists = Array.from(addTo);
-      const addToPlaylistPromise = axios.post("/api/prisma/addToPlaylists", {
-        playlists: playlists,
-        song: song,
-      });
+      const addToPlaylistPromise = axios.post(
+        "/api/prisma/playlists/addToPlaylists",
+        {
+          playlists: playlists,
+          song: song,
+        }
+      );
       promises.push(addToPlaylistPromise);
     }
 
     if (topSongsSelected.current === true) {
-      const addToTopSongsPromise = axios.post("/api/prisma/addToTopSongs", {
+      const addToTopSongsPromise = axios.post("/api/prisma/top/addToTopSongs", {
         song: song,
       });
       promises.push(addToTopSongsPromise);

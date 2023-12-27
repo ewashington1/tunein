@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Album } from "@spotify/web-api-ts-sdk";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import NewStarRatingAlbum from "../MyStarRatingAlbumSpotify";
+import NewStarRatingAlbum from "@/app/components/myRatings/MyStarRatingAlbumSpotify";
 import { createPortal } from "react-dom";
 import AddToTopAlbumsModal from "./AddToTopAlbumsModal";
 

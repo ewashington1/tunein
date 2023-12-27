@@ -18,7 +18,7 @@ const DeletePlaylistModal = ({
 
   const deletePlaylist = () => {
     axios
-      .delete("/api/prisma/deletePlaylist/" + playlistId)
+      .delete("/api/prisma/playlists/deletePlaylist/" + playlistId)
       .then((res) => {
         setDeletePlaylistModalOpen(false);
         updatePlaylists();

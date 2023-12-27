@@ -38,7 +38,7 @@ const CommentPage = ({
 
   const fetchComments = async () => {
     axios
-      .get(`/api/prisma/getComments/${song.id}`)
+      .get(`/api/prisma/comments/getComments/${song.id}`)
       .then((res) => {
         setComments(res.data);
       })
@@ -53,7 +53,7 @@ const CommentPage = ({
 
   const submit = () => {
     axios
-      .post("/api/prisma/addComment", {
+      .post("/api/prisma/comments/addComment", {
         comment: comment,
         songId: song.id,
       })

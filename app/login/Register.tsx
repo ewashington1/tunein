@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useContext } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { User } from "../api/register/route";
+import { User } from "@/app/api/prisma/auth/register/route";
 import axios from "axios";
 import variables from "../variables.module.scss";
 import { useRouter } from "next/navigation";
@@ -48,8 +48,9 @@ const Register = ({ className }: RegisterProps) => {
   const createUser: SubmitHandler<RegistrationInputs> = async (data) => {
     setBackendErrors({});
     axios
-      .post("/api/register", data)
+      .post("/api/prisma/auth/register", data)
       .then(async (res) => {
+        console.log(res);
         const cred = await signIn("credentials", {
           // callbackUrl: "/home",
           username: res.data.user.username,

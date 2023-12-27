@@ -1,0 +1,8 @@
+To start redis server locally:
+- run container on docker. Then type these two commands on terminal: 
+    1. docker run -d --name redis-stack -p 6379:6379 -p 8001:8001 redis/redis-stack:latest
+    2. docker exec -it redis-stack redis-cli
+
+Rules:
+- follow convention
+- always branch out before pushing

@@ -31,7 +31,7 @@ const UserCard = ({ className, user }: UserCardProps) => {
   useEffect(() => {
     const getFollowers = async () => {
       axios
-        .get("/api/prisma/getFollowers/" + user.id)
+        .get("/api/prisma/following/getFollowers/" + user.id)
         .then((res) => {
           setFollowers(res.data);
         })
@@ -44,7 +44,7 @@ const UserCard = ({ className, user }: UserCardProps) => {
 
   const getFollow = async () => {
     axios
-      .get("/api/prisma/getFollow/" + user.id)
+      .get("/api/prisma/following/getFollow/" + user.id)
       .then((res) => {
         setFollowing(res.data);
       })
@@ -65,7 +65,7 @@ const UserCard = ({ className, user }: UserCardProps) => {
 
   const getArtists = async () => {
     axios
-      .get("/api/prisma/getTopArtists/" + user.id)
+      .get("/api/prisma/top/getTopArtists/" + user.id)
       .then((res) => {
         console.log(res.data);
         setTopArtists(res.data);
@@ -87,43 +87,43 @@ const UserCard = ({ className, user }: UserCardProps) => {
 
   const follow = async () => {
     axios
-      .post("/api/prisma/follow", { followeeId: user.id })
+      .post("/api/prisma/following/follow", { followeeId: user.id })
       .then((res) => {
         setFollowing(!following);
       })
       .catch((err) => {
         console.log(err);
       });
-    axios
-      .post("/api/prisma/createNoti", {
-        inNotiId: user.id,
-        message: "followed you",
-      })
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    // axios
+    //   .post("/api/prisma/notifications/createNoti", {
+    //     inNotiId: user.id,
+    //     message: "followed you",
+    //   })
+    //   .then((res) => {
+    //     console.log(res);
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //   });
   };
 
   const unfollow = async () => {
     axios
-      .delete("/api/prisma/unfollow/" + user.id)
+      .delete("/api/prisma/following/unfollow/" + user.id)
       .then((res) => {
         setFollowing(!following);
       })
       .catch((err) => {
         console.log(err);
       });
-    axios
-      .delete("/api/prisma/deleteNoti/" + user.id)
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    // axios
+    //   .delete("/api/prisma/notifications/deleteNoti/" + user.id)
+    //   .then((res) => {
+    //     console.log(res);
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //   });
   };
 
   return (
@@ -131,7 +131,7 @@ const UserCard = ({ className, user }: UserCardProps) => {
       {/* the left flex box*/}
       <div className="max-w-[60%] h-full min-w-[60%]">
         {/* info at top -- picture, name, etc */}
-        <div className="max-w-[60%] h-full max-h-[11.5vh] flex p-3">
+        <div className="max-w-[100%] h-full max-h-[11.5vh] flex p-3">
           {/* user image */}
           <img
             className="h-full aspect-square mr-2 object-cover rounded-full"

@@ -1,6 +1,5 @@
 "use client";
 
-import AuthenticatedLayout from "@/app/components/layout/AuthenticatedLayout";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { Playlist, PlaylistSong, Song, User } from "@prisma/client";
@@ -31,7 +30,7 @@ const page = () => {
 
   const removeFromPlaylists = async (songId: string) => {
     axios
-      .delete("/api/prisma/removeFromTopSongs/" + songId)
+      .delete("/api/prisma/top/removeFromTopSongs/" + songId)
       .then((res) => {
         console.log(res);
       })
@@ -51,7 +50,7 @@ const page = () => {
 
   const getTopSongs = async () => {
     axios
-      .get(`/api/prisma/getTopSongsWithSongs/${session!.user.id}`)
+      .get(`/api/prisma/top/getTopSongsWithSongs/${session!.user.id}`)
       .then((res) => {
         setPlaylist(res.data);
       })
@@ -66,10 +65,10 @@ const page = () => {
     }
   }, [session]);
 
-  if (playlist === null) return <AuthenticatedLayout></AuthenticatedLayout>;
+  if (playlist === null) return <></>;
 
   return (
-    <AuthenticatedLayout>
+    <>
       {/* full container */}
       <div className="w-1/2 h-[95vh] my-4 relative flex flex-col">
         {/* top - title, owner, description, edit option, save btn */}
@@ -131,7 +130,7 @@ const page = () => {
             })}
         </div>
       </div>
-    </AuthenticatedLayout>
+    </>
   );
 };
 
