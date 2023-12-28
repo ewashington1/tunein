@@ -45,6 +45,42 @@ export async function POST(req: RateAlbumRequest) {
       },
     });
 
+    //notification portion
+    const fromUser: string = session!.user.id;
+    const message: string = "rated " + albumDetails.name;
+
+    //finding every user that follows the rater and rated this song
+    const toUsers = await prisma.albumRating.findMany({
+      where: {
+        user: {
+          following: {
+            some: {
+              followeeId: fromUser,
+            },
+          },
+        },
+        albumId: albumDetails.id,
+      },
+      select: {
+        user: {
+          select: {
+            id: true,
+          },
+        },
+      },
+    });
+
+    const notifications = toUsers.map((toUser) => ({
+      fromUserId: fromUser,
+      toUserId: toUser.user.id,
+      message: message,
+    }));
+
+    //creating a new notification relation between two users
+    await prisma.notification.createMany({
+      data: notifications,
+    });
+
     const returnMsg = "You rated " + albumDetails.id + " " + stars + " stars!";
 
     return NextResponse.json(
