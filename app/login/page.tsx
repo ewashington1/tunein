@@ -13,6 +13,7 @@ export const FormContext = createContext<Dispatch<SetStateAction<string>>>(
 );
 
 const page = () => {
+  console.log("Login page");
   const [formState, setFormState] = useState("sign in");
 
   return (

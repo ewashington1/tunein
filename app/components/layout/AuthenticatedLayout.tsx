@@ -1,17 +1,15 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import { redirect } from "next/navigation";
 import LeftSideBar from "./LeftSideBar";
 import RightSideBar from "./RightSideBar";
 import { createContext, useState, useEffect } from "react";
 import { Playlist } from "@prisma/client";
 import axios from "axios";
 import PlaylistsContext from "@/app/PlaylistContext";
-import { useRouter } from "next/navigation";
 import React from "react";
 import { PlaylistWithUsername } from "@/app/types";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 type AuthenticatedLayoutProps = {
   children?: React.ReactNode;
@@ -22,41 +20,37 @@ const AuthenticatedLayout = ({ children }: AuthenticatedLayoutProps) => {
   const { data: session, status } = useSession();
 
   const pathname = usePathname();
+  const router = useRouter();
 
   const [playlists, setPlaylists] = useState<PlaylistWithUsername[]>([]);
 
   const updatePlaylists = async () => {
-    if (status === "authenticated") {
-      axios
-        .get("/api/prisma/playlists/getPlaylists")
-        .then((res) => {
-          setPlaylists(res.data);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
+    axios
+      .get("/api/prisma/playlists/getPlaylists")
+      .then((res) => {
+        console.log("playlists");
+        setPlaylists(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   useEffect(() => {
     if (status === "unauthenticated" && pathname !== "/login") {
-      redirect("/login");
-    } else if (status !== "loading") {
+      router.replace("/login");
+    } else if (status === "authenticated") {
       updatePlaylists();
     }
   }, [status]);
 
   // if unauth and already at login screen, do nothing
-  if (status === "unauthenticated" && pathname === "/login") {
-    return <div className="flex justify-center">{children}</div>;
-  }
-  // if status loading and on login page, show nothing
-  else if (status === "loading" && pathname === "/login") {
-    console.log("gin");
+  if (pathname === "/login") {
     return <div className="flex justify-center">{children}</div>;
   }
   //if auth status loading and not on login page, show auth layout w loading
-  else if (status === "loading" && pathname !== "/login") {
+  else if (status === "loading") {
+    console.log("loading");
     return (
       <div className="flex justify-center">
         <LeftSideBar />
@@ -68,6 +62,8 @@ const AuthenticatedLayout = ({ children }: AuthenticatedLayoutProps) => {
     );
   }
 
+  console.log("Auth layout: ", status, pathname);
+  // children only updates when route changes
   return (
     <div className="flex justify-center">
       <PlaylistsContext.Provider
