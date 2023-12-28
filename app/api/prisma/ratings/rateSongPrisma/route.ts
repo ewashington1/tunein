@@ -13,6 +13,8 @@ type RateSongRequest = NextRequest & {
   };
 };
 
+// this route is for rating a new song that hasn't already been
+// added to the prisma db
 export async function PUT(req: RateSongRequest) {
   try {
     const body = await req.json();

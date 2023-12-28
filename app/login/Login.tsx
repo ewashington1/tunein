@@ -186,6 +186,8 @@ const Login = ({ className }: LoginProps) => {
               signIn("google")
                 .then(() => {
                   console.log("Signed in via Google");
+                  // conditional based on if account was created or logged in
+                  // if created take them to profile page
                 })
                 .catch((err) => {
                   console.log(err);

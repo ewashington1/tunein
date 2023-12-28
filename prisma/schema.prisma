@@ -11,29 +11,30 @@ datasource db {
 }
 
 model User {
-  id           String         @id @default(uuid())
-  email        String         @unique
-  password     String
-  name         String
-  username     String         @unique
-  bio          String?
-  pfp          String?
-  songRatings  SongRating[]
-  albumRatings AlbumRating[]
+  id            String         @id @default(uuid())
+  email         String         @unique
+  password      String
+  name          String
+  username      String         @unique
+  bio           String?
+  pfp           String?
+  songRatings   SongRating[]
+  albumRatings  AlbumRating[]
   //user followers is all the people following the user
   //it's getting every one where the current user is the "following"
-  followers    Follow[]       @relation("following")
+  followers     Follow[]       @relation("following")
   //user following is all the people they're following
   //it's getting every follow where the current user is the "follower" 
-  following    Follow[]       @relation("followers")
-  Playlist     Playlist[]
-  createdAt    DateTime       @default(now())
-  inNotis      Notification[] @relation("in")
-  outNotis     Notification[] @relation("out")
-  TopAlbums    TopAlbums[]
-  TopArtists   TopArtists[]
-  TopSongs     TopSongs[]
-  Comment      Comment[]
+  following     Follow[]       @relation("followers")
+  Playlist      Playlist[]
+  createdAt     DateTime       @default(now())
+  inNotis       Notification[] @relation("in")
+  outNotis      Notification[] @relation("out")
+  TopAlbums     TopAlbums[]
+  TopArtists    TopArtists[]
+  TopSongs      TopSongs[]
+  Comment       Comment[]
+  artistRatings ArtistRating[]
 }
 
 model Follow {
@@ -75,6 +76,18 @@ model AlbumRating {
   updatedAt DateTime @updatedAt
 
   @@id([userId, albumId])
+}
+
+model ArtistRating {
+  artist    Artist   @relation(fields: [artistId], references: [id])
+  artistId  String
+  stars     Float
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@id([userId, artistId])
 }
 
 // only works for follow notis for now
@@ -178,6 +191,7 @@ model Artist {
   AlbumArtist      AlbumArtist[]
   albums           Album[]
   TopArtistsArtist TopArtistsArtist[]
+  artistRatings    ArtistRating[]
 }
 
 model TopAlbums {

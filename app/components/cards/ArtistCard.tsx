@@ -10,6 +10,8 @@ import { faStar as filledStar } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { createPortal } from "react-dom";
 import AddToTopArtistsModal from "./AddToTopArtistsModal";
+import Image from "next/image";
+import MyStarRatingArtistSpotify from "../myRatings/MyStarRatingArtistSpotify";
 
 type ArtistCardProps = {
   className?: string;
@@ -81,9 +83,14 @@ const ArtistCard = ({ className, artist }: ArtistCardProps) => {
           </div>
         </div>
         <div className="flex ml-auto mr-2">
+          {/* my rating */}
+          <div className="flex flex-col self-center text-lg items-center">
+            <div>My rating:</div>
+            <MyStarRatingArtistSpotify artist={artist} />
+          </div>
           {/* add to favorite artists button */}
           <button
-            className="self-center"
+            className="self-center ml-3"
             onClick={() => setAddToTopArtistsOpen(true)}
           >
             <FontAwesomeIcon
@@ -114,6 +121,7 @@ const ArtistCard = ({ className, artist }: ArtistCardProps) => {
           </div>
         </div>
       </div>
+      {/* dropdown content */}
       {dropdown && (
         <div className="p-3 dropdownTransition">
           {/* top songs div */}
@@ -135,6 +143,7 @@ const ArtistCard = ({ className, artist }: ArtistCardProps) => {
                         key={track.id}
                       >
                         <img src={track.album.images[0].url} alt="photo" />
+                        {/* <Image src={track.album.images[0].url} alt="photo" /> */}
                         <div>{track.name}</div>
                       </div>
                     );
