@@ -28,12 +28,11 @@ export async function DELETE(
     const inNotiId: string = params.followeeId;
 
     //deleting the notification relation between two users
-    await prisma.notification.delete({
+    await prisma.notification.deleteMany({
       where: {
-        fromUserId_toUserId: {
-          fromUserId: outNotidId,
-          toUserId: inNotiId,
-        },
+        fromUserId: outNotidId,
+        toUserId: inNotiId,
+        message: "followed you",
       },
     });
 

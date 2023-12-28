@@ -45,12 +45,13 @@ export async function PUT(req: RateSongRequest) {
     //notification portion
     const fromUser: string = session!.user.id;
     const message: string = "rated " + song.name;
+    //finding every user that follows the rater and rated this song
     const toUsers = await prisma.songRating.findMany({
       where: {
         user: {
           following: {
             some: {
-              followeeId: userId,
+              followeeId: fromUser,
             },
           },
         },
@@ -70,8 +71,6 @@ export async function PUT(req: RateSongRequest) {
       toUserId: toUser.user.id,
       message: message,
     }));
-
-    console.log(notifications);
 
     //creating a new notification relation between two users
     await prisma.notification.createMany({
