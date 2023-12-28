@@ -11,7 +11,7 @@ import axios from "axios";
 import { createPortal } from "react-dom";
 import AddToTopArtistsModal from "./AddToTopArtistsModal";
 import Image from "next/image";
-import MyStarRatingArtistSpotify from "../myRatings/MyStarRatingArtistSpotify";
+import MyStarRatingArtistSpotify from "@/app/components/myRatings/MyStarRatingArtistSpotify";
 
 type ArtistCardProps = {
   className?: string;
