@@ -10,6 +10,7 @@ import { CommentsWithUsernames } from "@/app/types";
 import { useSession } from "next-auth/react";
 import { SongRating as PrismaSongRating } from "@prisma/client";
 import { Rating } from "react-simple-star-rating";
+import Image from "next/image";
 
 // entire page
 const page = () => {
@@ -65,6 +66,7 @@ type SongRating = PrismaSongRating & {
   user: {
     username: string;
     id: string;
+    pfp: string | null;
   };
 };
 
@@ -95,16 +97,31 @@ const FriendRatingsSection = ({ songId }: { songId: string }) => {
       <h1 className="text-2xl font-semibold">Friend Ratings:</h1>
 
       {/* friend ratings */}
-      <div className="overflow-y-scroll commentSectionScrollbar">
+      <div className="overflow-y-scroll commentSectionScrollbar h-full">
         {friendRatings ? (
           friendRatings.map((songRating, idx) => {
             return (
-              <div key={idx} className=" py-2">
+              <div key={idx} className=" py-2 flex gap-2">
                 <Link
                   href={`/users/${songRating.userId}`}
-                  className="inline-block mr-2"
+                  className="flex gap-2"
                 >
-                  {songRating.user.username}
+                  <Image
+                    src={
+                      songRating.user.pfp
+                        ? songRating.user.pfp
+                        : "/photos/defaultPfp.png"
+                    }
+                    alt="pfp"
+                    width={28}
+                    height={28}
+                    className="inline-block rounded-full"
+                  />
+                  <div className="inline-block m">
+                    {songRating.user.username.length < 12
+                      ? songRating.user.username
+                      : songRating.user.username.substring(0, 11).concat("...")}
+                  </div>
                 </Link>
                 <div className="pointer-events-none inline-block">
                   <Rating
