@@ -5,6 +5,7 @@ import { faPlus, faPlay, faPause } from "@fortawesome/free-solid-svg-icons";
 import NewStarRatingSongSpotify from "@/app/components/myRatings/MyStarRatingSongSpotify";
 import AddToPlaylistModal from "../playlists/AddToPlaylistModal";
 import { createPortal } from "react-dom";
+import Link from "next/link";
 
 type SongCardProps = {
   className?: string;
@@ -36,9 +37,12 @@ const SongCard = ({ className, track }: SongCardProps) => {
         <img src={track.album.images[0].url} alt="" className="h-full mr-2" />
         {/* song info */}
         <div className="flex flex-col justify-center max-w-[50%] overflow-x-hidden">
-          <div className="font-bold text-xl whitespace-nowrap">
+          <Link
+            href={`/songs/${track.id}`}
+            className="font-bold text-xl whitespace-nowrap"
+          >
             {track.name}
-          </div>
+          </Link>
           <div className="font-light text-sm text-textLightGrey align-middle flex">
             <div className="inline">Song</div>
             <div className="w-1 h-1 bg-textLightGrey rounded-full inline-block mx-1 my-auto"></div>

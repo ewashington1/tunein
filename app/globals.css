@@ -84,17 +84,29 @@ svg.star-svg {
 .lightGreyScrollbarForSidebar::-webkit-scrollbar {
   width: 10px;
 }
-
 .lightGreyScrollbarForSidebar::-webkit-scrollbar-track {
   background: #141414;
 }
-
 .lightGreyScrollbarForSidebar::-webkit-scrollbar-thumb {
   background: #252525;
   border-radius: 5px;
 }
-
 .lightGreyScrollbarForSidebar::-webkit-scrollbar-corner {
+  background: #141414; /* fixes the white box at the bottom */
+}
+
+/* scrollbar styling for comments section on song page */
+.commentSectionScrollbar::-webkit-scrollbar {
+  width: 10px;
+}
+.commentSectionScrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.commentSectionScrollbar::-webkit-scrollbar-thumb {
+  background: #9d9d9d37;
+  border-radius: 10px;
+}
+.commentSectionScrollbar::-webkit-scrollbar-corner {
   background: #141414; /* fixes the white box at the bottom */
 }
 

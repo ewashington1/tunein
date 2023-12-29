@@ -93,6 +93,7 @@ export async function GET(req: NextRequest) {
             user: {
               select: {
                 username: true,
+                id: true,
               },
             },
           },

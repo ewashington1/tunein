@@ -32,8 +32,8 @@ const CommentPage = ({
   const [playMarquee, setPlayMarquee] = useState<boolean>(false);
   const [comment, setComment] = useState<string>("");
 
-  const [comments, setComments] = useState<CommentsWithUsernames[] | null>(
-    null
+  const [comments, setComments] = useState<CommentsWithUsernames[] | undefined>(
+    undefined
   );
 
   const fetchComments = async () => {
@@ -58,8 +58,6 @@ const CommentPage = ({
         songId: song.id,
       })
       .then((res) => {
-        console.log(res.data);
-        alert("Success");
         setComments((prevComments) => {
           if (prevComments) {
             return [...prevComments, res.data];
@@ -136,38 +134,58 @@ const CommentPage = ({
             </Marquee>
           </div>
         </div>
-        <div>
-          {comments ? (
-            comments.map((existingComment) => (
-              <div className="flex gap-1 py-1 border-b-[1px] border-white text-center">
-                <div
-                  className={`ml-2 font-bold text-lg ${
-                    session?.user.id === existingComment.userId && "text-purple"
-                  }`}
-                >{`@${existingComment.user.username}:`}</div>
-                <div className="text-textLightGrey text-lg">
-                  {existingComment.comment}
+        <div className="pr-4 overflow-y-scroll commentSectionScrollbar">
+          <div className="flex flex-col items-start">
+            {comments && comments.length !== 0 ? (
+              comments.map((existingComment) => (
+                <div className="pl-2 py-1 border-b-[1px] border-white w-full">
+                  <p
+                    className={`font-bold text-lg inline ${
+                      session?.user.id === existingComment.userId &&
+                      "text-purple"
+                    }`}
+                  >{`@${existingComment.user.username}: `}</p>
+                  <div className="text-textLightGrey inline text-lg">
+                    {existingComment.comment}
+                  </div>
                 </div>
-              </div>
-            ))
-          ) : (
-            <div>Loading comments...</div>
-          )}
+              ))
+            ) : comments ? (
+              <div>No comments</div>
+            ) : (
+              <div>Loading comments...</div>
+            )}
+          </div>
         </div>
         <div className="h-[1px] w-auto bg-white mt-auto" />
-        <input
-          className="text-white font-extralight font-xl mt-2 bg-transparent mx-2 focus:outline-none"
-          placeholder="What are your thoughts?"
-          value={comment}
-          onChange={(e: ChangeEvent<HTMLInputElement>) =>
-            setComment(e.target.value)
-          }
-          onKeyDownCapture={(e: React.KeyboardEvent) => {
-            if (e.key === "Enter") {
-              submit();
+        <span className="w-full flex justify-center">
+          <input
+            className="text-white font-extralight w-f font-xl flex-grow mt-2 bg-transparent mx-2 focus:outline-none"
+            placeholder="What are your thoughts?"
+            value={comment}
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              setComment(e.target.value)
             }
-          }}
-        />
+            onKeyDownCapture={(e: React.KeyboardEvent) => {
+              if (e.key === "Enter") {
+                submit();
+              }
+            }}
+          />
+          <button
+            className=" self-end"
+            onClick={submit}
+            disabled={comment ? false : true}
+          >
+            <img
+              src="/send_icon.svg"
+              alt="Send"
+              className={
+                comment ? " h-6 w-6 opacity-75" : " h-6 w-6 opacity-25"
+              }
+            />
+          </button>
+        </span>
       </div>
     </div>
   );

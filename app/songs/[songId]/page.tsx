@@ -8,6 +8,8 @@ import Link from "next/link";
 import CommentPage from "@/app/components/CommentPage";
 import { CommentsWithUsernames } from "@/app/types";
 import { useSession } from "next-auth/react";
+import { SongRating as PrismaSongRating } from "@prisma/client";
+import { Rating } from "react-simple-star-rating";
 
 // entire page
 const page = () => {
@@ -41,7 +43,85 @@ const page = () => {
     <div className="w-[55%] h-[100vh] flex flex-col gap-6">
       <SongDetailsHeader song={songDetails} />
       <SongDetailsBody song={songDetails} />
-      <SongCommentsSection songId={songDetails.id} />
+      <div className="flex flex-row gap-2">
+        <SongCommentsSection songId={songDetails.id} />
+        <FriendRatingsSection songId={songDetails.id} />
+      </div>
+    </div>
+  );
+};
+
+//friend ratings section
+const friendRatingsSectionStyle = {
+  background: "rgba(0, 0, 0, 0.35)",
+  borderRadius: "16px",
+  boxShadow: "0 4px 30px rgba(0, 0, 0, 0.3)",
+  backdropFilter: "blur(5px)",
+  WebkitBackdropFilter: "blur(5px)",
+  border: "1px solid rgba(255, 255, 255, 0.1)",
+};
+
+type SongRating = PrismaSongRating & {
+  user: {
+    username: string;
+    id: string;
+  };
+};
+
+const FriendRatingsSection = ({ songId }: { songId: string }) => {
+  const [friendRatings, setFriendRatings] = useState<SongRating[] | undefined>(
+    undefined
+  );
+  const fetchFriendRatings = () => {
+    axios
+      .get(`/api/prisma/ratings/friendsSongRatings/${songId}`)
+      .then((res) => {
+        setFriendRatings(res.data.ratings);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  useEffect(() => {
+    fetchFriendRatings();
+  }, []);
+
+  return (
+    <div
+      className="flex flex-col max-h-[50vh] pl-5 pt-5 pr-5 pb-5 w-2/5"
+      style={friendRatingsSectionStyle}
+    >
+      <h1 className="text-2xl font-semibold">Friend Ratings:</h1>
+
+      {/* friend ratings */}
+      <div className="overflow-y-scroll commentSectionScrollbar">
+        {friendRatings ? (
+          friendRatings.map((songRating, idx) => {
+            return (
+              <div key={idx} className=" py-2">
+                <Link
+                  href={`/users/${songRating.userId}`}
+                  className="inline-block mr-2"
+                >
+                  {songRating.user.username}
+                </Link>
+                <div className="pointer-events-none inline-block">
+                  <Rating
+                    disableFillHover={true}
+                    fillColor="#a220c9"
+                    initialValue={songRating.stars}
+                    size={25}
+                    allowFraction
+                  />
+                </div>
+              </div>
+            );
+          })
+        ) : (
+          <div></div>
+        )}
+      </div>
     </div>
   );
 };
@@ -60,9 +140,9 @@ const SongCommentsSection = ({ songId }: { songId: string }) => {
   const { data: session } = useSession();
 
   const [comment, setComment] = useState<string>("");
-  const [comments, setComments] = useState<CommentsWithUsernames[] | null>(
-    null
-  );
+  const [comments, setComments] = useState<
+    CommentsWithUsernames[] | undefined | null
+  >(undefined);
   const fetchComments = async () => {
     axios
       .get(`/api/prisma/comments/getComments/${songId}`)
@@ -99,57 +179,82 @@ const SongCommentsSection = ({ songId }: { songId: string }) => {
   }, []);
 
   return (
-    <div className="flex flex-col max-h-[50vh] p-5" style={commentSectionStyle}>
+    <div
+      className="flex flex-col max-h-[50vh] pl-5 pt-5 pr-1 pb-5 w-3/5"
+      style={commentSectionStyle}
+    >
       <div className="text-4xl font-semibold">Comments</div>
       {/* <hr /> */}
-      <div>
-        {comments ? (
-          comments.map((existingComment) => (
-            <div className="flex gap-1 py-1 border-b-[1px] border-white text-center">
+      <div className="pr-4 overflow-y-scroll commentSectionScrollbar">
+        <div className="flex flex-col items-start">
+          {comments && comments.length !== 0 ? (
+            comments.map((existingComment) => (
               <div
-                className={`ml-2 font-bold text-lg ${
-                  session?.user.id === existingComment.userId && "text-purple"
-                }`}
-              >{`@${existingComment.user.username}:`}</div>
-              <div className="text-textLightGrey text-lg">
-                {existingComment.comment}
+                className="pl-2 py-1 border-b-[1px] border-white w-full"
+                key={existingComment.userId}
+              >
+                <p
+                  className={`font-bold text-lg inline ${
+                    session?.user.id === existingComment.userId && "text-purple"
+                  }`}
+                >{`@${existingComment.user.username}: `}</p>
+                <div className="text-textLightGrey inline text-lg">
+                  {existingComment.comment}
+                </div>
               </div>
-            </div>
-          ))
-        ) : (
-          <div>Loading comments...</div>
-        )}
+            ))
+          ) : comments ? (
+            <div>No comments</div>
+          ) : (
+            <div>Loading comments...</div>
+          )}
+        </div>
       </div>
 
-      <input
-        className="text-white font-extralight font-xl mt-2 bg-transparent mx-2 focus:outline-none"
-        placeholder="What are your thoughts?"
-        value={comment}
-        onChange={(e: ChangeEvent<HTMLInputElement>) =>
-          setComment(e.target.value)
-        }
-        onKeyDownCapture={(e: React.KeyboardEvent) => {
-          if (e.key === "Enter") {
-            submit();
+      <span className="w-full flex justify-center">
+        <input
+          className="text-white font-extralight w-f font-xl flex-grow mt-2 bg-transparent mx-2 focus:outline-none"
+          placeholder="What are your thoughts?"
+          value={comment}
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            setComment(e.target.value)
           }
-        }}
-      />
+          onKeyDownCapture={(e: React.KeyboardEvent) => {
+            if (e.key === "Enter") {
+              submit();
+            }
+          }}
+        />
+        <button
+          className=" self-end"
+          onClick={submit}
+          disabled={comment ? false : true}
+        >
+          <img
+            src="/send_icon.svg"
+            alt="Send"
+            className={comment ? " h-6 w-6 opacity-75" : " h-6 w-6 opacity-25"}
+          />
+        </button>
+      </span>
     </div>
   );
 };
 
 // song details body
 const SongDetailsBody = ({ song }: { song: Song }): React.ReactNode => {
-  const popularityBarStyle = `h-full w-[${song.popularity}%] bg-purple`;
   return (
     <div className="flex flex-col text-xl">
-      <p className="flex-row flex items-center">
+      <div className="flex-row flex items-center">
         Popularity:
         <div className=" h-4 flex-grow bg-lightGrey mx-3" id="popularityBar">
-          <div className={popularityBarStyle} />
+          <div
+            className={`h-full bg-purple`}
+            style={{ width: `${song.popularity}%` }}
+          />
         </div>
         {song.popularity}
-      </p>
+      </div>
     </div>
   );
 };

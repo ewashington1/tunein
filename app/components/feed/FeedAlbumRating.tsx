@@ -8,6 +8,7 @@ import MyStarRatingAlbumPrisma from "@/app/components/myRatings/MyStarRatingAlbu
 import Image from "next/image";
 import { Rating } from "react-simple-star-rating";
 import { Album } from "@prisma/client";
+import Link from "next/link";
 
 type FeedAlbumRatingProps = {
   album: FeedItem;
@@ -71,9 +72,12 @@ const FeedAlbumRating = ({ album }: FeedAlbumRatingProps) => {
         <div className="self-center align-middle max-w-[22rem] overflow-x-hidden">
           {/* name, dot, song */}
           <div className="flex items-center mb-3">
-            <p className="font-bold text-4xl mr-3 whitespace-nowrap textSlide">
+            <Link
+              href={`/albums/${album.id}`}
+              className="font-bold text-4xl mr-3 whitespace-nowrap textSlide"
+            >
               {album.name}
-            </p>
+            </Link>
             <div className="bg-white w-1 h-1 rounded-full" />
             <p className="ml-3 font-light text-textLightGrey">Album</p>
           </div>

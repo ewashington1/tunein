@@ -11,6 +11,7 @@ import { Song } from "@prisma/client";
 import CommentPage from "../CommentPage";
 import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 type FeedSongRatingProps = {
   song: FeedItem;
@@ -88,9 +89,12 @@ const FeedSongRating = ({ song }: FeedSongRatingProps) => {
         <div className="self-center align-middle max-w-[22rem] overflow-x-hidden">
           {/* name, dot, song */}
           <div className="flex items-center mb-3">
-            <p className="font-bold text-4xl mr-3 whitespace-nowrap textSlide">
+            <Link
+              href={`/songs/${song.id}`}
+              className="font-bold text-4xl mr-3 whitespace-nowrap textSlide"
+            >
               {song.name}
-            </p>
+            </Link>
             <div className="bg-white w-1 h-1 rounded-full" />
             <p className="ml-3 font-light text-textLightGrey">Song</p>
           </div>

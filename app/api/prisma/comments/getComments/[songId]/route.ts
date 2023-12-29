@@ -8,14 +8,14 @@ export async function GET(
   try {
     const songId = params.songId;
 
-    const comments = await prisma.song.findUnique({
-      where: { id: songId },
-      select: {
-        comments: { include: { user: { select: { username: true } } } },
-      },
+    const comments = await prisma.comment.findMany({
+      where: { songId: songId },
+      include: { user: { select: { username: true } } },
     });
 
-    return NextResponse.json(comments?.comments, { status: 200 });
+    return NextResponse.json(comments, {
+      status: 200,
+    });
   } catch (error) {
     console.log(error);
     return NextResponse.json("Failure", { status: 500 });
