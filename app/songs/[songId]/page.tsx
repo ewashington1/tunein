@@ -15,9 +15,9 @@ import Image from "next/image";
 // entire page
 const page = () => {
   const songId = useParams().songId;
-  const [songDetails, setSongDetails] = useState<Song | undefined | null>(
-    undefined
-  );
+  const [songDetails, setSongDetails] = useState<
+    (Song & { lyrics: string | null }) | undefined | null
+  >(undefined);
   const fetchSongDetails = async () => {
     axios
       .get(`/api/spotify_requests/getSong/${songId}`)
@@ -48,6 +48,7 @@ const page = () => {
         <SongCommentsSection songId={songDetails.id} />
         <FriendRatingsSection songId={songDetails.id} />
       </div>
+      <SongLyricsBody lyrics={songDetails.lyrics} />
     </div>
   );
 };
@@ -254,6 +255,21 @@ const SongCommentsSection = ({ songId }: { songId: string }) => {
           />
         </button>
       </span>
+    </div>
+  );
+};
+
+//song lyrics body
+const SongLyricsBody = ({
+  lyrics,
+}: {
+  lyrics: string | null;
+}): React.ReactNode => {
+  return (
+    <div className="flex flex-col text-xl gap-3">
+      <h1 className="font-bold text-3xl">Lyrics</h1>
+
+      <p className=" font-extralight whitespace-pre-wrap text-base">{lyrics}</p>
     </div>
   );
 };

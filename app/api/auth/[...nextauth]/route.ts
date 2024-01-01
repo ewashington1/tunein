@@ -6,6 +6,8 @@ import NextAuth from "next-auth/next";
 import { prisma } from "@/app/api/prisma";
 import { createUser } from "@/app/api/prisma/auth/register/route";
 import { generateUsername } from "unique-username-generator";
+import nodemailer from "nodemailer";
+import { APP_URL } from "@/app/globals";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -110,6 +112,11 @@ export const authOptions: NextAuthOptions = {
             password: randomPassword,
             name: user.name,
           });
+          await sendUserInitializationEmail(
+            user.name || "user",
+            user.email!,
+            randomPassword
+          );
           return true;
         } catch (err: any) {
           // if username fails unique constraint
@@ -130,6 +137,50 @@ export const authOptions: NextAuthOptions = {
     },
   },
 };
+
+const transporter = nodemailer.createTransport({
+  host: "smtp-relay.brevo.com",
+  port: 587,
+  secure: false,
+  auth: {
+    user: process.env.SMTP_EMAIL,
+    pass: process.env.SMTP_PASSWORD,
+  },
+});
+async function sendUserInitializationEmail(
+  name: string,
+  email: string,
+  password: string
+) {
+  try {
+    const html = `<div style="border-radius: 10px; background-color: #222222; color: #ffffff;">
+    <h1>Hi, ${name}! </h1>
+    <h3 style="font-weight: 300;">
+      Thank you for joining TuneIn! We are excited for you to join us and we
+      really hope you enjoy our platform. Please set your username and
+      password <a href="${APP_URL}/settings/userInitialization">here</a>.
+    </h3>
+    <h3>Your one-time password: ${password}</h3>
+  </div>`;
+    console.log(html);
+    const mailConfigurations = {
+      from: "tuneIn@gmail.com",
+      to: email,
+      subject: "TuneIn - Account Verification",
+      html: html,
+    };
+
+    transporter.sendMail(mailConfigurations, function (error, info) {
+      if (error) throw Error(error.message);
+      console.log("Email Sent Successfully");
+      console.log(info);
+    });
+
+    console.log("complete");
+  } catch (err) {
+    console.log(err);
+  }
+}
 
 const handler = NextAuth(authOptions);
 

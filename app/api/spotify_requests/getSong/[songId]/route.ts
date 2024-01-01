@@ -4,6 +4,7 @@ import {
   getSpotifyAuthHeaders,
 } from "@/app/api/spotify_requests/spotifyAuth";
 import axios from "axios";
+import { Track } from "@spotify/web-api-ts-sdk";
 
 export async function GET(
   req: NextRequest,
@@ -19,7 +20,14 @@ export async function GET(
       spotifyAuthHeaders
     );
 
-    const songDetails = songResponse.data;
+    const songDetails: Track & { lyrics: string | undefined } =
+      songResponse.data;
+
+    const musixmatchResponse = await fetchSongLyrics(
+      songDetails.external_ids.isrc
+    );
+
+    songDetails.lyrics = musixmatchResponse.message.body.lyrics.lyrics_body;
 
     return NextResponse.json({ songDetails: songDetails }, { status: 200 });
   } catch (err) {
@@ -29,5 +37,16 @@ export async function GET(
       },
       { status: 500 }
     );
+  }
+}
+
+async function fetchSongLyrics(isrc: string) {
+  try {
+    const musixmatchResponse = await axios.get(
+      `https://api.musixmatch.com/ws/1.1/matcher.lyrics.get?track_isrc=${isrc}&apikey=${process.env.MUSIXMATCH_API_KEY}`
+    );
+    return musixmatchResponse.data;
+  } catch (error) {
+    console.log(error);
   }
 }
