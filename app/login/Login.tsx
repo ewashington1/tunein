@@ -110,7 +110,7 @@ const Login = ({ className }: LoginProps) => {
             Password
           </label>
           <input
-            className="h-6 py-6 px-3 rounded-md bg-lightGrey focus:outline-none focus:border-purple focus:border-2"
+            className="h-6 py-6 px-3 rounded-md bg-lightGrey focus:outline-none  focus:ring-purple focus:ring-2"
             placeholder="Password"
             type="password"
             id="password"

@@ -28,7 +28,6 @@ const AuthenticatedLayout = ({ children }: AuthenticatedLayoutProps) => {
     axios
       .get("/api/prisma/playlists/getPlaylists")
       .then((res) => {
-        console.log("playlists");
         setPlaylists(res.data);
       })
       .catch((err) => {
@@ -62,7 +61,7 @@ const AuthenticatedLayout = ({ children }: AuthenticatedLayoutProps) => {
     );
   }
 
-  console.log("Auth layout: ", status, pathname);
+  console.log("Auth layout");
   // children only updates when route changes
   return (
     <div className="flex justify-center">

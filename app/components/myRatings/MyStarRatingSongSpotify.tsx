@@ -15,7 +15,7 @@ const MyStarRatingSongSpotify = ({ song }: MyStarRatingSongSpotifyProps) => {
   const { data: session } = useSession();
 
   //initialize this to your previous song rating instead
-  const [rating, setRating] = useState<number | null>(null);
+  const [rating, setRating] = useState<number | undefined>(undefined);
 
   useEffect(() => {
     axios
@@ -39,8 +39,17 @@ const MyStarRatingSongSpotify = ({ song }: MyStarRatingSongSpotifyProps) => {
       .catch((err) => console.log(err));
   };
 
-  if (rating === null) {
-    return <div className="font-bold text-xl">Loading...</div>;
+  if (rating === undefined) {
+    return (
+      <div className="flex pointer-events-none opacity-25">
+        <Rating
+          initialValue={rating}
+          size={25}
+          allowFraction
+          disableFillHover
+        />
+      </div>
+    );
   }
 
   return (
