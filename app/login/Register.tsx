@@ -91,7 +91,7 @@ const Register = ({ className }: RegisterProps) => {
           Full Name
         </label>
         <input
-          className="h-6 py-6 px-3 rounded-md"
+          className="h-6 py-6 px-3 rounded-md focus:outline-none focus:ring-purple focus:ring-2"
           id="name"
           placeholder="Full Name"
           style={{ backgroundColor: variables.lightGrey }}
@@ -109,7 +109,7 @@ const Register = ({ className }: RegisterProps) => {
           Username
         </label>
         <input
-          className="h-6 py-6 px-3 rounded-md"
+          className="h-6 py-6 px-3 rounded-md  focus:outline-none focus:ring-purple focus:ring-2"
           id="username"
           placeholder="Username"
           style={{ backgroundColor: variables.lightGrey }}
@@ -134,7 +134,7 @@ const Register = ({ className }: RegisterProps) => {
         <input
           type="email"
           placeholder="Email"
-          className="h-6 py-6 px-3 rounded-md"
+          className="h-6 py-6 px-3 rounded-md  focus:outline-none focus:ring-purple focus:ring-2"
           id="email"
           style={{ backgroundColor: variables.lightGrey }}
           {...register("email", { required: true })}
@@ -158,7 +158,7 @@ const Register = ({ className }: RegisterProps) => {
         <input
           type="password"
           placeholder="Password"
-          className="h-6 py-6 px-3 rounded-md"
+          className="h-6 py-6 px-3 rounded-md  focus:outline-none focus:ring-purple focus:ring-2"
           id="password"
           style={{ backgroundColor: variables.lightGrey }}
           {...register("password", { required: true })}
@@ -177,7 +177,7 @@ const Register = ({ className }: RegisterProps) => {
         <input
           type="password"
           placeholder="Confirm Password"
-          className="h-6 py-6 px-3 rounded-md"
+          className="h-6 py-6 px-3 rounded-md  focus:outline-none focus:ring-purple focus:ring-2"
           id="confirmPassword"
           style={{ backgroundColor: variables.lightGrey }}
           {...register("confirmPassword", {

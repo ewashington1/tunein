@@ -83,6 +83,10 @@ const Login = ({ className }: LoginProps) => {
         `text-black flex flex-col gap-6 p-6 w-[25%] mr-56 rounded-md bg-boxDarkGrey ` +
         className
       }
+      style={{
+        backgroundColor: variables.boxDarkGrey,
+        filter: "drop-shadow(-10px 10px 1px rgba(0, 0, 0, 0.25))",
+      }}
     >
       <form
         onSubmit={handleSubmit(login)}

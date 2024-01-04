@@ -136,7 +136,9 @@ const RightSideBar = () => {
               Profile
             </Link>
             <hr />
-            <div className="p-4">Settings</div>
+            <Link className={"p-4 " + paths.settings} href="/settings">
+              Settings
+            </Link>
             <hr />
             <div className="p-4">
               <button onClick={() => signOut()}>Sign out</button>

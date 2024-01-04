@@ -158,11 +158,13 @@ async function sendUserInitializationEmail(
     <h3 style="font-weight: 300;">
       Thank you for joining TuneIn! We are excited for you to join us and we
       really hope you enjoy our platform. Please set your username and
-      password <a href="${APP_URL}/settings/userInitialization">here</a>.
+      password <a href="${APP_URL}/settings">here</a>.
     </h3>
-    <h3>Your one-time password: ${password}</h3>
+    <h2>Login info: </h2>
+    <h3>Email: ${email}</h3>
+    <h3>Password: ${password}</h3>
+    <h3>...or you can log in with one of our OAuth options: Google and Spotify</h3>
   </div>`;
-    console.log(html);
     const mailConfigurations = {
       from: "tuneIn@gmail.com",
       to: email,
@@ -173,7 +175,6 @@ async function sendUserInitializationEmail(
     transporter.sendMail(mailConfigurations, function (error, info) {
       if (error) throw Error(error.message);
       console.log("Email Sent Successfully");
-      console.log(info);
     });
 
     console.log("complete");

@@ -113,7 +113,13 @@ const FeedSongRating = ({ song }: FeedSongRatingProps) => {
       </div>
       <hr className="my-3" />
       {/* bottom section */}
-      <button onClick={() => setCommentModalOpen(true)}>Add comment...</button>
+      <button
+        onClick={() => {
+          setCommentModalOpen(true);
+        }}
+      >
+        Add comment...
+      </button>
       {commentModalOpen &&
         createPortal(
           <CommentPage song={song} setCommentModalOpen={setCommentModalOpen} />,
