@@ -72,6 +72,21 @@ const CommentPage = ({
       });
   };
 
+  const removeComment = () => {
+    axios
+      .delete("/api/prisma/comments/deleteComment/" + song.id)
+      .then(() => {
+        setComments((prevComments) => {
+          return prevComments?.filter((comment) => {
+            return comment.userId != session?.user.id;
+          });
+        });
+      })
+      .catch((err) => {
+        alert("Attempt failed.");
+      })
+  };
+
   return (
     // background
     <div
@@ -138,6 +153,7 @@ const CommentPage = ({
           <div className="flex flex-col items-start">
             {comments && comments.length !== 0 ? (
               comments.map((existingComment) => (
+
                 <div className="pl-2 py-1 border-b-[1px] border-white w-full">
                   <p
                     className={`font-bold text-lg inline ${
@@ -145,9 +161,17 @@ const CommentPage = ({
                       "text-purple"
                     }`}
                   >{`@${existingComment.user.username}: `}</p>
+
                   <div className="text-textLightGrey inline text-lg">
                     {existingComment.comment}
                   </div>
+                  
+                  {session?.user.id === existingComment.userId && <div className="inline"
+                    onClick={removeComment}
+                  >
+                    delete
+                  </div>}
+
                 </div>
               ))
             ) : comments ? (
