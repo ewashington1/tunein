@@ -7,7 +7,6 @@ export async function POST(req: NextRequest & { followeeId: string }) {
   try {
     const session = await getServerSession(authOptions);
     const followerId = session!.user.id;
-
     const body = await req.json();
     const followeeId = body.followeeId;
 
